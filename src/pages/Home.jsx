@@ -48,12 +48,16 @@ export default function Home() {
       {/* Hero */}
       <section className="hero">
         <div className="hero__overlay" />
-        <img
-          src="/images/products/kelaghayi-1.jpg"
-          alt="Paressilk İpek Koleksiyon"
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/images/products/kelaghayi-1.jpg"
           className="hero__video"
-          style={{ objectPosition: 'center' }}
-        />
+        >
+          <source src="/videos/hero-collage.mp4" type="video/mp4" />
+        </video>
         <div className="hero__content fade-in">
           <p className="hero__subtitle">%100 El Yapımı Doğal İpek</p>
           <h1 className="hero__title">Zarafetin İpek Dokunuşu</h1>
