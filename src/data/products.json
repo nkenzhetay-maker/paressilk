@@ -1,0 +1,263 @@
+[
+  {
+    "id": "kelaghayi-national-collection-150",
+    "name": "National Collection Kelaghayi",
+    "nameEn": "National Collection Kelaghayi",
+    "category": "kelaghayi",
+    "price": 2450,
+    "currency": "TRY",
+    "description": "El yapımı %100 ipek kelaghayi. Azerbaycan'ın geleneksel baskı sanatıyla üretilmiştir. Boyutlar: 150x150 cm.",
+    "descriptionEn": "Handcrafted 100% silk kelaghayi with traditional Azerbaijani printing art. Dimensions: 150x150 cm.",
+    "images": ["/images/products/kelaghayi-1.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "150 x 150 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": true,
+    "tags": ["ipek", "kelaghayi", "hediye", "el yapımı", "geleneksel"]
+  },
+  {
+    "id": "kelaghayi-national-collection-2",
+    "name": "National Collection Kelaghayi II",
+    "nameEn": "National Collection Kelaghayi II",
+    "category": "kelaghayi",
+    "price": 2250,
+    "currency": "TRY",
+    "description": "Zarif desenleriyle öne çıkan %100 ipek kelaghayi. Özel günler ve hediye için ideal.",
+    "descriptionEn": "Elegant patterned 100% silk kelaghayi. Perfect for special occasions and gifts.",
+    "images": ["/images/products/kelaghayi-2.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "140 x 140 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": true,
+    "tags": ["ipek", "kelaghayi", "hediye", "zarif"]
+  },
+  {
+    "id": "kelaghayi-national-collection-3",
+    "name": "National Collection Kelaghayi III",
+    "nameEn": "National Collection Kelaghayi III",
+    "category": "kelaghayi",
+    "price": 2250,
+    "currency": "TRY",
+    "description": "Geleneksel Azerbaycan motiflerinde %100 ipek kelaghayi. Her biri benzersiz el işçiliğiyle üretilmiştir.",
+    "descriptionEn": "Traditional Azerbaijani motif 100% silk kelaghayi. Each piece is uniquely handcrafted.",
+    "images": ["/images/products/kelaghayi-3.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "140 x 140 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": ["ipek", "kelaghayi", "geleneksel", "motif"]
+  },
+  {
+    "id": "kelaghayi-classic-1",
+    "name": "Classic Kelaghayi",
+    "nameEn": "Classic Kelaghayi",
+    "category": "kelaghayi",
+    "price": 1950,
+    "currency": "TRY",
+    "description": "Klasik tasarım %100 ipek kelaghayi. Günlük kullanım ve özel davetler için mükemmel.",
+    "descriptionEn": "Classic design 100% silk kelaghayi. Perfect for daily use and special occasions.",
+    "images": ["/images/products/kelaghayi-4.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "130 x 130 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": ["ipek", "kelaghayi", "klasik"]
+  },
+  {
+    "id": "kelaghayi-classic-2",
+    "name": "Classic Kelaghayi II",
+    "nameEn": "Classic Kelaghayi II",
+    "category": "kelaghayi",
+    "price": 1950,
+    "currency": "TRY",
+    "description": "Klasik koleksiyon %100 ipek kelaghayi. Zamansız tasarımıyla her kombine uyum sağlar.",
+    "descriptionEn": "Classic collection 100% silk kelaghayi. Timeless design that complements any outfit.",
+    "images": ["/images/products/kelaghayi-5.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "130 x 130 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": ["ipek", "kelaghayi", "klasik"]
+  },
+  {
+    "id": "kelaghayi-elegant-1",
+    "name": "Elegant Collection Kelaghayi",
+    "nameEn": "Elegant Collection Kelaghayi",
+    "category": "kelaghayi",
+    "price": 2650,
+    "currency": "TRY",
+    "description": "Elegant koleksiyon %100 ipek kelaghayi. Özel tasarım desenleri ve premium kalite ipek.",
+    "descriptionEn": "Elegant collection 100% silk kelaghayi. Exclusive design patterns and premium quality silk.",
+    "images": ["/images/products/kelaghayi-6.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek (Premium)",
+      "dimensions": "150 x 150 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": true,
+    "tags": ["ipek", "kelaghayi", "elegant", "premium", "hediye"]
+  },
+  {
+    "id": "kelaghayi-elegant-2",
+    "name": "Elegant Kelaghayi",
+    "nameEn": "Elegant Kelaghayi",
+    "category": "kelaghayi",
+    "price": 2450,
+    "currency": "TRY",
+    "description": "Şık ve sofistike %100 ipek kelaghayi. Özel etkinlikler için tasarlanmıştır.",
+    "descriptionEn": "Chic and sophisticated 100% silk kelaghayi. Designed for special events.",
+    "images": ["/images/products/kelaghayi-7.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "140 x 140 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": ["ipek", "kelaghayi", "elegant", "şık"]
+  },
+  {
+    "id": "scarf-classic-1",
+    "name": "Classic İpek Eşarp",
+    "nameEn": "Classic Silk Scarf",
+    "category": "scarves",
+    "price": 1750,
+    "currency": "TRY",
+    "description": "%100 doğal ipek eşarp. Klasik tasarım, her mevsim kullanılabilir.",
+    "descriptionEn": "100% natural silk scarf. Classic design, suitable for all seasons.",
+    "images": ["/images/products/scarf-1.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "90 x 180 cm",
+      "origin": "Azerbaycan",
+      "care": "Elde yıkama veya kuru temizleme"
+    },
+    "inStock": true,
+    "featured": true,
+    "tags": ["ipek", "eşarp", "klasik", "hediye"]
+  },
+  {
+    "id": "scarf-classic-2",
+    "name": "Classic İpek Eşarp II",
+    "nameEn": "Classic Silk Scarf II",
+    "category": "scarves",
+    "price": 1750,
+    "currency": "TRY",
+    "description": "%100 doğal ipek eşarp. Zarif desenleri ile göz alıcı bir aksesuar.",
+    "descriptionEn": "100% natural silk scarf. An eye-catching accessory with elegant patterns.",
+    "images": ["/images/products/scarf-2.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "90 x 180 cm",
+      "origin": "Azerbaycan",
+      "care": "Elde yıkama veya kuru temizleme"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": ["ipek", "eşarp", "klasik"]
+  },
+  {
+    "id": "scarf-federation",
+    "name": "Özel Tasarım Kurumsal Eşarp",
+    "nameEn": "Custom Corporate Silk Scarf",
+    "category": "scarves",
+    "price": 3200,
+    "currency": "TRY",
+    "description": "Kurumsal etkinlikler ve organizasyonlar için özel tasarım %100 ipek eşarp. Logo ve kurumsal kimlik baskısı yapılabilir.",
+    "descriptionEn": "Custom design 100% silk scarf for corporate events and organizations. Logo and corporate identity printing available.",
+    "images": ["/images/products/scarf-3.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "90 x 180 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir",
+      "customization": "Kurumsal logo ve tasarım baskısı mevcut"
+    },
+    "inStock": true,
+    "featured": true,
+    "tags": ["ipek", "eşarp", "kurumsal", "özel tasarım", "organizasyon"]
+  },
+  {
+    "id": "scarf-blue-rose",
+    "name": "Blue Rose İpek Eşarp",
+    "nameEn": "Blue Rose Silk Scarf",
+    "category": "scarves",
+    "price": 1850,
+    "currency": "TRY",
+    "description": "Mavi gül desenli %100 ipek eşarp. Romantik ve zarif bir dokunuş.",
+    "descriptionEn": "Blue rose patterned 100% silk scarf. A romantic and elegant touch.",
+    "images": ["/images/products/scarf-4.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "90 x 180 cm",
+      "origin": "Azerbaycan",
+      "care": "Elde yıkama veya kuru temizleme"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": ["ipek", "eşarp", "çiçek", "mavi"]
+  },
+  {
+    "id": "scarf-pink-buta",
+    "name": "Pink Buta İpek Eşarp",
+    "nameEn": "Pink Buta Silk Scarf",
+    "category": "scarves",
+    "price": 1850,
+    "currency": "TRY",
+    "description": "Pembe buta desenli %100 ipek eşarp. Geleneksel buta motifi modern yorumla.",
+    "descriptionEn": "Pink buta patterned 100% silk scarf. Traditional buta motif with a modern twist.",
+    "images": ["/images/products/scarf-5.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "90 x 180 cm",
+      "origin": "Azerbaycan",
+      "care": "Elde yıkama veya kuru temizleme"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": ["ipek", "eşarp", "buta", "pembe"]
+  },
+  {
+    "id": "scarf-elegant",
+    "name": "Elegant İpek Eşarp",
+    "nameEn": "Elegant Silk Scarf",
+    "category": "scarves",
+    "price": 2100,
+    "currency": "TRY",
+    "description": "Premium koleksiyon %100 ipek eşarp. Sofistike tasarım, özel ambalajda.",
+    "descriptionEn": "Premium collection 100% silk scarf. Sophisticated design, in special packaging.",
+    "images": ["/images/products/scarf-6.jpg"],
+    "details": {
+      "material": "%100 Doğal İpek (Premium)",
+      "dimensions": "90 x 180 cm",
+      "origin": "Azerbaycan",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": true,
+    "tags": ["ipek", "eşarp", "elegant", "premium", "hediye"]
+  }
+]
