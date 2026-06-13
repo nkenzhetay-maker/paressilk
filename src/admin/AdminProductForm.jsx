@@ -13,7 +13,7 @@ const categoryOptions = [
 const emptyProduct = {
   name: '', nameEn: '', category: 'kelaghayi', price: '', description: '', descriptionEn: '',
   images: [], inStock: true, featured: false, tags: [],
-  details: { material: '%100 Doğal İpek', dimensions: '', origin: 'Azerbaycan', care: 'Kuru temizleme önerilir' },
+  details: { material: '%100 Doğal İpek', dimensions: '', origin: 'El Yapımı', care: 'Kuru temizleme önerilir' },
 };
 
 export default function AdminProductForm() {
@@ -22,6 +22,7 @@ export default function AdminProductForm() {
   const { getProduct, addProduct, updateProduct } = useProducts();
   const isEdit = !!id;
   const fileRef = useRef();
+  const videoRef = useRef();
 
   const [form, setForm] = useState(emptyProduct);
   const [tagsInput, setTagsInput] = useState('');
@@ -63,6 +64,20 @@ export default function AdminProductForm() {
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
     }));
+  };
+
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setForm(prev => ({ ...prev, video: ev.target.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeVideo = () => {
+    setForm(prev => ({ ...prev, video: null }));
   };
 
   const handleSubmit = (e) => {
@@ -175,6 +190,29 @@ export default function AdminProductForm() {
                       >x</button>
                     </div>
                   ))}
+                </div>
+              )}
+            </div>
+
+            <div className="admin-card">
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: 20 }}>Ürün Videosu</h3>
+              {form.video ? (
+                <div style={{ position: 'relative' }}>
+                  <video src={form.video} controls style={{ width: '100%', borderRadius: 4, maxHeight: 200 }} />
+                  <button
+                    type="button"
+                    onClick={removeVideo}
+                    style={{ position: 'absolute', top: 8, right: 8, padding: '4px 10px', background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: '0.72rem', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                  >Kaldır</button>
+                </div>
+              ) : (
+                <div className="product-form__image-upload" onClick={() => videoRef.current?.click()} style={{ borderStyle: 'dashed' }}>
+                  <input type="file" ref={videoRef} accept="video/*" onChange={handleVideoUpload} style={{ display: 'none' }} />
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" style={{ marginBottom: 8 }}>
+                    <polygon points="5,3 19,12 5,21" />
+                  </svg>
+                  <p style={{ fontSize: '0.85rem', color: '#888' }}>Video yüklemek için tıklayın</p>
+                  <p style={{ fontSize: '0.72rem', color: '#bbb' }}>MP4, MOV - Maks. 50MB - 1 adet</p>
                 </div>
               )}
             </div>

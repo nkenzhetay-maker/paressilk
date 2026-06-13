@@ -39,7 +39,7 @@ export default function Shop() {
     <>
       <Helmet>
         <title>{activeCatLabel} | Paressilk - %100 İpek Ürünler</title>
-        <meta name="description" content={`Paressilk ${activeCatLabel} koleksiyonu. %100 doğal ipek, el yapımı, Azerbaycan'dan Türkiye'ye. Kelaghayi, eşarp ve daha fazlası.`} />
+        <meta name="description" content={`Paressilk ${activeCatLabel} koleksiyonu. %100 doğal ipek, el yapımı, el yapımı premium kalite. Kelaghayi, eşarp ve daha fazlası.`} />
       </Helmet>
 
       <div className="shop-page">

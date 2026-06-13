@@ -6,7 +6,7 @@ export default function About() {
     <>
       <Helmet>
         <title>Hakkımızda | Paressilk - %100 Doğal İpek</title>
-        <meta name="description" content="Paressilk, Azerbaycan'ın UNESCO korumalı kelaghayi geleneğini Türkiye'ye taşıyan butik ipek markasıdır. %100 el yapımı doğal ipek ürünler." />
+        <meta name="description" content="Paressilk, UNESCO korumalı kelaghayi geleneğini modern dünyaya taşıyan butik ipek markasıdır. %100 el yapımı doğal ipek ürünler." />
       </Helmet>
 
       <div className="shop-page">
@@ -23,10 +23,10 @@ export default function About() {
                 <p className="section__subtitle">Markamız</p>
                 <h3>Paressilk</h3>
                 <p>
-                  Paressilk, Azerbaycan'ın kadim ipek geleneğini Türkiye ve dünyaya tanıtmak amacıyla kurulmuş bir butik ipek markasıdır. Her ürünümüz, %100 doğal ipekten, usta zanaatkarların ellerinde hayat bulur.
+                  Paressilk, kadim ipek geleneğini Türkiye ve dünyaya tanıtmak amacıyla kurulmuş bir butik ipek markasıdır. Her ürünümüz, %100 doğal ipekten, usta zanaatkarların ellerinde hayat bulur.
                 </p>
                 <p>
-                  Kelaghayi — Azerbaycan'ın UNESCO Somut Olmayan Kültürel Miras Listesi'nde yer alan geleneksel ipek başörtüsü — markamızın temelini oluşturur. Bu kadim sanatı, modern tasarımlarla harmanlayarak zamansız parçalar yaratıyoruz.
+                  Kelaghayi — UNESCO Somut Olmayan Kültürel Miras Listesi'nde yer alan geleneksel ipek başörtüsü — markamızın temelini oluşturur. Bu kadim sanatı, modern tasarımlarla harmanlayarak zamansız parçalar yaratıyoruz.
                 </p>
               </div>
             </div>

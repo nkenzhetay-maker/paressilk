@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { useCart } from '../context/CartContext';
@@ -9,6 +10,8 @@ export default function ProductDetail() {
   const { getProduct, getByCategory } = useProducts();
   const { addItem } = useCart();
   const product = getProduct(id);
+  const [activeImage, setActiveImage] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
 
   if (!product) {
     return (
@@ -64,7 +67,49 @@ export default function ProductDetail() {
           </div>
 
           <div className="product-detail__grid">
-            <img src={product.images?.[0] || '/images/products/kelaghayi-1.jpg'} alt={product.name} className="product-detail__image" />
+            <div className="product-gallery">
+              <div className="product-gallery__main">
+                {showVideo && product.video ? (
+                  <video
+                    src={product.video}
+                    controls
+                    autoPlay
+                    className="product-gallery__video"
+                  />
+                ) : (
+                  <img
+                    src={product.images?.[activeImage] || '/images/products/kelaghayi-1.jpg'}
+                    alt={`${product.name} - ${activeImage + 1}`}
+                    className="product-detail__image"
+                  />
+                )}
+              </div>
+              {(product.images?.length > 1 || product.video) && (
+                <div className="product-gallery__thumbs">
+                  {product.images?.map((img, i) => (
+                    <button
+                      key={i}
+                      className={`product-gallery__thumb ${!showVideo && activeImage === i ? 'product-gallery__thumb--active' : ''}`}
+                      onClick={() => { setActiveImage(i); setShowVideo(false); }}
+                    >
+                      <img src={img} alt={`${product.name} ${i + 1}`} />
+                    </button>
+                  ))}
+                  {product.video && (
+                    <button
+                      className={`product-gallery__thumb ${showVideo ? 'product-gallery__thumb--active' : ''}`}
+                      onClick={() => setShowVideo(true)}
+                    >
+                      <div className="product-gallery__thumb-video">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--gold)">
+                          <polygon points="5,3 19,12 5,21" />
+                        </svg>
+                      </div>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="product-detail__info">
               <p className="product-detail__category">{categoryLabels[product.category]}</p>
               <h1 className="product-detail__name">{product.name}</h1>
@@ -86,7 +131,7 @@ export default function ProductDetail() {
                 <button className="btn btn--primary" onClick={() => addItem(product)} disabled={!product.inStock}>
                   {product.inStock ? 'Sepete Ekle' : 'Stokta Yok'}
                 </button>
-                <a href={`https://wa.me/90XXXXXXXXXX?text=Merhaba%2C%20${encodeURIComponent(product.name)}%20hakkında%20bilgi%20almak%20istiyorum.`} target="_blank" rel="noopener noreferrer" className="btn btn--outline">
+                <a href={`https://wa.me/905334850748?text=Merhaba%2C%20${encodeURIComponent(product.name)}%20hakkında%20bilgi%20almak%20istiyorum.`} target="_blank" rel="noopener noreferrer" className="btn btn--outline">
                   WhatsApp ile Sor
                 </a>
               </div>

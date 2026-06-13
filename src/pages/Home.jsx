@@ -58,7 +58,7 @@ export default function Home() {
           <p className="hero__subtitle">%100 El Yapımı Doğal İpek</p>
           <h1 className="hero__title">Zarafetin İpek Dokunuşu</h1>
           <p className="hero__description">
-            Azerbaycan'ın yüzyıllık ipek geleneğini keşfedin. Her parça, ustalıkla el işçiliğiyle üretilmiş benzersiz bir sanat eseridir.
+            Yüzyıllık ipek geleneğini keşfedin. Her parça, ustalıkla el işçiliğiyle üretilmiş benzersiz bir sanat eseridir.
           </p>
           <Link to="/shop" className="hero__cta">Koleksiyonu Keşfet</Link>
         </div>
@@ -123,7 +123,7 @@ export default function Home() {
               <p className="section__subtitle">Hikayemiz</p>
               <h3>Yüzyıllık İpek Geleneği</h3>
               <p>
-                Paressilk, Azerbaycan'ın UNESCO tarafından koruma altına alınan kelaghayi geleneğini modern dünyaya taşımaktadır. Her ürünümüz, doğal ipekten el işçiliğiyle üretilir ve kuşaktan kuşağa aktarılan teknikleri yaşatır.
+                Paressilk, UNESCO tarafından koruma altına alınan kelaghayi geleneğini modern dünyaya taşımaktadır. Her ürünümüz, doğal ipekten el işçiliğiyle üretilir ve kuşaktan kuşağa aktarılan teknikleri yaşatır.
               </p>
               <p>
                 Koleksiyonlarımız, geleneksel desenlerin çağdaş yorumlarını sunar. İpek eşarplarımız, kelaghayilerimiz ve özel tasarım ürünlerimiz, her biri kendine özgü bir hikaye anlatır.

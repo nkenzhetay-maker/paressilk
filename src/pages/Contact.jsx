@@ -37,7 +37,7 @@ export default function Contact() {
                 </div>
                 <div className="contact-info-item">
                   <h4>Telefon & WhatsApp</h4>
-                  <p>+90 (XXX) XXX XX XX</p>
+                  <p>+90 (533) 485 07 48</p>
                 </div>
                 <div className="contact-info-item">
                   <h4>Adres</h4>

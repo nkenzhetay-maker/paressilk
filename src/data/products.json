@@ -6,13 +6,13 @@
     "category": "kelaghayi",
     "price": 2450,
     "currency": "TRY",
-    "description": "El yapımı %100 ipek kelaghayi. Azerbaycan'ın geleneksel baskı sanatıyla üretilmiştir. Boyutlar: 150x150 cm.",
-    "descriptionEn": "Handcrafted 100% silk kelaghayi with traditional Azerbaijani printing art. Dimensions: 150x150 cm.",
+    "description": "El yapımı %100 ipek kelaghayi. Geleneksel baskı sanatıyla üretilmiştir. Boyutlar: 150x150 cm.",
+    "descriptionEn": "Handcrafted 100% silk kelaghayi with traditional printing art. Dimensions: 150x150 cm.",
     "images": ["/images/products/kelaghayi-1.jpg"],
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "150 x 150 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
@@ -32,7 +32,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "140 x 140 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
@@ -46,13 +46,13 @@
     "category": "kelaghayi",
     "price": 2250,
     "currency": "TRY",
-    "description": "Geleneksel Azerbaycan motiflerinde %100 ipek kelaghayi. Her biri benzersiz el işçiliğiyle üretilmiştir.",
-    "descriptionEn": "Traditional Azerbaijani motif 100% silk kelaghayi. Each piece is uniquely handcrafted.",
+    "description": "Geleneksel motiflerinde %100 ipek kelaghayi. Her biri benzersiz el işçiliğiyle üretilmiştir.",
+    "descriptionEn": "Traditional motif 100% silk kelaghayi. Each piece is uniquely handcrafted.",
     "images": ["/images/products/kelaghayi-3.jpg"],
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "140 x 140 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
@@ -72,7 +72,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "130 x 130 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
@@ -92,7 +92,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "130 x 130 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
@@ -112,7 +112,7 @@
     "details": {
       "material": "%100 Doğal İpek (Premium)",
       "dimensions": "150 x 150 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
@@ -132,7 +132,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "140 x 140 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
@@ -152,7 +152,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "90 x 180 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Elde yıkama veya kuru temizleme"
     },
     "inStock": true,
@@ -172,7 +172,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "90 x 180 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Elde yıkama veya kuru temizleme"
     },
     "inStock": true,
@@ -192,7 +192,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "90 x 180 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir",
       "customization": "Kurumsal logo ve tasarım baskısı mevcut"
     },
@@ -213,7 +213,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "90 x 180 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Elde yıkama veya kuru temizleme"
     },
     "inStock": true,
@@ -233,7 +233,7 @@
     "details": {
       "material": "%100 Doğal İpek",
       "dimensions": "90 x 180 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Elde yıkama veya kuru temizleme"
     },
     "inStock": true,
@@ -253,7 +253,7 @@
     "details": {
       "material": "%100 Doğal İpek (Premium)",
       "dimensions": "90 x 180 cm",
-      "origin": "Azerbaycan",
+      "origin": "El Yapımı",
       "care": "Kuru temizleme önerilir"
     },
     "inStock": true,
