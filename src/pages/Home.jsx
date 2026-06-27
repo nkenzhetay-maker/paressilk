@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { useCart } from '../context/CartContext';
@@ -35,6 +36,55 @@ function HomeProductCard({ product }) {
         </button>
       </div>
     </div>
+  );
+}
+
+function NewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('idle');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      const res = await fetch('/.netlify/functions/send-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setStatus('success');
+      setMessage(data.message);
+      setEmail('');
+    } catch (err) {
+      setStatus('error');
+      setMessage(err.message || 'Bir hata oluştu');
+    }
+  };
+
+  if (status === 'success') {
+    return <p style={{ color: '#27ae60', fontSize: '0.95rem' }}>{message}</p>;
+  }
+
+  return (
+    <>
+      <form className="newsletter__form" onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="E-posta adresiniz"
+          className="newsletter__input"
+          required
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <button type="submit" className="newsletter__btn" disabled={status === 'loading'}>
+          {status === 'loading' ? 'Kaydediliyor...' : 'Abone Ol'}
+        </button>
+      </form>
+      {status === 'error' && <p style={{ color: '#e74c3c', fontSize: '0.82rem', marginTop: 8 }}>{message}</p>}
+    </>
   );
 }
 
@@ -159,10 +209,7 @@ export default function Home() {
       <section className="newsletter">
         <h3>Koleksiyonlardan Haberdar Olun</h3>
         <p>Yeni ürünler, özel indirimler ve daha fazlası için bültenimize abone olun.</p>
-        <form className="newsletter__form" onSubmit={(e) => { e.preventDefault(); alert('Teşekkürler! Bültene kaydınız alındı.'); }}>
-          <input type="email" placeholder="E-posta adresiniz" className="newsletter__input" required />
-          <button type="submit" className="newsletter__btn">Abone Ol</button>
-        </form>
+        <NewsletterForm />
       </section>
     </>
   );

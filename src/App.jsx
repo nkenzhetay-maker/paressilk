@@ -3,6 +3,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from './context/CartContext';
 import { ProductProvider } from './context/ProductContext';
 import { AuthProvider } from './context/AuthContext';
+import { UserProvider } from './context/UserContext';
+import AuthModal from './components/AuthModal';
 import { useEffect, useState, useCallback } from 'react';
 import SplashScreen from './components/SplashScreen';
 
@@ -59,6 +61,7 @@ function StorefrontLayout() {
       </Routes>
       <Footer />
       <WhatsAppButton />
+      <AuthModal />
       <CookieConsent />
     </>
   );
@@ -80,6 +83,7 @@ export default function App() {
       <ProductProvider>
         <CartProvider>
           <AuthProvider>
+          <UserProvider>
             <BrowserRouter>
               {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
               <ScrollToTop />
@@ -95,6 +99,7 @@ export default function App() {
                 <Route path="/*" element={<StorefrontLayout />} />
               </Routes>
             </BrowserRouter>
+          </UserProvider>
           </AuthProvider>
         </CartProvider>
       </ProductProvider>

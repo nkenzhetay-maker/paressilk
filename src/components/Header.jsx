@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { setIsOpen, totalItems } = useCart();
+  const { user, logout, setShowAuthModal } = useUser();
   const location = useLocation();
   const isHome = location.pathname === '/';
 
@@ -37,6 +40,31 @@ export default function Header() {
           </nav>
 
           <div className="header__icons">
+            {user ? (
+              <div style={{ position: 'relative' }}>
+                <button className="header__icon" aria-label="Hesabım" onClick={() => setUserMenuOpen(!userMenuOpen)}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </button>
+                {userMenuOpen && (
+                  <div style={{ position: 'absolute', top: '100%', right: 0, background: '#fff', minWidth: 180, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', zIndex: 100 }}>
+                    <div style={{ padding: '12px 16px', borderBottom: '1px solid #eee', fontSize: '0.82rem', color: '#888' }}>
+                      {user.firstName} {user.lastName}
+                    </div>
+                    <button onClick={() => { logout(); setUserMenuOpen(false); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', color: '#333' }}>
+                      Çıkış Yap
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button className="header__icon" onClick={() => setShowAuthModal(true)} aria-label="Giriş Yap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </button>
+            )}
             <button className="header__icon" onClick={() => setIsOpen(true)} aria-label="Sepet">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
