@@ -24,8 +24,11 @@ export default function Footer() {
             <ul className="footer__links">
               <li><Link to="/about">Hakkımızda</Link></li>
               <li><Link to="/contact">İletişim</Link></li>
+              <li><Link to="/sss">Sıkça Sorulan Sorular</Link></li>
               <li><Link to="/kvkk">KVKK Aydınlatma Metni</Link></li>
               <li><Link to="/cerez-politikasi">Çerez Politikası</Link></li>
+              <li><Link to="/mesafeli-satis">Mesafeli Satış Sözleşmesi</Link></li>
+              <li><Link to="/iade-politikasi">İade Politikası</Link></li>
             </ul>
           </div>
           <div>

@@ -7,10 +7,15 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!login(username, password)) {
+    setLoading(true);
+    const success = await login(username, password);
+    setLoading(false);
+    if (!success) {
       setError('Kullanıcı adı veya şifre hatalı.');
     }
   };
@@ -32,7 +37,9 @@ export default function AdminLogin() {
             <label>Şifre</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
           </div>
-          <button type="submit" className="btn btn--primary" style={{ width: '100%' }}>Giriş Yap</button>
+          <button type="submit" className="btn btn--primary" style={{ width: '100%' }} disabled={loading}>
+            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+          </button>
         </form>
       </div>
     </div>

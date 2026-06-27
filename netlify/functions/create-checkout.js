@@ -1,27 +1,74 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+const ALLOWED_ORIGINS = [
+  process.env.URL || 'https://paressilk.com',
+  'https://paressilk.netlify.app',
+];
+
+function getHeaders(event) {
+  const origin = event.headers?.origin || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 exports.handler = async (event) => {
+  const headers = getHeaders(event);
+
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers, body: '' };
+  }
+
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
   try {
     const { items, customerEmail, shippingAddress } = JSON.parse(event.body);
 
-    const lineItems = items.map(item => ({
-      price_data: {
-        currency: 'try',
-        product_data: {
-          name: item.name,
-          images: item.images?.[0] ? [`https://paressilk.com${item.images[0]}`] : [],
-          metadata: { productId: item.id },
-        },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.qty,
-    }));
+    if (!Array.isArray(items) || items.length === 0) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Sepet boş' }) };
+    }
 
-    const totalAmount = items.reduce((sum, i) => sum + i.price * i.qty, 0);
+    if (!customerEmail || !validateEmail(customerEmail)) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir e-posta adresi gerekli' }) };
+    }
+
+    if (items.length > 50) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Çok fazla ürün' }) };
+    }
+
+    const lineItems = items.map(item => {
+      const price = Math.round(Number(item.price) * 100);
+      const qty = Math.max(1, Math.min(99, Math.round(Number(item.qty))));
+
+      if (!price || price < 100 || price > 10000000) {
+        throw new Error('Geçersiz fiyat');
+      }
+
+      return {
+        price_data: {
+          currency: 'try',
+          product_data: {
+            name: String(item.name).slice(0, 200),
+            images: item.images?.[0] ? [`https://paressilk.com${item.images[0]}`] : [],
+            metadata: { productId: String(item.id).slice(0, 50) },
+          },
+          unit_amount: price,
+        },
+        quantity: qty,
+      };
+    });
+
+    const totalAmount = items.reduce((sum, i) => sum + Number(i.price) * Number(i.qty), 0);
     const shippingCost = totalAmount >= 1000 ? 0 : 4990;
 
     if (shippingCost > 0) {
@@ -41,9 +88,7 @@ exports.handler = async (event) => {
       locale: 'tr',
       line_items: lineItems,
       customer_email: customerEmail,
-      shipping_address_collection: {
-        allowed_countries: ['TR'],
-      },
+      shipping_address_collection: { allowed_countries: ['TR'] },
       success_url: `${process.env.URL || 'https://paressilk.com'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.URL || 'https://paressilk.com'}/checkout`,
       metadata: {
@@ -53,14 +98,15 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ id: session.id, url: session.url }),
     };
   } catch (error) {
+    console.error('Checkout error:', error);
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: error.message }),
+      headers,
+      body: JSON.stringify({ error: 'Ödeme oluşturulamadı. Lütfen tekrar deneyin.' }),
     };
   }
 };

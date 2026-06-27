@@ -20,6 +20,9 @@ import Checkout from './pages/Checkout';
 import CheckoutSuccess from './pages/CheckoutSuccess';
 import KVKK from './pages/KVKK';
 import CerezPolitikasi from './pages/CerezPolitikasi';
+import MesafeliSatis from './pages/MesafeliSatis';
+import IadePolitikasi from './pages/IadePolitikasi';
+import SSS from './pages/SSS';
 import CookieConsent from './components/CookieConsent';
 
 import AdminLayout from './admin/AdminLayout';
@@ -50,6 +53,9 @@ function StorefrontLayout() {
         <Route path="/checkout/success" element={<CheckoutSuccess />} />
         <Route path="/kvkk" element={<KVKK />} />
         <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
+        <Route path="/mesafeli-satis" element={<MesafeliSatis />} />
+        <Route path="/iade-politikasi" element={<IadePolitikasi />} />
+        <Route path="/sss" element={<SSS />} />
       </Routes>
       <Footer />
       <WhatsAppButton />

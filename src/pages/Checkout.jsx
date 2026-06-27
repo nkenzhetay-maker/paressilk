@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Helmet } from 'react-helmet-async';
 
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePhone(phone) {
+  return /^0?5\d{9}$/.test(phone.replace(/\s/g, ''));
+}
+
 export default function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
   const [step, setStep] = useState(1);
@@ -10,6 +18,7 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '',
     address: '', city: '', district: '', postalCode: '', note: '',
@@ -257,6 +266,22 @@ export default function Checkout() {
                   <div className="form-group">
                     <label>Sipariş Notu (Opsiyonel)</label>
                     <textarea rows="3" placeholder="Hediye paketi, özel not vb." value={formData.note} onChange={e => handleInputChange('note', e.target.value)} />
+                  </div>
+
+                  <div style={{ padding: 16, border: '1px solid #eee', marginBottom: 24, background: '#FAFAFA' }}>
+                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', fontSize: '0.82rem', lineHeight: 1.6 }}>
+                      <input
+                        type="checkbox"
+                        checked={acceptTerms}
+                        onChange={e => setAcceptTerms(e.target.checked)}
+                        style={{ accentColor: 'var(--gold)', marginTop: 3, flexShrink: 0 }}
+                        required
+                      />
+                      <span>
+                        <Link to="/mesafeli-satis" target="_blank" style={{ color: 'var(--gold-dark)', textDecoration: 'underline' }}>Mesafeli Satış Sözleşmesi</Link>'ni ve{' '}
+                        <Link to="/iade-politikasi" target="_blank" style={{ color: 'var(--gold-dark)', textDecoration: 'underline' }}>İade Politikası</Link>'nı okudum ve kabul ediyorum.
+                      </span>
+                    </label>
                   </div>
 
                   <div style={{ display: 'flex', gap: 16 }}>
