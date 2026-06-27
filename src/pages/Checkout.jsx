@@ -19,14 +19,57 @@ export default function Checkout() {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoDiscount, setPromoDiscount] = useState(null);
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoError, setPromoError] = useState('');
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '',
     address: '', city: '', district: '', postalCode: '', note: '',
   });
 
   const formatPrice = (price) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(price);
-  const shipping = totalPrice >= 1000 ? 0 : 49.90;
-  const grandTotal = totalPrice + shipping;
+  const baseShipping = totalPrice >= 1000 ? 0 : 49.90;
+  const shipping = promoDiscount?.type === 'shipping' ? 0 : baseShipping;
+  const promoAmount = promoDiscount?.type === 'percentage' ? (totalPrice * promoDiscount.value / 100) : 0;
+  const grandTotal = totalPrice - promoAmount + shipping;
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoError('');
+    try {
+      const res = await fetch('/.netlify/functions/validate-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        if (data.discount.minAmount && totalPrice < data.discount.minAmount) {
+          setPromoError(`Bu kod minimum ${formatPrice(data.discount.minAmount)} sipariş gerektirir.`);
+          setPromoDiscount(null);
+        } else {
+          setPromoDiscount(data.discount);
+          setPromoError('');
+        }
+      } else {
+        setPromoError(data.message);
+        setPromoDiscount(null);
+      }
+    } catch {
+      setPromoError('Bir hata oluştu. Lütfen tekrar deneyin.');
+      setPromoDiscount(null);
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setPromoDiscount(null);
+    setPromoCode('');
+    setPromoError('');
+  };
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -40,6 +83,8 @@ export default function Checkout() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, images: i.images })),
+          promoCode: promoDiscount ? promoDiscount.code : null,
+          promoDiscount: promoDiscount || null,
           customerEmail: formData.email,
           shippingAddress: {
             name: `${formData.firstName} ${formData.lastName}`,
@@ -316,14 +361,74 @@ export default function Checkout() {
                     <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>{formatPrice(item.price * item.qty)}</span>
                   </div>
                 ))}
+                {/* Promo Code Section */}
+                <div style={{ borderTop: '1px solid #eee', paddingTop: 16, marginTop: 16 }}>
+                  {!promoDiscount ? (
+                    <div>
+                      <label style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block', color: '#555' }}>Promosyon Kodu</label>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <input
+                          type="text"
+                          value={promoCode}
+                          onChange={e => { setPromoCode(e.target.value); setPromoError(''); }}
+                          placeholder="Kodunuzu girin"
+                          style={{ flex: 1, padding: '10px 12px', border: '1px solid #ddd', fontSize: '0.85rem', fontFamily: 'inherit', outline: 'none', background: '#fff' }}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleApplyPromo(); } }}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyPromo}
+                          disabled={promoLoading || !promoCode.trim()}
+                          style={{
+                            padding: '10px 18px', background: 'var(--gold)', color: '#fff', border: 'none',
+                            fontSize: '0.8rem', fontWeight: 600, cursor: promoLoading || !promoCode.trim() ? 'not-allowed' : 'pointer',
+                            opacity: promoLoading || !promoCode.trim() ? 0.5 : 1, letterSpacing: '0.05em', fontFamily: 'inherit',
+                          }}
+                        >
+                          {promoLoading ? '...' : 'Uygula'}
+                        </button>
+                      </div>
+                      {promoError && (
+                        <p style={{ color: '#E74C3C', fontSize: '0.75rem', marginTop: 6 }}>{promoError}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: '#F5F0E8', border: '1px solid var(--gold)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-dark)" strokeWidth="2">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--gold-dark)' }}>{promoDiscount.code}</span>
+                        <span style={{ fontSize: '0.75rem', color: '#888' }}>— {promoDiscount.label}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemovePromo}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, lineHeight: 1, color: '#999', fontSize: '1.1rem' }}
+                        title="Kodu kaldır"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div style={{ borderTop: '1px solid #eee', paddingTop: 16, marginTop: 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: '0.85rem' }}>
                     <span>Ara Toplam</span>
                     <span>{formatPrice(totalPrice)}</span>
                   </div>
+                  {promoDiscount && promoDiscount.type === 'percentage' && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: '0.85rem', color: '#27AE60' }}>
+                      <span>İndirim ({promoDiscount.label})</span>
+                      <span>−{formatPrice(promoAmount)}</span>
+                    </div>
+                  )}
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: '0.85rem' }}>
                     <span>Kargo</span>
-                    <span style={{ color: shipping === 0 ? '#27AE60' : undefined }}>{shipping === 0 ? 'Ücretsiz' : formatPrice(shipping)}</span>
+                    <span style={{ color: shipping === 0 ? '#27AE60' : undefined }}>
+                      {shipping === 0 ? (promoDiscount?.type === 'shipping' ? 'Ücretsiz (Promo)' : 'Ücretsiz') : formatPrice(shipping)}
+                    </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '1.1rem', borderTop: '2px solid var(--gold)', paddingTop: 16, marginTop: 8 }}>
                     <span>Toplam</span>

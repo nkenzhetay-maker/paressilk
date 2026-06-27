@@ -13,6 +13,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import CartSidebar from './components/CartSidebar';
 import WhatsAppButton from './components/WhatsAppButton';
+import TrustBar from './components/TrustBar';
 
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -45,6 +46,7 @@ function ScrollToTop() {
 function StorefrontLayout() {
   return (
     <>
+      <TrustBar />
       <Header />
       <CartSidebar />
       <Routes>

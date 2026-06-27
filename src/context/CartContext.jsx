@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const CartContext = createContext();
 
@@ -8,9 +8,32 @@ export function CartProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
   const [isOpen, setIsOpen] = useState(false);
+  const saveTimerRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem('paressilk_cart', JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    if (items.length === 0) return;
+    const userStr = localStorage.getItem('paressilk_user');
+    if (!userStr) return;
+    const user = JSON.parse(userStr);
+    if (!user?.email) return;
+
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      fetch('/.netlify/functions/save-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: user.email,
+          items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, images: i.images })),
+        }),
+      }).catch(() => {});
+    }, 5000);
+
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
   }, [items]);
 
   const addItem = (product, qty = 1) => {
