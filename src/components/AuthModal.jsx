@@ -18,7 +18,10 @@ export default function AuthModal() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    firstName: '', lastName: '', email: '', password: '',
+    phone: '', address: '', city: '', district: '', postalCode: '',
+  });
 
   if (!showAuthModal) return null;
 
@@ -27,7 +30,7 @@ export default function AuthModal() {
     setError('');
     setSuccess('');
     setMode('login');
-    setForm({ firstName: '', lastName: '', email: '', password: '' });
+    setForm({ firstName: '', lastName: '', email: '', password: '', phone: '', address: '', city: '', district: '', postalCode: '' });
   };
 
   const handleChange = (field, value) => {
@@ -86,9 +89,7 @@ export default function AuthModal() {
 
         <div style={{ padding: '40px 32px' }}>
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', color: 'var(--gold)', marginBottom: 4 }}>
-              PARESSILK
-            </h2>
+            <img src="/images/logo.png" alt="Paressilk" style={{ height: 36, marginBottom: 8 }} />
             <p style={{ fontSize: '0.8rem', color: '#888', letterSpacing: '0.1em' }}>
               {mode === 'login' ? 'Hesabınıza giriş yapın' : 'Yeni hesap oluşturun'}
             </p>
@@ -135,16 +136,22 @@ export default function AuthModal() {
 
           <form onSubmit={handleSubmit}>
             {mode === 'register' && (
-              <div style={{ display: 'flex', gap: 12 }}>
-                <div className="form-group" style={{ flex: 1 }}>
-                  <label>Ad</label>
-                  <input type="text" value={form.firstName} onChange={e => handleChange('firstName', e.target.value)} required />
+              <>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>Ad</label>
+                    <input type="text" value={form.firstName} onChange={e => handleChange('firstName', e.target.value)} required />
+                  </div>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>Soyad</label>
+                    <input type="text" value={form.lastName} onChange={e => handleChange('lastName', e.target.value)} required />
+                  </div>
                 </div>
-                <div className="form-group" style={{ flex: 1 }}>
-                  <label>Soyad</label>
-                  <input type="text" value={form.lastName} onChange={e => handleChange('lastName', e.target.value)} />
+                <div className="form-group">
+                  <label>Telefon</label>
+                  <input type="tel" value={form.phone} onChange={e => handleChange('phone', e.target.value)} placeholder="05XX XXX XX XX" required />
                 </div>
-              </div>
+              </>
             )}
 
             <div className="form-group">
@@ -163,6 +170,32 @@ export default function AuthModal() {
                 placeholder={mode === 'register' ? 'En az 6 karakter' : ''}
               />
             </div>
+
+            {mode === 'register' && (
+              <>
+                <div style={{ borderTop: '1px solid #eee', marginTop: 16, paddingTop: 16, marginBottom: 8 }}>
+                  <p style={{ fontSize: '0.78rem', color: '#888', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 12 }}>Teslimat Bilgileri</p>
+                </div>
+                <div className="form-group">
+                  <label>Adres</label>
+                  <textarea rows="2" value={form.address} onChange={e => handleChange('address', e.target.value)} placeholder="Mahalle, sokak, bina no, daire no" required />
+                </div>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>İl</label>
+                    <input type="text" value={form.city} onChange={e => handleChange('city', e.target.value)} placeholder="İstanbul" required />
+                  </div>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>İlçe</label>
+                    <input type="text" value={form.district} onChange={e => handleChange('district', e.target.value)} required />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Posta Kodu</label>
+                  <input type="text" value={form.postalCode} onChange={e => handleChange('postalCode', e.target.value)} placeholder="34000" maxLength={5} />
+                </div>
+              </>
+            )}
 
             <button type="submit" className="btn btn--primary" style={{ width: '100%', marginTop: 8 }} disabled={loading}>
               {loading

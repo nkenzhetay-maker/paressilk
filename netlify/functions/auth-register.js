@@ -24,7 +24,7 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
 
   try {
-    const { email, password, firstName, lastName } = JSON.parse(event.body);
+    const { email, password, firstName, lastName, phone, address, city, district, postalCode } = JSON.parse(event.body);
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir e-posta adresi girin' }) };
@@ -43,6 +43,11 @@ exports.handler = async (event) => {
       user_metadata: {
         first_name: firstName.trim(),
         last_name: (lastName || '').trim(),
+        phone: (phone || '').trim(),
+        address: (address || '').trim(),
+        city: (city || '').trim(),
+        district: (district || '').trim(),
+        postal_code: (postalCode || '').trim(),
       },
     });
 
