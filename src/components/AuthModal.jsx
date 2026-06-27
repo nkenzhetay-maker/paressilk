@@ -89,7 +89,7 @@ export default function AuthModal() {
 
         <div style={{ padding: '40px 32px' }}>
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <img src="/images/logo.png" alt="Paressilk" style={{ height: 36, marginBottom: 8 }} />
+            <img src="/images/logo.png" alt="Paressilk" style={{ height: 36, marginBottom: 8, display: 'block', margin: '0 auto 8px' }} />
             <p style={{ fontSize: '0.8rem', color: '#888', letterSpacing: '0.1em' }}>
               {mode === 'login' ? 'Hesabınıza giriş yapın' : 'Yeni hesap oluşturun'}
             </p>
