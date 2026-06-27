@@ -1,7 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const ALLOWED_ORIGINS = [
-  process.env.URL || 'https://paressilk.com',
+  process.env.SITE_URL || 'https://paressilk.com',
   'https://paressilk.netlify.app',
 ];
 

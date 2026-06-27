@@ -1,6 +1,6 @@
 const HEADERS = {
   'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': process.env.URL || 'https://paressilk.com',
+  'Access-Control-Allow-Origin': process.env.SITE_URL || 'https://paressilk.com',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };

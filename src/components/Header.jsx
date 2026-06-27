@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
+import { useWishlist } from '../context/WishlistContext';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -9,6 +10,7 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { setIsOpen, totalItems } = useCart();
   const { user, logout, setShowAuthModal } = useUser();
+  const { count: wishlistCount } = useWishlist();
   const location = useLocation();
   const isHome = location.pathname === '/';
 
@@ -65,6 +67,12 @@ export default function Header() {
                 </svg>
               </button>
             )}
+            <Link to="/wishlist" className="header__icon" aria-label="Favoriler" style={{ position: 'relative' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+              </svg>
+              {wishlistCount > 0 && <span className="header__cart-count">{wishlistCount}</span>}
+            </Link>
             <button className="header__icon" onClick={() => setIsOpen(true)} aria-label="Sepet">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>

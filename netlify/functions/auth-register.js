@@ -3,7 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 const ALLOWED_ORIGINS = [
-  process.env.URL || 'https://paressilk.com',
+  process.env.SITE_URL || 'https://paressilk.com',
   'https://paressilk.netlify.app',
 ];
 
@@ -63,7 +63,7 @@ exports.handler = async (event) => {
       type: 'signup',
       email: email.toLowerCase().trim(),
       options: {
-        redirectTo: `${process.env.URL || 'https://paressilk.com'}/email-verify`,
+        redirectTo: `${process.env.SITE_URL || 'https://paressilk.com'}/email-verify`,
       },
     });
 

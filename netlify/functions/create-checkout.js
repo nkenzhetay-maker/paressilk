@@ -1,7 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const ALLOWED_ORIGINS = [
-  process.env.URL || 'https://paressilk.com',
+  process.env.SITE_URL || 'https://paressilk.com',
   'https://paressilk.netlify.app',
 ];
 
@@ -89,8 +89,8 @@ exports.handler = async (event) => {
       line_items: lineItems,
       customer_email: customerEmail,
       shipping_address_collection: { allowed_countries: ['TR'] },
-      success_url: `${process.env.URL || 'https://paressilk.com'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.URL || 'https://paressilk.com'}/checkout`,
+      success_url: `${process.env.SITE_URL || 'https://paressilk.com'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.SITE_URL || 'https://paressilk.com'}/checkout`,
       metadata: {
         shippingAddress: JSON.stringify(shippingAddress || {}),
       },

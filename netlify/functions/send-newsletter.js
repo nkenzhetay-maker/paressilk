@@ -3,7 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 const ALLOWED_ORIGINS = [
-  process.env.URL || 'https://paressilk.com',
+  process.env.SITE_URL || 'https://paressilk.com',
   'https://paressilk.netlify.app',
 ];
 
@@ -73,7 +73,7 @@ exports.handler = async (event) => {
                 Paressilk bültenine kaydınız başarıyla alınmıştır. Yeni koleksiyonlar, özel indirimler ve kampanyalardan ilk siz haberdar olacaksınız.
               </p>
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.URL || 'https://paressilk.com'}/shop" style="display: inline-block; padding: 14px 32px; background: #B8860B; color: white; text-decoration: none; font-size: 13px; letter-spacing: 1px;">KOLEKSİYONU KEŞFET</a>
+                <a href="${process.env.SITE_URL || 'https://paressilk.com'}/shop" style="display: inline-block; padding: 14px 32px; background: #B8860B; color: white; text-decoration: none; font-size: 13px; letter-spacing: 1px;">KOLEKSİYONU KEŞFET</a>
               </div>
             </div>
             <div style="text-align: center; padding: 20px; background: #f5f5f5; color: #888; font-size: 12px;">

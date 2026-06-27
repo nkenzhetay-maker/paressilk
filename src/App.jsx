@@ -4,6 +4,7 @@ import { CartProvider } from './context/CartContext';
 import { ProductProvider } from './context/ProductContext';
 import { AuthProvider } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
+import { WishlistProvider } from './context/WishlistContext';
 import AuthModal from './components/AuthModal';
 import { useEffect, useState, useCallback } from 'react';
 import SplashScreen from './components/SplashScreen';
@@ -25,6 +26,7 @@ import CerezPolitikasi from './pages/CerezPolitikasi';
 import MesafeliSatis from './pages/MesafeliSatis';
 import IadePolitikasi from './pages/IadePolitikasi';
 import SSS from './pages/SSS';
+import Wishlist from './pages/Wishlist';
 import CookieConsent from './components/CookieConsent';
 
 import AdminLayout from './admin/AdminLayout';
@@ -58,6 +60,7 @@ function StorefrontLayout() {
         <Route path="/mesafeli-satis" element={<MesafeliSatis />} />
         <Route path="/iade-politikasi" element={<IadePolitikasi />} />
         <Route path="/sss" element={<SSS />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
       <Footer />
       <WhatsAppButton />
@@ -84,6 +87,7 @@ export default function App() {
         <CartProvider>
           <AuthProvider>
           <UserProvider>
+          <WishlistProvider>
             <BrowserRouter>
               {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
               <ScrollToTop />
@@ -99,6 +103,7 @@ export default function App() {
                 <Route path="/*" element={<StorefrontLayout />} />
               </Routes>
             </BrowserRouter>
+          </WishlistProvider>
           </UserProvider>
           </AuthProvider>
         </CartProvider>

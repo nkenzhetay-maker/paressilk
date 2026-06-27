@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { Helmet } from 'react-helmet-async';
 import ProductCard from '../components/ProductCard';
 
@@ -9,7 +10,9 @@ export default function ProductDetail() {
   const { id } = useParams();
   const { getProduct, getByCategory } = useProducts();
   const { addItem } = useCart();
+  const { toggleItem, isInWishlist } = useWishlist();
   const product = getProduct(id);
+  const liked = product ? isInWishlist(product.id) : false;
   const [activeImage, setActiveImage] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
 
@@ -130,6 +133,16 @@ export default function ProductDetail() {
               <div className="product-detail__actions">
                 <button className="btn btn--primary" onClick={() => addItem(product)} disabled={!product.inStock}>
                   {product.inStock ? 'Sepete Ekle' : 'Stokta Yok'}
+                </button>
+                <button
+                  className="btn btn--outline"
+                  onClick={() => toggleItem(product)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill={liked ? '#e74c3c' : 'none'} stroke={liked ? '#e74c3c' : 'currentColor'} strokeWidth="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                  </svg>
+                  {liked ? 'Favorilerde' : 'Favorilere Ekle'}
                 </button>
                 <a href={`https://wa.me/905334850748?text=Merhaba%2C%20${encodeURIComponent(product.name)}%20hakkında%20bilgi%20almak%20istiyorum.`} target="_blank" rel="noopener noreferrer" className="btn btn--outline">
                   WhatsApp ile Sor
