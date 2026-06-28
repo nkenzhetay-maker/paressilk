@@ -6,30 +6,78 @@ export default function About() {
     <>
       <Helmet>
         <title>Hakkımızda | Paressilk - %100 Doğal İpek</title>
-        <meta name="description" content="Paressilk, UNESCO korumalı kelaghayi geleneğini modern dünyaya taşıyan butik ipek markasıdır. %100 el yapımı doğal ipek ürünler." />
+        <meta name="description" content="Paressilk, Azerbaycan'ın kadim ipek geleneğini Türkiye'nin modern tasarım vizyonuyla buluşturan butik ipek markasıdır. Kurucu: Serap Kabakçı." />
       </Helmet>
 
       <div className="shop-page">
         <div className="shop-hero">
           <h1>Hikayemiz</h1>
-          <p>İpek Geleneğinin Modern Yorumu</p>
+          <p>Hazar'dan Boğaziçi'ne Uzanan İpek Yolu</p>
         </div>
 
         <section className="section">
           <div className="container">
             <div className="about-section">
-              <img src="/images/products/kelaghayi-1.jpg" alt="Paressilk Hikaye" className="about-section__image" />
+              <img src="/images/products/kelaghayi-1.jpg" alt="Paressilk - İpek Geleneği" className="about-section__image" />
               <div className="about-section__content">
-                <p className="section__subtitle">Markamız</p>
-                <h3>Paressilk</h3>
-                <p>
-                  Paressilk, kadim ipek geleneğini Türkiye ve dünyaya tanıtmak amacıyla kurulmuş bir butik ipek markasıdır. Her ürünümüz, %100 doğal ipekten, usta zanaatkarların ellerinde hayat bulur.
+                <p className="section__subtitle">Pares Felsefesi</p>
+                <h3>Bir Ruh Ortaklığı</h3>
+                <p style={{ fontStyle: 'italic', color: 'var(--color-gold, #B8860B)', fontSize: '1.05rem', lineHeight: 1.8, marginBottom: 24 }}>
+                  "Gerçek bir 'Pares', sadece yan yana gelen insanlar değil; aynı rüyayı gören, aynı estetiği paylaşan ve sınırları aşarak birbirinin ruhuna dokunanların çemberidir."
                 </p>
                 <p>
-                  Kelaghayi — UNESCO Somut Olmayan Kültürel Miras Listesi'nde yer alan geleneksel ipek başörtüsü — markamızın temelini oluşturur. Bu kadim sanatı, modern tasarımlarla harmanlayarak zamansız parçalar yaratıyoruz.
+                  Yunan kültüründeki "Pares" kavramı — bir araya gelerek hayatı, sanatı ve güzelliği paylaşan, birbirinin derinliğinden beslenen o seçkin dostluk çemberi — markamızın adına ve ruhuna ilham verdi.
                 </p>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="section section--cream">
+          <div className="container">
+            <div className="about-section" style={{ flexDirection: 'row-reverse' }}>
+              <img src="/images/products/kelaghayi-6.jpg" alt="Şeki İpek Zanaatı" className="about-section__image" />
+              <div className="about-section__content">
+                <p className="section__subtitle">Kurucu</p>
+                <h3>Serap Kabakçı</h3>
+                <p>
+                  Bir sosyolog ve yapımcı olarak, hayatım boyunca insanları birbirine bağlayan o görünmez ipliklerin, ortak duyguların ve kadim kültürlerin peşinden gittim. Bu felsefeyi yanıma alarak yönümü doğuya, İpek Yolu'nun kalbine çevirdim.
+                </p>
+                <p>
+                  Hazar'ın kıyısında, Şeki'nin asırlık çınarlarının altında, ipeğe hayat veren Azerbaycanlı zanaatkarlarla tanıştım. Onların nesiller boyu sabırla dokuduğu saf ipek, Şeki ustalarının emeği, benim için tam anlamıyla bir "Pares" hikayesiydi; bir ruh ortaklığıydı.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="container">
+            <div className="section__header" style={{ textAlign: 'center' }}>
+              <p className="section__subtitle">Misyonumuz</p>
+              <h2 className="section__title">İki Devlet, Tek İpek İpliği</h2>
+              <div className="section__divider" />
+            </div>
+            <div style={{ maxWidth: 720, margin: '0 auto', lineHeight: 1.9, fontSize: '1rem' }}>
+              <p style={{ marginBottom: 20 }}>
+                Azerbaycan'ın kadim ipek geleneğini, Türkiye'nin modern tasarım vizyonu ve estetik anlayışıyla buluşturuyoruz. Hazar'ın rüzgarıyla dokunan saf ipekler, Türkiye'deki zanaatkarların el kıvırmaları ve tasarımlarıyla hayat buluyor.
+              </p>
+              <p style={{ marginBottom: 20 }}>
+                Markamız, iki devletin tek bir ipek ipliğinde birleştiği, yaşayan bir kültür köprüsüdür. Pares; Hazar'dan Boğaziçi'ne uzanan, zanaatkarların, tasarımcıların ve bu ipeği üzerinde taşıyan seçkin kadınların oluşturduğu o küresel dostluk ve estetik çemberidir.
+              </p>
+              <p>
+                Biz sadece geleneksel yöntemlerle üretilmiş ipek eşarplar tasarlamıyoruz; sınırları aşan, köklerine sadık ve zarafette buluşan ortak bir ruhu, bir "Pares"i paylaşıyoruz.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--dark" style={{ textAlign: 'center' }}>
+          <div className="container">
+            <blockquote style={{ fontFamily: 'var(--font-heading, "Playfair Display", serif)', fontSize: 'clamp(1.2rem, 3vw, 1.6rem)', color: 'var(--color-gold, #B8860B)', fontStyle: 'italic', lineHeight: 1.7, maxWidth: 700, margin: '0 auto 40px', border: 'none', padding: 0 }}>
+              "İpek, sadece bir kumaş değildir; medeniyetleri birbirine bağlayan, sınırları aşan ortak bir hafızadır."
+            </blockquote>
+            <p style={{ color: '#999', fontSize: '0.9rem', letterSpacing: 1 }}>— Serap Kabakçı, Kurucu</p>
           </div>
         </section>
 
@@ -45,7 +93,7 @@ export default function About() {
                 { title: '%100 Doğal İpek', desc: 'Sentetik veya karışım malzeme kullanmıyoruz. Tüm ürünlerimiz saf doğal ipekten üretilmiştir.' },
                 { title: 'El İşçiliği', desc: 'Her parça, usta zanaatkarlar tarafından geleneksel tekniklerle elle üretilir. Hiçbir ürün birbirinin aynısı değildir.' },
                 { title: 'UNESCO Mirası', desc: 'Kelaghayi yapım sanatı, UNESCO tarafından korunan somut olmayan kültürel mirastır.' },
-                { title: 'Sürdürülebilir Üretim', desc: 'Doğal boyalar ve çevre dostu üretim süreçleri ile sürdürülebilir moda anlayışını benimsiyoruz.' },
+                { title: 'Kültür Köprüsü', desc: 'Azerbaycan\'ın kadim zanaat geleneğini Türkiye\'nin modern tasarım vizyonuyla buluşturuyoruz.' },
                 { title: 'Özel Tasarım', desc: 'Kurumsal müşterilerimiz için özel logo ve desen baskısı hizmeti sunuyoruz.' },
                 { title: 'Premium Ambalaj', desc: 'Her ürün, hediye olarak da verilebilecek özel ambalajında teslim edilir.' },
               ].map((item, i) => (
