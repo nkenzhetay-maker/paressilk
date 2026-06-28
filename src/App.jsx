@@ -28,6 +28,7 @@ import MesafeliSatis from './pages/MesafeliSatis';
 import IadePolitikasi from './pages/IadePolitikasi';
 import SSS from './pages/SSS';
 import Wishlist from './pages/Wishlist';
+import InstagramPage from './pages/InstagramPage';
 import CookieConsent from './components/CookieConsent';
 
 import AdminLayout from './admin/AdminLayout';
@@ -63,6 +64,7 @@ function StorefrontLayout() {
         <Route path="/iade-politikasi" element={<IadePolitikasi />} />
         <Route path="/sss" element={<SSS />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/instagram" element={<InstagramPage />} />
       </Routes>
       <Footer />
       <WhatsAppButton />
