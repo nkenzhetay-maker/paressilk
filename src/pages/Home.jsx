@@ -11,7 +11,16 @@ function HomeProductCard({ product }) {
   const { addItem } = useCart();
 
   return (
-    <div className="home-product">
+    <div className="home-product" style={{ position: 'relative' }}>
+      {!product.inStock && (
+        <div style={{
+          position: 'absolute', top: 10, left: 10, zIndex: 5,
+          background: '#1a1a1a', color: '#fff', padding: '4px 12px',
+          fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+        }}>
+          Tükendi
+        </div>
+      )}
       <Link to={`/product/${product.id}`} className="home-product__link">
         <div className="home-product__image-wrap">
           <img
@@ -31,8 +40,10 @@ function HomeProductCard({ product }) {
         <button
           className="home-product__cart-btn"
           onClick={() => addItem(product)}
+          disabled={!product.inStock}
+          style={!product.inStock ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
         >
-          Sepete Ekle
+          {product.inStock ? 'Sepete Ekle' : 'Stokta Yok'}
         </button>
       </div>
     </div>
@@ -107,7 +118,7 @@ export default function Home() {
           poster="/images/products/kelaghayi-1.jpg"
           className="hero__video"
         >
-          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="/videos/hero-collage.mp4" type="video/mp4" />
         </video>
         <div className="hero__poster" aria-hidden="true" />
         <div className="hero__content fade-in">
