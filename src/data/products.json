@@ -593,36 +593,6 @@
     ]
   },
   {
-    "id": "k09-warm-caramel-tan",
-    "name": "Kelaghayi — Warm Caramel Tan",
-    "nameEn": "Kelaghayi Warm Caramel Tan",
-    "category": "yeni-koleksiyon",
-    "price": 6200,
-    "currency": "TRY",
-    "description": "Sıcak karamel tonunda, süslü madalyon merkezi ve krem desen dolgusu ile %100 el yapımı doğal ipek kelaghayi. 150×150 cm.",
-    "descriptionEn": "Warm caramel tan 100% handmade natural silk kelaghayi with ornate medallion center and cream pattern fill. 150×150 cm.",
-    "images": [
-      "/images/products/k09_model.jpg",
-      "/images/products/k09_flatlay.jpg",
-      "/images/products/k09_detail.jpg"
-    ],
-    "details": {
-      "material": "%100 Doğal İpek",
-      "dimensions": "150 x 150 cm",
-      "origin": "El Yapımı — Azerbaycan Şeki",
-      "care": "Kuru temizleme önerilir"
-    },
-    "inStock": false,
-    "featured": true,
-    "tags": [
-      "ipek",
-      "kelaghayi",
-      "yeni koleksiyon",
-      "karamel",
-      "premium"
-    ]
-  },
-  {
     "id": "k10-navy-blue",
     "name": "Kelaghayi — Navy Blue",
     "nameEn": "Kelaghayi Navy Blue",
@@ -680,36 +650,6 @@
       "yeni koleksiyon",
       "magenta",
       "mor"
-    ]
-  },
-  {
-    "id": "k12-powder-baby-blue",
-    "name": "Kelaghayi — Powder Baby Blue",
-    "nameEn": "Kelaghayi Powder Baby Blue",
-    "category": "yeni-koleksiyon",
-    "price": 5200,
-    "currency": "TRY",
-    "description": "Pudra bebek mavisi tonunda, minimal buta ve zarif kıvrımlı bordür ile %100 el yapımı doğal ipek kelaghayi. 150×150 cm.",
-    "descriptionEn": "Powder baby blue 100% handmade natural silk kelaghayi with minimal buta and delicate scrollwork border. 150×150 cm.",
-    "images": [
-      "/images/products/k12_model.jpg",
-      "/images/products/k12_flatlay.jpg",
-      "/images/products/k12_detail.jpg"
-    ],
-    "details": {
-      "material": "%100 Doğal İpek",
-      "dimensions": "150 x 150 cm",
-      "origin": "El Yapımı — Azerbaycan Şeki",
-      "care": "Kuru temizleme önerilir"
-    },
-    "inStock": false,
-    "featured": false,
-    "tags": [
-      "ipek",
-      "kelaghayi",
-      "yeni koleksiyon",
-      "mavi",
-      "pastel"
     ]
   },
   {
