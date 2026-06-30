@@ -118,6 +118,7 @@ export default function ProductDetail() {
               <p className="product-detail__category">{categoryLabels[product.category]}</p>
               <h1 className="product-detail__name">{product.name}</h1>
               <p className="product-detail__price">{formatPrice(product.price)}</p>
+              {product.sku && <p style={{ fontSize: '0.78rem', color: '#999', letterSpacing: '0.1em', marginBottom: 8 }}>SKU: {product.sku}</p>}
               <p className="product-detail__description">{product.description}</p>
 
               {product.details && (
