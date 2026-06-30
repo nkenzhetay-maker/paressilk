@@ -23,6 +23,18 @@ export default function IadePolitikasi() {
               <li>Kişiye özel üretilen veya özelleştirilen ürünler iade kapsamı dışındadır.</li>
             </ul>
 
+            <h2>İade Kabul Edilmeyen Durumlar</h2>
+            <p>Aşağıdaki durumlarda iade ve değişim talepleri kabul edilmemektedir:</p>
+            <ul>
+              <li><strong>Leklenme:</strong> Parfüm, makyaj, yiyecek-içecek veya herhangi bir madde ile lekelenmiş ürünler.</li>
+              <li><strong>Kullanılma:</strong> Giyilmiş, takılmış veya kullanılmış olduğu tespit edilen ürünler.</li>
+              <li><strong>Kirlenme:</strong> Toz, kir, ter veya herhangi bir nedenle kirlenmiş ürünler.</li>
+              <li><strong>Hasar görme:</strong> Yırtılmış, sökülmüş, çekilmiş, yanmış veya herhangi bir fiziksel hasara uğramış ürünler.</li>
+            </ul>
+            <p style={{ fontSize: '0.9rem', color: '#666', fontStyle: 'italic' }}>
+              İpek ürünler hassas yapıda olduğundan, teslim aldığınızda dikkatli bir şekilde kontrol etmenizi ve deneme sırasında parfüm, deodorant gibi maddelerden uzak tutmanızı rica ederiz.
+            </p>
+
             <h2>İade Süreci</h2>
             <ol>
               <li><strong>Bildirim:</strong> İade talebinizi info@paressilk.com adresine veya +90 (533) 485 07 48 numarasına WhatsApp ile bildirin.</li>

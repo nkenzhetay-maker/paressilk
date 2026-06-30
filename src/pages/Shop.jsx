@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet-async';
 
 const categories = [
   { key: 'all', label: 'Tümü' },
+  { key: 'yeni-koleksiyon', label: 'Yeni Koleksiyon' },
   { key: 'kelaghayi', label: 'Kelaghayi' },
   { key: 'scarves', label: 'Eşarplar' },
   { key: 'chitme', label: 'Chitme' },

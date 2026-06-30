@@ -92,6 +92,7 @@ export default function Home() {
   const { products, getByCategory } = useProducts();
   const kelaghayi = getByCategory('kelaghayi');
   const scarves = getByCategory('scarves');
+  const yeniKoleksiyon = getByCategory('yeni-koleksiyon');
 
   return (
     <>
@@ -106,17 +107,42 @@ export default function Home() {
           poster="/images/products/kelaghayi-1.jpg"
           className="hero__video"
         >
-          <source src="/videos/hero-collage.mp4" type="video/mp4" />
+          <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
+        <div className="hero__poster" aria-hidden="true" />
         <div className="hero__content fade-in">
-          <p className="hero__subtitle">%100 El Yapımı Doğal İpek</p>
-          <h1 className="hero__title">Zarafetin İpek Dokunuşu</h1>
+          <p className="hero__eyebrow">%100 El Yapımı Doğal İpek</p>
+          <h1 className="hero__title">Paressilk</h1>
+          <p className="hero__subtitle">Zarafetin İpek Dokunuşu</p>
           <p className="hero__description">
             Yüzyıllık ipek geleneğini keşfedin. Her parça, ustalıkla el işçiliğiyle üretilmiş benzersiz bir sanat eseridir.
           </p>
           <Link to="/shop" className="hero__cta">Koleksiyonu Keşfet</Link>
         </div>
       </section>
+
+      {/* Yeni Koleksiyon */}
+      {yeniKoleksiyon.length > 0 && (
+        <section className="section" style={{ paddingTop: 80, paddingBottom: 80 }}>
+          <div className="container">
+            <div className="section__header">
+              <p className="section__subtitle">Yeni Sezon</p>
+              <h2 className="section__title">Yeni Koleksiyon</h2>
+              <div className="section__divider" />
+            </div>
+            <div className="home-products-grid">
+              {yeniKoleksiyon.filter(p => p.featured).map(product => (
+                <HomeProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 40 }}>
+              <Link to="/shop?category=yeni-koleksiyon" className="btn btn--outline">
+                Tüm Yeni Koleksiyonu Gör ({yeniKoleksiyon.length} Ürün)
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Products Grid - aeneis style */}
       <section className="section" style={{ paddingTop: 80, paddingBottom: 80 }}>
@@ -127,7 +153,7 @@ export default function Home() {
             <div className="section__divider" />
           </div>
           <div className="home-products-grid">
-            {products.filter(p => p.inStock).map(product => (
+            {products.filter(p => p.inStock && p.category !== 'yeni-koleksiyon').map(product => (
               <HomeProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -143,6 +169,13 @@ export default function Home() {
             <div className="section__divider" />
           </div>
           <div className="categories-grid">
+            <Link to="/shop?category=yeni-koleksiyon" className="category-card">
+              <img src="/images/products/k01_model.jpg" alt="Yeni Koleksiyon" className="category-card__image" />
+              <div className="category-card__overlay">
+                <h3 className="category-card__title">Yeni Koleksiyon</h3>
+                <span className="category-card__count">{yeniKoleksiyon.length} Ürün</span>
+              </div>
+            </Link>
             <Link to="/shop?category=kelaghayi" className="category-card">
               <img src="/images/products/kelaghayi-2.jpg" alt="Kelaghayi" className="category-card__image" />
               <div className="category-card__overlay">

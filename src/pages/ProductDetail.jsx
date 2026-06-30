@@ -31,6 +31,7 @@ export default function ProductDetail() {
   const related = getByCategory(product.category).filter(p => p.id !== product.id).slice(0, 3);
 
   const categoryLabels = {
+    'yeni-koleksiyon': 'Yeni Koleksiyon',
     kelaghayi: 'Kelaghayi',
     scarves: 'Eşarplar',
     chitme: 'Chitme',
@@ -152,7 +153,7 @@ export default function ProductDetail() {
               <div style={{ marginTop: 32, padding: 20, background: '#F5F0E8', fontSize: '0.82rem', lineHeight: 1.8 }}>
                 <p><strong>Ücretsiz Kargo:</strong> 1000 TL üzeri siparişlerde</p>
                 <p><strong>Güvenli Ödeme:</strong> Kredi kartı & havale</p>
-                <p><strong>İade:</strong> 14 gün koşulsuz iade</p>
+                <p><strong>İade:</strong> 14 gün iade (kullanılmamış, leklenmemiş, hasarsız)</p>
               </div>
             </div>
           </div>

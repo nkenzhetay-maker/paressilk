@@ -3,8 +3,16 @@ import initialProducts from '../data/products.json';
 
 const ProductContext = createContext();
 
+const PRODUCTS_VERSION = 3;
+
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState(() => {
+    const savedVersion = localStorage.getItem('paressilk_products_version');
+    if (savedVersion !== String(PRODUCTS_VERSION)) {
+      localStorage.setItem('paressilk_products_version', String(PRODUCTS_VERSION));
+      localStorage.setItem('paressilk_products', JSON.stringify(initialProducts));
+      return initialProducts;
+    }
     const saved = localStorage.getItem('paressilk_products');
     return saved ? JSON.parse(saved) : initialProducts;
   });

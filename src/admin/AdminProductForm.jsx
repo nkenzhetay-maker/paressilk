@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 
 const categoryOptions = [
+  { value: 'yeni-koleksiyon', label: 'Yeni Koleksiyon' },
   { value: 'kelaghayi', label: 'Kelaghayi' },
   { value: 'scarves', label: 'Eşarplar' },
   { value: 'chitme', label: 'Chitme' },
