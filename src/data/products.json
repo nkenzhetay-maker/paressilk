@@ -614,37 +614,6 @@
     "sku": "PRS-0021"
   },
   {
-    "id": "k10-navy-blue",
-    "name": "Kelaghayi — Navy Blue",
-    "nameEn": "Kelaghayi Navy Blue",
-    "category": "yeni-koleksiyon",
-    "price": 5000,
-    "currency": "TRY",
-    "description": "Lacivert tonunda, pembe ve beyaz buta paisley kıvrımlı madalyon ile %100 el yapımı doğal ipek kelaghayi. 150×150 cm.",
-    "descriptionEn": "Navy blue 100% handmade natural silk kelaghayi with pink and white buta paisley swirling medallion. 150×150 cm.",
-    "images": [
-      "/images/products/k10_model.jpg",
-      "/images/products/k10_flatlay.jpg",
-      "/images/products/k10_detail.jpg"
-    ],
-    "details": {
-      "material": "%100 Doğal İpek",
-      "dimensions": "150 x 150 cm",
-      "origin": "El Yapımı — Azerbaycan Şeki",
-      "care": "Kuru temizleme önerilir"
-    },
-    "inStock": false,
-    "featured": false,
-    "tags": [
-      "ipek",
-      "kelaghayi",
-      "yeni koleksiyon",
-      "lacivert",
-      "mavi"
-    ],
-    "sku": "PRS-0022"
-  },
-  {
     "id": "k11-magenta-purple",
     "name": "Kelaghayi — Magenta Purple",
     "nameEn": "Kelaghayi Magenta Purple",
