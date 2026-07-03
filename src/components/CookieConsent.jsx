@@ -34,13 +34,13 @@ export default function CookieConsent() {
             kabul etmiş sayılırsınız.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', width: '100%' }}>
           <button
             onClick={() => accept('essential')}
             style={{
               padding: '10px 20px', background: 'transparent', color: '#999',
               border: '1px solid #444', fontSize: '0.75rem', letterSpacing: '0.1em',
-              textTransform: 'uppercase', cursor: 'pointer',
+              textTransform: 'uppercase', cursor: 'pointer', flex: '1 1 auto', minWidth: 0,
             }}
           >
             Sadece Zorunlu
@@ -50,7 +50,7 @@ export default function CookieConsent() {
             style={{
               padding: '10px 24px', background: '#C8A456', color: '#0A0A0A',
               border: '1px solid #C8A456', fontSize: '0.75rem', fontWeight: 600,
-              letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
+              letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', flex: '1 1 auto', minWidth: 0,
             }}
           >
             Tümünü Kabul Et

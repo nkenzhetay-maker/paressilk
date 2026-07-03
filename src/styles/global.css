@@ -31,6 +31,7 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 body {
@@ -41,6 +42,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -344,6 +346,33 @@ input, textarea, select {
   .hero__description {
     font-size: 0.9rem;
   }
+  .section {
+    padding: 60px 0;
+  }
+  .section__title {
+    font-size: 2rem;
+  }
+  .newsletter {
+    padding: 60px 20px;
+  }
+  .newsletter h3 {
+    font-size: 1.5rem;
+  }
+  .newsletter__form {
+    flex-direction: column;
+  }
+  .newsletter__input {
+    border-right: 1px solid var(--gray-light);
+  }
+  .product-detail__name {
+    font-size: 1.8rem;
+  }
+  .product-detail__actions .btn {
+    width: 100%;
+  }
+  .shop-hero h1 {
+    font-size: 2rem;
+  }
 }
 
 /* Section Styles */
@@ -576,6 +605,7 @@ input, textarea, select {
 .product-detail__actions {
   display: flex;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -671,6 +701,9 @@ input, textarea, select {
 @media (max-width: 768px) {
   .categories-grid {
     grid-template-columns: 1fr;
+  }
+  .category-card {
+    height: 280px;
   }
 }
 
@@ -792,6 +825,8 @@ input, textarea, select {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .footer__bottom p {
@@ -1159,6 +1194,8 @@ input, textarea, select {
   padding: 20px 0;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  flex-wrap: wrap;
+  overflow: hidden;
 }
 
 .breadcrumb a:hover {
