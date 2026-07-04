@@ -37,6 +37,7 @@ export default function ProductDetail() {
     chitme: 'Chitme',
     'raw-silk': 'Ham İpek',
     carpet: 'Halılar',
+    'hediye-seti': 'Hediye Setleri',
   };
 
   return (
@@ -151,7 +152,59 @@ export default function ProductDetail() {
                 </a>
               </div>
 
-              <div style={{ marginTop: 32, padding: 20, background: '#F5F0E8', fontSize: '0.82rem', lineHeight: 1.8 }}>
+              {/* Limitli Üretim Sayacı */}
+              <div style={{ marginTop: 24, padding: '16px 20px', border: '1px solid rgba(200,164,86,0.3)', background: 'rgba(200,164,86,0.05)', display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid #C8A456', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#C8A456', letterSpacing: '0.05em' }}>LTD</span>
+                </div>
+                <div>
+                  <p style={{ fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A', marginBottom: 2 }}>Limitli Üretim</p>
+                  <p style={{ fontSize: '0.75rem', color: '#888' }}>Bu desenden yalnızca <strong style={{ color: '#C8A456' }}>50 adet</strong> üretilmiştir. Her parça benzersiz üretim numarasıyla teslim edilir.</p>
+                </div>
+              </div>
+
+              {/* Orijinallik Sertifikası */}
+              <div style={{ marginTop: 16, padding: '16px 20px', border: '1px solid rgba(200,164,86,0.3)', background: 'rgba(200,164,86,0.05)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8A456" strokeWidth="1.5">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                  <p style={{ fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A' }}>Orijinallik Sertifikası</p>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: '#888', lineHeight: 1.7 }}>
+                  Her ürün, Azerbaycan Kültür Bakanlığı tarafından tescilli usta isimleriyle birlikte orijinallik sertifikasıyla teslim edilir. Sertifika üzerindeki QR kod ile ürün doğrulaması yapılabilir.
+                </p>
+              </div>
+
+              {/* Premium Ambalaj */}
+              <div style={{ marginTop: 16, padding: '16px 20px', border: '1px solid rgba(200,164,86,0.3)', background: 'rgba(200,164,86,0.05)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8A456" strokeWidth="1.5">
+                    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+                  </svg>
+                  <p style={{ fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A' }}>Premium Hediye Ambalajı</p>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: '#888', lineHeight: 1.7 }}>
+                  Kadife kutu içerisinde, ipek koruma kağıdıyla sarılı olarak teslim edilir. Her kutu içerisinde el yazısıyla yazılmış teşekkür kartı ve bakım kılavuzu bulunur.
+                </p>
+              </div>
+
+              {/* UNESCO Hikayesi */}
+              <div style={{ marginTop: 16, padding: '16px 20px', border: '1px solid rgba(200,164,86,0.3)', background: 'rgba(200,164,86,0.05)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8A456" strokeWidth="1.5">
+                    <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                  </svg>
+                  <p style={{ fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A' }}>UNESCO Somut Olmayan Kültürel Miras</p>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: '#888', lineHeight: 1.7 }}>
+                  Kelaghayi, 2014 yılında UNESCO Somut Olmayan Kültürel Miras Listesi'ne alınmıştır. Azerbaycan'ın Şeki şehrinde, nesillerdir süregelen geleneksel tekniklerle, doğal ipekten el işçiliğiyle üretilmektedir. Her desen, yüzyıllık Kafkas motiflerini taşır.
+                </p>
+              </div>
+
+              <div style={{ marginTop: 24, padding: 20, background: '#F5F0E8', fontSize: '0.82rem', lineHeight: 1.8 }}>
                 <p><strong>Ücretsiz Kargo:</strong> 1000 TL üzeri siparişlerde</p>
                 <p><strong>Güvenli Ödeme:</strong> Kredi kartı & havale</p>
                 <p><strong>İade:</strong> 14 gün iade (kullanılmamış, leklenmemiş, hasarsız)</p>

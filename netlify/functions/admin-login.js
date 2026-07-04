@@ -38,10 +38,16 @@ exports.handler = async (event) => {
       return { statusCode: 401, headers: HEADERS, body: JSON.stringify({ error: 'Geçersiz kullanıcı bilgileri' }) };
     }
 
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret || jwtSecret.length < 16) {
+      console.error('JWT_SECRET environment variable not set or too short');
+      return { statusCode: 500, headers: HEADERS, body: JSON.stringify({ error: 'Sunucu yapılandırma hatası' }) };
+    }
+
     const jwt = require('jsonwebtoken');
     const token = jwt.sign(
       { role: 'admin', iat: Math.floor(Date.now() / 1000) },
-      process.env.JWT_SECRET || 'fallback-secret-change-me',
+      jwtSecret,
       { expiresIn: '4h' }
     );
 

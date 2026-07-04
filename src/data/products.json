@@ -1018,5 +1018,97 @@
       "premium"
     ],
     "sku": "PRS-0035"
+  },
+  {
+    "id": "hediye-seti-premium",
+    "name": "Premium Hediye Seti",
+    "nameEn": "Premium Gift Set",
+    "category": "hediye-seti",
+    "price": 6500,
+    "currency": "TRY",
+    "description": "Kelaghayi + kadife kutu + ipek koruma kağıdı + el yazısı teşekkür kartı + orijinallik sertifikası. Sevdiklerinize özel bir hediye.",
+    "descriptionEn": "Kelaghayi + velvet box + silk tissue paper + handwritten thank-you card + certificate of authenticity. A special gift for your loved ones.",
+    "images": [
+      "/images/products/kelaghayi-1.jpg"
+    ],
+    "details": {
+      "material": "%100 Doğal İpek Kelaghayi",
+      "dimensions": "150 x 150 cm Kelaghayi",
+      "origin": "El Yapımı — Azerbaycan Şeki",
+      "care": "Kuru temizleme önerilir",
+      "customization": "İsme özel kart yazılabilir"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": [
+      "hediye",
+      "hediye seti",
+      "premium",
+      "kadife kutu",
+      "özel günler"
+    ],
+    "sku": "PRS-0036"
+  },
+  {
+    "id": "hediye-seti-lux",
+    "name": "Lüks Hediye Seti",
+    "nameEn": "Luxury Gift Set",
+    "category": "hediye-seti",
+    "price": 7500,
+    "currency": "TRY",
+    "description": "2 adet Kelaghayi + kadife kutu + ipek koruma kağıdı + el yazısı teşekkür kartı + orijinallik sertifikası + bakım kiti. Kurumsal hediyeler için ideal.",
+    "descriptionEn": "2x Kelaghayi + velvet box + silk tissue paper + handwritten thank-you card + certificate of authenticity + care kit. Ideal for corporate gifts.",
+    "images": [
+      "/images/products/kelaghayi-1.jpg"
+    ],
+    "details": {
+      "material": "%100 Doğal İpek Kelaghayi (2 adet)",
+      "dimensions": "150 x 150 cm (her biri)",
+      "origin": "El Yapımı — Azerbaycan Şeki",
+      "care": "Kuru temizleme önerilir",
+      "customization": "Kurumsal logo ve mesaj eklenebilir"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": [
+      "hediye",
+      "hediye seti",
+      "lüks",
+      "kurumsal",
+      "kadife kutu",
+      "premium"
+    ],
+    "sku": "PRS-0037"
+  },
+  {
+    "id": "hediye-seti-esarp-duo",
+    "name": "İkili Eşarp Hediye Seti",
+    "nameEn": "Scarf Duo Gift Set",
+    "category": "hediye-seti",
+    "price": 6990,
+    "currency": "TRY",
+    "description": "1 Kelaghayi + 1 İpek Şal + kadife kutu + ipek koruma kağıdı + el yazısı teşekkür kartı + orijinallik sertifikası. Anne-kız, arkadaş veya iş ortağı hediyesi.",
+    "descriptionEn": "1 Kelaghayi + 1 Silk Shawl + velvet box + silk tissue paper + handwritten thank-you card + certificate of authenticity. Mother-daughter, friend or business partner gift.",
+    "images": [
+      "/images/products/kelaghayi-1.jpg"
+    ],
+    "details": {
+      "material": "%100 Doğal İpek (Kelaghayi + Şal)",
+      "dimensions": "150×150 cm + 190×70 cm",
+      "origin": "El Yapımı — Azerbaycan Şeki",
+      "care": "Kuru temizleme önerilir",
+      "customization": "İsme özel kart yazılabilir"
+    },
+    "inStock": true,
+    "featured": false,
+    "tags": [
+      "hediye",
+      "hediye seti",
+      "ikili",
+      "eşarp",
+      "kelaghayi",
+      "premium"
+    ],
+    "sku": "PRS-0038"
   }
 ]

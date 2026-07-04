@@ -1,4 +1,8 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const PRODUCTS = require('../../src/data/products.json');
+
+// id -> gerçek fiyat eşlemesi (sunucu tarafı doğrulama için)
+const PRICE_BY_ID = new Map(PRODUCTS.map(p => [String(p.id), Number(p.price)]));
 
 const ALLOWED_ORIGINS = [
   process.env.SITE_URL || 'https://paressilk.com',
@@ -47,7 +51,13 @@ exports.handler = async (event) => {
     }
 
     const lineItems = items.map(item => {
-      const price = Math.round(Number(item.price) * 100);
+      const productId = String(item.id);
+      // Fiyat OTORİTESİ sunucudur: client'tan gelen item.price'a asla güvenilmez.
+      const authoritativePrice = PRICE_BY_ID.get(productId);
+      if (authoritativePrice == null) {
+        throw new Error('Geçersiz ürün');
+      }
+      const price = Math.round(authoritativePrice * 100);
       const qty = Math.max(1, Math.min(99, Math.round(Number(item.qty))));
 
       if (!price || price < 100 || price > 10000000) {
@@ -60,15 +70,20 @@ exports.handler = async (event) => {
           product_data: {
             name: String(item.name).slice(0, 200),
             images: item.images?.[0] ? [`https://paressilk.com${item.images[0]}`] : [],
-            metadata: { productId: String(item.id).slice(0, 50) },
+            metadata: { productId: productId.slice(0, 50) },
           },
           unit_amount: price,
         },
         quantity: qty,
+        _serverPrice: authoritativePrice,
+        _qty: qty,
       };
     });
 
-    const totalAmount = items.reduce((sum, i) => sum + Number(i.price) * Number(i.qty), 0);
+    // Toplam da sunucu fiyatlarından hesaplanır (kargo eşiği manipülasyonunu önler)
+    const totalAmount = lineItems.reduce((sum, li) => sum + li._serverPrice * li._qty, 0);
+    // Stripe'a giderken iç alanları temizle
+    lineItems.forEach(li => { delete li._serverPrice; delete li._qty; });
     const shippingCost = totalAmount >= 1000 ? 0 : 4990;
 
     if (shippingCost > 0) {

@@ -37,6 +37,7 @@ export default function Header() {
           <nav className="header__nav">
             <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Ana Sayfa</Link>
             <Link to="/shop" className={location.pathname === '/shop' ? 'active' : ''}>Koleksiyon</Link>
+            <Link to="/sanal-deneme" className={location.pathname === '/sanal-deneme' ? 'active' : ''}>Sanal Deneme</Link>
             <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>Hakkımızda</Link>
             <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>İletişim</Link>
           </nav>
@@ -98,6 +99,7 @@ export default function Header() {
         </button>
         <Link to="/">Ana Sayfa</Link>
         <Link to="/shop">Koleksiyon</Link>
+        <Link to="/sanal-deneme">Sanal Deneme</Link>
         <Link to="/about">Hakkımızda</Link>
         <Link to="/contact">İletişim</Link>
       </div>

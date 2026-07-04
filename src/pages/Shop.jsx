@@ -12,6 +12,7 @@ const categories = [
   { key: 'chitme', label: 'Chitme' },
   { key: 'raw-silk', label: 'Ham İpek' },
   { key: 'carpet', label: 'Halılar' },
+  { key: 'hediye-seti', label: 'Hediye Setleri' },
 ];
 
 const sortOptions = [

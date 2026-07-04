@@ -64,6 +64,17 @@ function buildEmailHtml(items) {
 }
 
 exports.handler = async (event) => {
+  // Bu fonksiyon yalnızca zamanlanmış görev (cron) veya gizli token ile tetiklenebilir.
+  // Aksi halde herkes çağırıp tüm kullanıcılara mail spam'i yaptırabilir.
+  const isScheduled = !!(event.headers && (event.headers['x-nf-event'] === 'schedule' || event.headers['X-Nf-Event'] === 'schedule'));
+  const cronSecret = process.env.CRON_SECRET;
+  const provided = (event.headers && (event.headers['x-cron-secret'] || event.headers['X-Cron-Secret'])) || '';
+  if (!isScheduled) {
+    if (!cronSecret || provided !== cronSecret) {
+      return { statusCode: 401, body: JSON.stringify({ error: 'Yetkisiz' }) };
+    }
+  }
+
   try {
     const now = new Date();
     const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString();
