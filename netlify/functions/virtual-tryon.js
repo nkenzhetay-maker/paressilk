@@ -89,7 +89,8 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers: HEADERS, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  const apiKey = process.env.NVIDIA_API_KEY;
+  // Netlify env'de anahtar NVIDIA_API_KEY veya Nvapi_Apikey adıyla olabilir
+  const apiKey = process.env.NVIDIA_API_KEY || process.env.Nvapi_Apikey;
   if (!apiKey) {
     return { statusCode: 503, headers: HEADERS, body: JSON.stringify({ error: 'AI servisi yapılandırılmamış', fallback: true }) };
   }
