@@ -23,6 +23,8 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
+import readline from 'node:readline';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -251,6 +253,45 @@ async function main() {
     process.exit(1);
   }
 
+  // ---------- AI READINESS GATE zorunluluğu ----------
+  // Preflight geçmeden veya dataset/prompt DEĞİŞMİŞSE benchmark ÇALIŞMAZ.
+  const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+  const promptText = PROMPTS[CFG.promptVersion] || PROMPTS.v1;
+  const promptSha256 = sha256(Buffer.from(promptText));
+  const fileHashes = [...models, ...scarves].map(f => sha256(fs.readFileSync(f)));
+  const datasetHash = sha256(fileHashes.sort().join('')).slice(0, 16);
+
+  const preflightPath = path.join(ROOT, 'testing/config/.preflight.json');
+  if (!fs.existsSync(preflightPath)) {
+    console.error('❌ AI Readiness Gate geçilmemiş. Önce:  GEMINI_API_KEY=... npm run preflight');
+    process.exit(1);
+  }
+  const pf = JSON.parse(fs.readFileSync(preflightPath, 'utf8'));
+  if (pf.datasetHash !== datasetHash) {
+    console.error('❌ Dataset preflight sonrasında DEĞİŞMİŞ. Preflight\'ı yeniden çalıştırın.');
+    console.error(`   preflight: ${pf.datasetHash}  şimdi: ${datasetHash}`);
+    process.exit(1);
+  }
+  if (pf.promptSha256 !== promptSha256) {
+    console.error('❌ PROMPT KİLİDİ İHLALİ: prompt preflight sonrasında değişmiş.');
+    console.error('   Benchmark ortasında/öncesinde prompt değiştirilemez. Yeni sürüm tanımlayıp preflight\'ı yeniden çalıştırın.');
+    process.exit(1);
+  }
+
+  // ---------- İNSAN ONAYI (maliyet onayı) ----------
+  const totalPlanned = models.length * scarves.length * CFG.runsPerImage;
+  const estCost = (totalPlanned * CFG.costPerImageUsd).toFixed(2);
+  if (!process.argv.includes('--yes')) {
+    console.log(`\n⚠️  ${totalPlanned} gerçek AI üretimi yapılacak. Tahmini maliyet: $${estCost} (worst case ~$${(estCost * 2).toFixed ? (Number(estCost) * 2).toFixed(2) : estCost})`);
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const answer = await new Promise(res => rl.question('Onaylıyor musunuz? (EVET yazın): ', res));
+    rl.close();
+    if (answer.trim().toUpperCase() !== 'EVET') {
+      console.log('İptal edildi. Hiçbir üretim yapılmadı.');
+      process.exit(0);
+    }
+  }
+
   const prompt = PROMPTS[CFG.promptVersion] || PROMPTS.v1;
   const runId = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
   const runDir = path.join(RESULTS_ROOT, runId);
@@ -270,6 +311,8 @@ async function main() {
     generatedAt: new Date().toISOString(),
     gitCommit: git('git rev-parse HEAD'),
     branch: git('git branch --show-current'),
+    promptSha256,
+    datasetHash,
     datasetFiles: {
       models: models.map(f => path.basename(f)),
       scarves: scarves.map(f => path.basename(f)),
@@ -286,10 +329,19 @@ async function main() {
   const rows = [];
   let passed = 0, failed = 0, totalMs = 0;
 
+  // Benzersiz üretim kimliği: RUN-YYYYMMDD-###-SKU-W##
+  // Aynı ID dosya adında, JSON'da, HTML'de ve logda kullanılır —
+  // "3. görsel neden kötüydü?" sorusu tek ID ile izlenir.
+  const dateTag = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  let seq = 0;
+
   for (const m of models) {
     for (const s of scarves) {
       for (let run = 0; run < CFG.runsPerImage; run++) {
-        const id = `${path.basename(m, path.extname(m))}__${path.basename(s, path.extname(s))}${CFG.runsPerImage > 1 ? `__r${run + 1}` : ''}`;
+        seq++;
+        const wTag = (path.basename(m).match(/woman(\d+)/i)?.[1] || String(seq)).padStart(2, '0');
+        const sku = path.basename(s).split('_')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const id = `RUN-${dateTag}-${String(seq).padStart(3, '0')}-${sku}-W${wTag}${CFG.runsPerImage > 1 ? `-r${run + 1}` : ''}`;
         process.stdout.write(`  • ${id} … `);
         const r = await generate(m, s, prompt);
         totalMs += r.ms;

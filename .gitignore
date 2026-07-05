@@ -42,3 +42,4 @@ testing/golden-dataset/scarves/*.jpg
 testing/golden-dataset/scarves/*.jpeg
 testing/golden-dataset/scarves/*.png
 testing/golden-dataset/scarves/*.webp
+testing/config/.preflight.json
