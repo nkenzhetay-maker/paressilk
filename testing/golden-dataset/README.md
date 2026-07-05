@@ -94,3 +94,44 @@ dosya boyutu, API hatası. Bunlar objektif ve otomatiktir.
 Form genel ortalamayı hesaplar ve **PASS / FAIL** kararı verir (hedef: ≥ 4/5).
 Bir algoritma "müşteri bunu satın alır mı?" sorusunu ölçemez — nihai kabul kararı
 insan QA ortalamasına dayanır.
+
+## 🏛 Business Acceptance Gate (BAG) — Milestone 3'ün SON kapısı
+
+`testing/reports/business.html` (her koşunun kendi klasöründe de kopyası var) —
+mühendislik değil, **müşteri güveni** ölçer. 6 ticari soru (1-5):
+
+1. Eşarp doğal giyilmiş görünüyor mu?
+2. Bunun gerçek bir fotoğraf olduğuna inanır mıydınız?
+3. Paressilk'in lüks imajını koruyor mu?
+4. Satın almadan önce bu önizlemeye güvenir miydiniz?
+5. **Sadece bu önizlemeye bakarak satın alır mıydınız?**
+6. Bu özelliği bir arkadaşınıza tavsiye eder miydiniz?
+
+- **Overall Commercial Score:** PASS ≥ **4.2** / FAIL < 4.2 — Milestone 3'e geçiş şartı
+- **Customer Confidence Index (CCI):** %40 satın alma + %30 güven + %30 gerçeklik
+
+### 5 kişilik jüri (tek kişinin beğenisi yeterli değil)
+Önerilen jüri: siz + aile bireyi + bir kadın arkadaş + Paressilk'ten biri + modaya
+ilgili biri. Her üye `business.html`'i açar, **kendi adını yazar**, aynı 25 görseli
+puanlar, "JSON İndir" ile dışa aktarır. JSON dosyaları o koşunun
+`testing/results/<runId>/` klasörüne konur → `npm run compare` hepsini birleştirir.
+
+### A/B Prompt Testi
+1. `benchmark.config.json` → `promptVersion: "v1"` → preflight → benchmark → jüri puanlar
+2. Yeni prompt tanımla (v2) → config'i güncelle → preflight → benchmark → aynı jüri puanlar
+3. `npm run compare` → koşuları yan yana kıyaslar, **en iyi promptu otomatik seçer**
+
+Prompt kilidi sayesinde her koşu tek bir prompt sürümüyle üretilir — sonuçlar
+bilimsel olarak karşılaştırılabilir.
+
+## 👥 Gerçek Kullanıcı Testi (Milestone 2 sonrası kural)
+
+Benchmark PASS olsa bile, Milestone 3'ten önce **en az 10 gerçek kullanıcı**
+(hedef müşteri profiline yakın) sistemi kendi fotoğrafıyla denemeli. Sorulacaklar:
+- Fotoğraf yüklemek kolay mıydı?
+- Bekleme süresi kabul edilebilir miydi?
+- Sonuç sana güven verdi mi?
+- Bu görsele bakarak eşarbı satın almayı düşünür müydün?
+
+Bu geri bildirim teknik benchmark kadar değerlidir — UX sorunları ancak gerçek
+kullanıcıyla ortaya çıkar.

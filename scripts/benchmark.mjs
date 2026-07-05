@@ -236,6 +236,114 @@ document.getElementById('export').onclick=()=>{
   fs.writeFileSync(path.join(REPORTS, 'index.html'), html);
 }
 
+// Business Acceptance Gate raporu — mühendislik DEĞİL, müşteri güveni ölçer.
+// 6 ticari soru (1-5), Overall Commercial Score (PASS >= businessPassThreshold),
+// Customer Confidence Index = %40 WouldBuy + %30 WouldTrust + %30 LooksReal.
+// Çoklu jüri: her değerlendirici adını girer, puanları ayrı saklanır, ortalama alınır.
+function writeBusinessHtml(report, runDirRel, outFile) {
+  const QS = [
+    'Eşarp doğal giyilmiş görünüyor mu?',
+    'Bunun gerçek bir fotoğraf olduğuna inanır mıydınız?',
+    'Paressilk\'in lüks imajını koruyor mu?',
+    'Satın almadan önce bu önizlemeye güvenir miydiniz?',
+    'SADECE bu önizlemeye bakarak bu eşarbı satın alır mıydınız?',
+    'Bu özelliği bir arkadaşınıza tavsiye eder miydiniz?',
+  ];
+  const rows = report.rows.filter(r => r.ok).map((r, i) => `
+    <tr data-id="${r.id}">
+      <td>${i + 1}</td>
+      <td><img src="${outFile === 'reports' ? `../results/${runDirRel}/` : ''}${r.file}" loading="lazy"></td>
+      <td><small>${r.id}</small><br>${r.scarf}<br><small>Prompt ${report.promptVersion}</small></td>
+      ${QS.map((q, qi) => `<td><select data-q="${qi}"><option value="">–</option>${[1, 2, 3, 4, 5].map(v => `<option>${v}</option>`).join('')}</select></td>`).join('')}
+      <td class="rowavg">–</td>
+    </tr>`).join('');
+
+  const html = `<!doctype html><html lang="tr"><head><meta charset="utf-8">
+<title>Business Acceptance Report — ${report.runId}</title>
+<style>
+  body{font-family:system-ui,sans-serif;margin:24px;background:#faf8f5;color:#222}
+  h1{font-size:1.25rem} .note{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px;font-size:.83rem;margin:14px 0}
+  .meta{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0}.meta div{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:10px 14px;font-size:.85rem}.meta b{display:block;font-size:1.05rem}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e5e5;font-size:.8rem}
+  th,td{padding:7px 8px;border-top:1px solid #eee;text-align:left;vertical-align:top}th{background:#f4f0e8;font-size:.72rem}
+  img{width:96px;border-radius:6px;display:block}
+  #juror{padding:8px;border:1px solid #ccc;border-radius:6px;font-size:.85rem}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}
+  .kpi div{background:#fff;border:2px solid #e5e5e5;border-radius:10px;padding:14px 18px;font-size:.85rem}
+  .kpi b{display:block;font-size:1.5rem}
+  button{padding:8px 14px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer}
+</style></head><body>
+<h1>🏛 Business Acceptance Report — Milestone 3 Kapısı</h1>
+<div class="meta">
+  <div>Benchmark<b>${report.runId}</b></div>
+  <div>Prompt<b>${report.promptVersion}</b></div>
+  <div>Görsel<b>${report.rows.filter(r => r.ok).length}</b></div>
+  <div>PASS eşiği<b>≥ ${report.businessPassThreshold}</b></div>
+</div>
+<div class="note">Bu rapor <b>mühendislik kalitesini değil, müşteri güvenini</b> ölçer.
+Önerilen: 5 kişilik jüri (siz + aile + kadın arkadaş + Paressilk'ten biri + modaya ilgili biri) —
+her jüri üyesi kendi adını yazıp AYNI görselleri puanlar; sistem ortalamayı alır.
+Puanlar tarayıcıda jüri adına göre saklanır; her üye "JSON İndir" ile dışa aktarıp
+bu koşunun <code>testing/results/${runDirRel}/</code> klasörüne koyarsa <code>npm run compare</code> hepsini birleştirir.</div>
+<p>Jüri üyesi adı: <input id="juror" placeholder="ör. Nazgul"> </p>
+<div class="kpi">
+  <div>Overall Commercial Score<b id="ocs">–</b><span id="passfail"></span></div>
+  <div>Customer Confidence Index<b id="cci">–</b><small>%40 satın alma + %30 güven + %30 gerçeklik</small></div>
+</div>
+<div style="margin:10px 0"><button id="export">Bu Jürinin Puanlarını JSON İndir</button></div>
+<table><thead><tr><th>#</th><th>Görsel</th><th>ID / SKU</th>
+${QS.map(q => `<th>${q}</th>`).join('')}<th>Ort.</th></tr></thead><tbody>${rows}</tbody></table>
+<script>
+const RUN='${report.runId}',TH=${report.businessPassThreshold};
+const W=${JSON.stringify(report.cciWeights)};
+let juror='';
+const jEl=document.getElementById('juror');
+jEl.value=localStorage.getItem('bag_juror_'+RUN)||'';juror=jEl.value;
+jEl.addEventListener('input',()=>{juror=jEl.value.trim();localStorage.setItem('bag_juror_'+RUN,juror);load();});
+function key(){return 'bag_'+RUN+'_'+ (juror||'anon');}
+function load(){
+  const d=JSON.parse(localStorage.getItem(key())||'{}');
+  document.querySelectorAll('tr[data-id]').forEach(tr=>{
+    tr.querySelectorAll('select').forEach(s=>{s.value=d[tr.dataset.id+'|'+s.dataset.q]||'';});
+  });recalc();
+}
+function recalc(){
+  const d=JSON.parse(localStorage.getItem(key())||'{}');
+  let rowAvgs=[],q2=[],q4=[],q5=[];
+  document.querySelectorAll('tr[data-id]').forEach(tr=>{
+    const vals=[...tr.querySelectorAll('select')].map(s=>+s.value);
+    const filled=vals.filter(Boolean);
+    tr.querySelector('.rowavg').textContent=filled.length?(filled.reduce((a,b)=>a+b)/filled.length).toFixed(1):'–';
+    if(filled.length===6){rowAvgs.push(filled.reduce((a,b)=>a+b)/6);q2.push(vals[1]);q4.push(vals[3]);q5.push(vals[4]);}
+  });
+  const ocsEl=document.getElementById('ocs'),pf=document.getElementById('passfail'),cciEl=document.getElementById('cci');
+  if(rowAvgs.length){
+    const ocs=rowAvgs.reduce((a,b)=>a+b)/rowAvgs.length;
+    ocsEl.textContent=ocs.toFixed(2)+'/5';
+    pf.innerHTML=ocs>=TH?' <b style="color:#2e7d32">PASS ✅</b>':' <b style="color:#c62828">FAIL ❌</b>';
+    const avg=a=>a.reduce((x,y)=>x+y,0)/a.length/5;
+    const cci=(avg(q5)*W.wouldBuy+avg(q4)*W.wouldTrust+avg(q2)*W.looksReal)*100;
+    cciEl.textContent=Math.round(cci)+'%';
+  } else {ocsEl.textContent='–';pf.textContent='';cciEl.textContent='–';}
+}
+document.querySelectorAll('tr[data-id]').forEach(tr=>{
+  tr.querySelectorAll('select').forEach(s=>{
+    s.addEventListener('change',()=>{
+      const d=JSON.parse(localStorage.getItem(key())||'{}');
+      d[tr.dataset.id+'|'+s.dataset.q]=s.value;localStorage.setItem(key(),JSON.stringify(d));recalc();
+    });
+  });
+});
+document.getElementById('export').onclick=()=>{
+  if(!juror){alert('Önce jüri üyesi adını girin');return;}
+  const blob=new Blob([JSON.stringify({type:'business-qa',runId:RUN,juror,scores:JSON.parse(localStorage.getItem(key())||'{}')},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='business-qa-'+RUN+'-'+juror+'.json';a.click();
+};
+load();
+</script></body></html>`;
+  return html;
+}
+
 // ---------- Ana akış ----------
 
 async function main() {
@@ -383,9 +491,19 @@ async function main() {
     rows,
   };
 
+  report.businessPassThreshold = CFG.businessPassThreshold || 4.2;
+  report.cciWeights = CFG.cciWeights || { wouldBuy: 0.4, wouldTrust: 0.3, looksReal: 0.3 };
+  report.promptSha256 = promptSha256;
+
   fs.writeFileSync(path.join(REPORTS, 'report.json'), JSON.stringify(report, null, 2));
   writeMd(report);
   writeHtml(report, runId);
+  fs.writeFileSync(path.join(REPORTS, 'business.html'), writeBusinessHtml(report, runId, 'reports'));
+
+  // A/B karşılaştırması için her koşunun raporu KENDİ klasöründe de saklanır
+  // (reports/ her koşuda üzerine yazılır; results/<runId>/ kalıcı arşivdir)
+  fs.writeFileSync(path.join(runDir, 'report.json'), JSON.stringify(report, null, 2));
+  fs.writeFileSync(path.join(runDir, 'business.html'), writeBusinessHtml(report, runId, 'run'));
 
   console.log('\n================ BENCHMARK ÖZETİ ================');
   console.log(`  Üretim        : ${passed}/${total} (${report.autoQa.successRate})`);

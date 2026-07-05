@@ -9,6 +9,8 @@
   "costPerImageUsd": 0.039,
   "qaThreshold": 90,
   "humanQaTarget": 4,
+  "businessPassThreshold": 4.2,
+  "cciWeights": { "wouldBuy": 0.4, "wouldTrust": 0.3, "looksReal": 0.3 },
   "output": {
     "resultsDir": "testing/results",
     "reportsDir": "testing/reports"
