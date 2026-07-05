@@ -23,6 +23,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -156,7 +157,7 @@ function writeHtml(report, runDirRel) {
       <td>${(r.ms / 1000).toFixed(1)}s</td>
       <td>${r.width && r.height ? `${r.width}×${r.height}` : '—'}</td>
       <td>$${report.avgCostUsd}</td>
-      <td class="hq">${r.ok ? ['Yüz', 'Elbise', 'Eşarp doğallığı', 'Kumaş hissi', 'Satın alma güveni'].map(k =>
+      <td class="hq">${r.ok ? ['Yüz korunmuş', 'Saç korunmuş', 'Elbise korunmuş', 'Kumaş gerçekçiliği', 'Lüks görünüm', 'Satın alır mıydınız?'].map(k =>
         `<label>${k} <select data-k="${k}"><option value="">–</option>${[1, 2, 3, 4, 5].map(v => `<option>${v}</option>`).join('')}</select></label>`
       ).join('') + '<div class="avg">Ortalama: <b>–</b></div>' : '—'}</td>
     </tr>`).join('');
@@ -208,8 +209,14 @@ function recalc(){
     if(avgEl){const a=vals.length?(vals.reduce((x,y)=>x+y)/vals.length):null;
       avgEl.textContent=a?a.toFixed(1):'–';if(a)all.push(a);}
   });
-  document.getElementById('overall').textContent=all.length?
-    ('Genel İnsan QA: '+(all.reduce((x,y)=>x+y)/all.length).toFixed(2)+'/5 ('+all.length+' görsel)'):'';
+  const target=${report.humanQaTarget};
+  if(all.length){
+    const avg=all.reduce((x,y)=>x+y)/all.length;
+    const pass=avg>=target;
+    const el=document.getElementById('overall');
+    el.innerHTML='Genel İnsan QA: <b>'+avg.toFixed(2)+'/5</b> ('+all.length+' görsel) — '+
+      (pass?'<b style="color:#2e7d32">PASS ✅</b>':'<b style="color:#c62828">FAIL ❌ (hedef ≥ '+target+')</b>');
+  } else { document.getElementById('overall').textContent=''; }
 }
 document.querySelectorAll('tr[data-id]').forEach(tr=>{
   const id=tr.dataset.id;
@@ -249,6 +256,27 @@ async function main() {
   const runDir = path.join(RESULTS_ROOT, runId);
   fs.mkdirSync(runDir, { recursive: true });
   fs.mkdirSync(REPORTS, { recursive: true });
+
+  // Manifest: bu benchmark HANGİ kod + prompt + dataset ile üretildi?
+  // 6 ay sonra "prompt v8 / farklı model" karşılaştırmasında izlenebilirlik sağlar.
+  const git = (cmd) => { try { return execSync(cmd, { cwd: ROOT }).toString().trim(); } catch { return 'unknown'; } };
+  const manifest = {
+    benchmarkId: runId,
+    datasetVersion: CFG.datasetVersion || '1.0.0',
+    provider: CFG.provider,
+    model: CFG.model,
+    promptVersion: CFG.promptVersion,
+    style: CFG.style,
+    generatedAt: new Date().toISOString(),
+    gitCommit: git('git rev-parse HEAD'),
+    branch: git('git branch --show-current'),
+    datasetFiles: {
+      models: models.map(f => path.basename(f)),
+      scarves: scarves.map(f => path.basename(f)),
+    },
+  };
+  fs.writeFileSync(path.join(REPORTS, 'benchmark_manifest.json'), JSON.stringify(manifest, null, 2));
+  fs.writeFileSync(path.join(runDir, 'benchmark_manifest.json'), JSON.stringify(manifest, null, 2));
 
   const total = models.length * scarves.length * CFG.runsPerImage;
   console.log(`\n🎬 Benchmark ${runId}`);

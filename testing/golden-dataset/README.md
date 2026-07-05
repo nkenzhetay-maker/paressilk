@@ -12,19 +12,24 @@ Model, prompt veya sağlayıcı değiştiğinde kalite **aynı veriyle** yeniden
 ```
 golden-dataset/
 ├── models/            ← 5 kadın fotoğrafı (deneme yapılacak kişiler)
-│   ├── woman01.jpg
-│   ├── woman02.jpg
-│   ├── woman03.jpg
-│   ├── woman04.jpg
-│   └── woman05.jpg
+│   ├── woman01_front.jpg
+│   ├── woman02_front.jpg
+│   ├── woman03_front.jpg
+│   ├── woman04_front.jpg
+│   └── woman05_front.jpg
 ├── scarves/           ← 5 eşarp ürün görseli
-│   ├── PRS-0001.png
-│   ├── PRS-0002.png
-│   ├── PRS-0003.png
-│   ├── PRS-0004.png
-│   └── PRS-0005.png
+│   ├── PRS0001_classic.jpg
+│   ├── PRS0002_modern.jpg
+│   ├── PRS0003_loose.jpg
+│   ├── PRS0004_shawl.jpg
+│   └── PRS0005_silk.jpg
 └── README.md
 ```
+
+> 📌 **DOSYA ADLARI SABİTTİR — asla değişmez.** Yıllarca aynı adlarla aynı dataset
+> kullanılır; böylece "prompt v1 vs v8" veya "Gemini vs başka model" karşılaştırmaları
+> her zaman birebir aynı veri üzerinde yapılır. Görsel değişimi = datasetVersion artar
+> (`testing/config/benchmark.config.json` → `datasetVersion`).
 
 ## models/ — Kadın fotoğrafı gereksinimleri
 
@@ -32,11 +37,11 @@ Her fotoğraf **gerçek müşteri senaryosunu** temsil etmeli. 5 fotoğraf **çe
 
 | Dosya | Senaryo |
 |-------|---------|
-| woman01.jpg | Tam boy, elbiseli, düz önden, iç mekan |
-| woman02.jpg | Üst beden (baş+omuz+göğüs), pencere ışığı |
-| woman03.jpg | Tam boy, dış mekan, güneş ışığı |
-| woman04.jpg | Üst beden, koyu renk kıyafet, stüdyo/sade fon |
-| woman05.jpg | Tam boy, hareketli poz (hafif dönük), karışık ışık |
+| woman01_front.jpg | Tam boy, elbiseli, düz önden, iç mekan |
+| woman02_front.jpg | Üst beden (baş+omuz+göğüs), pencere ışığı |
+| woman03_front.jpg | Tam boy, dış mekan, güneş ışığı |
+| woman04_front.jpg | Üst beden, koyu renk kıyafet, stüdyo/sade fon |
+| woman05_front.jpg | Tam boy, hareketli poz (hafif dönük), karışık ışık |
 
 **Zorunlu kriterler (hepsi için):**
 - Başı açık (eşarpsız/şapkasız) — sistem eşarbı EKLEYECEK
@@ -50,15 +55,14 @@ Her fotoğraf **gerçek müşteri senaryosunu** temsil etmeli. 5 fotoğraf **çe
 
 - **Flatlay** (düz serili) veya tam açık desen görseli — sade zeminde
 - Desen TAMAMEN görünür, kenarlar kırpılmamış
-- Dosya adı = SKU (ör. `PRS-0014.png`) — rapor bu adı kullanır
-- Mevcut ürünlerden hızlı başlangıç: `public/images/products/k*_flatlay.jpg`
-  dosyalarından 5'ini buraya SKU adıyla kopyalayabilirsiniz:
+- Dosya adı standardı: `SKU_stil.jpg` (ör. `PRS0001_classic.jpg`) — rapor bu adı kullanır
+- Mevcut ürünlerden hızlı başlangıç:
   ```bash
-  cp public/images/products/k01_flatlay.jpg testing/golden-dataset/scarves/PRS-0014.jpg
-  cp public/images/products/k02_flatlay.jpg testing/golden-dataset/scarves/PRS-0015.jpg
-  cp public/images/products/k03_flatlay.jpg testing/golden-dataset/scarves/PRS-0016.jpg
-  cp public/images/products/k04_flatlay.jpg testing/golden-dataset/scarves/PRS-0017.jpg
-  cp public/images/products/k05_flatlay.jpg testing/golden-dataset/scarves/PRS-0018.jpg
+  cp public/images/products/k01_flatlay.jpg testing/golden-dataset/scarves/PRS0001_classic.jpg
+  cp public/images/products/k02_flatlay.jpg testing/golden-dataset/scarves/PRS0002_modern.jpg
+  cp public/images/products/k03_flatlay.jpg testing/golden-dataset/scarves/PRS0003_loose.jpg
+  cp public/images/products/k04_flatlay.jpg testing/golden-dataset/scarves/PRS0004_shawl.jpg
+  cp public/images/products/k05_flatlay.jpg testing/golden-dataset/scarves/PRS0005_silk.jpg
   ```
 
 ## Çalıştırma
@@ -79,12 +83,14 @@ GEMINI_API_KEY=... npm run benchmark
 dosya boyutu, API hatası. Bunlar objektif ve otomatiktir.
 
 **2) İnsan QA (sen puanlarsın — ticari):** `testing/reports/index.html` her görsel için
-1–5 puanlama formu içerir:
+1–5 puanlama formu içerir (6 kriter):
 - Yüz korunmuş mu?
+- Saç korunmuş mu?
 - Elbise korunmuş mu?
-- Eşarp doğal duruyor mu?
-- Kumaş/ipek hissi gerçekçi mi?
-- Satın alma güveni oluşturuyor mu?
+- Kumaş gerçekçiliği (ipek hissi)?
+- Lüks görünüm?
+- **Satın alır mıydınız?** ← en kritik kriter: amaç güzel görsel değil, satış dönüşümü
 
-Bir algoritma "müşteri bunu satın alır mı?" sorusunu ölçemez — o yüzden nihai
-kabul kararı insan QA ortalamasına dayanır (hedef: ≥ 4/5).
+Form genel ortalamayı hesaplar ve **PASS / FAIL** kararı verir (hedef: ≥ 4/5).
+Bir algoritma "müşteri bunu satın alır mı?" sorusunu ölçemez — nihai kabul kararı
+insan QA ortalamasına dayanır.
