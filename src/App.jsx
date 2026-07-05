@@ -30,6 +30,7 @@ import SSS from './pages/SSS';
 import Wishlist from './pages/Wishlist';
 import InstagramPage from './pages/InstagramPage';
 import SanalDeneme from './pages/SanalDeneme';
+import AITryonPlayground from './pages/AITryonPlayground';
 import CookieConsent from './components/CookieConsent';
 
 import AdminLayout from './admin/AdminLayout';
@@ -38,6 +39,7 @@ import AdminProducts from './admin/AdminProducts';
 import AdminProductForm from './admin/AdminProductForm';
 import AdminOrders from './admin/AdminOrders';
 import AdminSettings from './admin/AdminSettings';
+import AdminAITryon from './admin/AdminAITryon';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -67,6 +69,7 @@ function StorefrontLayout() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/instagram" element={<InstagramPage />} />
         <Route path="/sanal-deneme" element={<SanalDeneme />} />
+        <Route path="/ai-playground" element={<AITryonPlayground />} />
       </Routes>
       <Footer />
       <WhatsAppButton />
@@ -104,6 +107,7 @@ export default function App() {
                   <Route path="products/new" element={<AdminProductForm />} />
                   <Route path="products/edit/:id" element={<AdminProductForm />} />
                   <Route path="orders" element={<AdminOrders />} />
+                  <Route path="ai-tryon" element={<AdminAITryon />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
                 <Route path="/*" element={<StorefrontLayout />} />

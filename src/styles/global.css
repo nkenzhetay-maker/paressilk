@@ -1522,6 +1522,8 @@ input, textarea, select {
   }
   .admin-main {
     margin-left: 0;
+    padding: 16px;
+    overflow-x: hidden;
   }
 }
 
