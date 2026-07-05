@@ -42,18 +42,30 @@ const STYLE_INSTRUCTIONS = {
   loose_wrap: 'loosely wrapped around her neck and shoulders with natural silk folds',
 };
 
+// --- Prompt versiyonlama ---
+// Her sürüm ayrı tutulur; hangi sürümün kullanıldığı log/QA'ya yazılır.
+// Model/prompt değişince golden benchmark aynı veriyle yeniden ölçülebilir.
+const PROMPT_VERSIONS = {
+  v1: (style) => {
+    const placement = STYLE_INSTRUCTIONS[style] || STYLE_INSTRUCTIONS.headscarf;
+    return (
+      'You are given two images. The FIRST image is a photo of a woman. ' +
+      'The SECOND image is a silk scarf with a specific printed pattern. ' +
+      `Edit the FIRST image so she is wearing the scarf from the SECOND image, ${placement}. ` +
+      'CRITICAL RULES: (1) Keep the scarf pattern, colors and design EXACTLY identical to the second image — do not invent or alter the pattern. ' +
+      '(2) Never modify her face, eyes, nose, mouth, skin or identity. ' +
+      '(3) Keep her existing clothing, body and the background completely unchanged. ' +
+      '(4) Only add the scarf. Natural fabric folds, soft realistic shadows, silk sheen, correct perspective and gravity. ' +
+      'Photorealistic, high resolution, no artifacts.'
+    );
+  },
+};
+
+const ACTIVE_PROMPT_VERSION = process.env.PROMPT_VERSION || 'v1';
+
 function buildPrompt(style) {
-  const placement = STYLE_INSTRUCTIONS[style] || STYLE_INSTRUCTIONS.headscarf;
-  return (
-    'You are given two images. The FIRST image is a photo of a woman. ' +
-    'The SECOND image is a silk scarf with a specific printed pattern. ' +
-    `Edit the FIRST image so she is wearing the scarf from the SECOND image, ${placement}. ` +
-    'CRITICAL RULES: (1) Keep the scarf pattern, colors and design EXACTLY identical to the second image — do not invent or alter the pattern. ' +
-    '(2) Never modify her face, eyes, nose, mouth, skin or identity. ' +
-    '(3) Keep her existing clothing, body and the background completely unchanged. ' +
-    '(4) Only add the scarf. Natural fabric folds, soft realistic shadows, silk sheen, correct perspective and gravity. ' +
-    'Photorealistic, high resolution, no artifacts.'
-  );
+  const builder = PROMPT_VERSIONS[ACTIVE_PROMPT_VERSION] || PROMPT_VERSIONS.v1;
+  return builder(style);
 }
 
 async function fetchAsInlineData(url) {
@@ -161,6 +173,7 @@ exports.handler = async (event) => {
         meta: {
           engine: GEMINI_MODEL,
           style: style || 'headscarf',
+          promptVersion: ACTIVE_PROMPT_VERSION,
           durationMs: Date.now() - t0,
           estimatedCostUsd: COST_PER_IMAGE_USD,
         },

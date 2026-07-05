@@ -27,3 +27,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Benchmark çıktıları (üretilen görseller + raporlar repo'ya girmez)
+testing/results/*
+!testing/results/.gitkeep
+testing/reports/*
+!testing/reports/.gitkeep
+# Golden dataset görselleri (telif/KVKK — yerelde tutulur)
+testing/golden-dataset/models/*.jpg
+testing/golden-dataset/models/*.jpeg
+testing/golden-dataset/models/*.png
+testing/golden-dataset/models/*.webp
+testing/golden-dataset/scarves/*.jpg
+testing/golden-dataset/scarves/*.jpeg
+testing/golden-dataset/scarves/*.png
+testing/golden-dataset/scarves/*.webp

@@ -2,6 +2,8 @@ import { useState, useRef, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useProducts } from '../context/ProductContext';
 import { validatePhoto } from '../utils/imageValidation';
+import { sanitizeImage } from '../utils/imageSanitize';
+import { computeQA } from '../utils/qaScore';
 import { addLog } from '../utils/tryonLog';
 
 const COST_PER_IMAGE_USD = 0.039;
@@ -64,14 +66,20 @@ export default function AITryonPlayground() {
       const img = new Image();
       img.onload = async () => {
         const v = await validatePhoto(img);
-        setValidating(false);
-        if (v.ok) {
-          setValid(true);
-        } else {
+        if (!v.ok) {
+          setValidating(false);
           setValid(false);
           setError(v.reason);
           addLog({ status: 'rejected', rejectCode: v.code, note: v.reason });
+          return;
         }
+        // Geçerliyse: EXIF/metadata sıyır + normalize et (KVKK)
+        try {
+          const { clean } = await sanitizeImage(dataUrl);
+          setUserImage(clean); // AI'a temizlenmiş görsel gider
+        } catch { /* sanitize başarısızsa orijinal kalır */ }
+        setValidating(false);
+        setValid(true);
       };
       img.src = dataUrl;
     };
@@ -94,8 +102,17 @@ export default function AITryonPlayground() {
       const data = await resp.json().catch(() => ({}));
       if (resp.ok && data.image) {
         setResult(data.image);
-        setMeta({ ...data.meta, clientMs: Math.round(performance.now() - t0) });
-        addLog({ status: 'generated', sku: selected?.sku, style, engine: data.meta?.engine, durationMs: data.meta?.durationMs, costUsd: data.meta?.estimatedCostUsd ?? COST_PER_IMAGE_USD });
+        // Otomatik QA skoru (yüz/arka plan/ışık korunumu)
+        let qa = null;
+        try { qa = await computeQA(userImage, data.image); } catch { /* qa opsiyonel */ }
+        setMeta({ ...data.meta, clientMs: Math.round(performance.now() - t0), qa });
+        addLog({
+          status: qa && !qa.passed ? 'failed' : 'generated',
+          sku: selected?.sku, style, engine: data.meta?.engine, promptVersion: data.meta?.promptVersion,
+          durationMs: data.meta?.durationMs, costUsd: data.meta?.estimatedCostUsd ?? COST_PER_IMAGE_USD,
+          qaScore: qa?.score ?? null,
+          note: qa && !qa.passed ? 'QA<90 (satışa uygun değil)' : null,
+        });
       } else {
         setError(data.error || 'İşlem başarısız.');
         if (data.meta || data.durationMs) setMeta({ durationMs: data.durationMs });
@@ -171,10 +188,26 @@ export default function AITryonPlayground() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8, fontSize: '0.8rem' }}>
                     {meta.engine && <div>Motor: <b style={{ color: '#C8A456' }}>{meta.engine}</b></div>}
                     {meta.style && <div>Stil: <b>{meta.style}</b></div>}
+                    {meta.promptVersion && <div>Prompt: <b>{meta.promptVersion}</b></div>}
                     {meta.durationMs != null && <div>Sunucu süresi: <b>{(meta.durationMs / 1000).toFixed(1)}s</b></div>}
                     {meta.clientMs != null && <div>Toplam: <b>{(meta.clientMs / 1000).toFixed(1)}s</b></div>}
                     {meta.estimatedCostUsd != null && <div>Tahmini maliyet: <b style={{ color: '#27ae60' }}>${meta.estimatedCostUsd}</b></div>}
                   </div>
+                  {meta.qa && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #2a2a2a' }}>
+                      <p style={{ ...label, marginBottom: 6 }}>
+                        QA Skoru: <b style={{ color: meta.qa.passed ? '#27ae60' : '#e74c3c', fontSize: '1rem' }}>{meta.qa.score}</b>
+                        {!meta.qa.passed && <span style={{ color: '#e74c3c' }}> · FAILED (satışa uygun değil)</span>}
+                      </p>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(90px,1fr))', gap: 6, fontSize: '0.72rem', color: '#aaa' }}>
+                        <div>Yüz: {meta.qa.breakdown.face}</div>
+                        <div>Arka plan: {meta.qa.breakdown.background}</div>
+                        <div>Işık: {meta.qa.breakdown.lighting}</div>
+                        <div>Elbise: {meta.qa.breakdown.dress}</div>
+                        <div>Saç: {meta.qa.breakdown.hair}</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

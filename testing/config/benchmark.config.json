@@ -1,0 +1,15 @@
+{
+  "provider": "gemini",
+  "model": "gemini-2.5-flash-image",
+  "promptVersion": "v1",
+  "style": "headscarf",
+  "runsPerImage": 1,
+  "timeoutMs": 120000,
+  "costPerImageUsd": 0.039,
+  "qaThreshold": 90,
+  "humanQaTarget": 4,
+  "output": {
+    "resultsDir": "testing/results",
+    "reportsDir": "testing/reports"
+  }
+}

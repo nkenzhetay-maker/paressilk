@@ -6,7 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
 import { WishlistProvider } from './context/WishlistContext';
 import AuthModal from './components/AuthModal';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import SplashScreen from './components/SplashScreen';
 
 import Header from './components/Header';
@@ -29,17 +29,22 @@ import IadePolitikasi from './pages/IadePolitikasi';
 import SSS from './pages/SSS';
 import Wishlist from './pages/Wishlist';
 import InstagramPage from './pages/InstagramPage';
-import SanalDeneme from './pages/SanalDeneme';
-import AITryonPlayground from './pages/AITryonPlayground';
 import CookieConsent from './components/CookieConsent';
 
-import AdminLayout from './admin/AdminLayout';
-import AdminDashboard from './admin/AdminDashboard';
-import AdminProducts from './admin/AdminProducts';
-import AdminProductForm from './admin/AdminProductForm';
-import AdminOrders from './admin/AdminOrders';
-import AdminSettings from './admin/AdminSettings';
-import AdminAITryon from './admin/AdminAITryon';
+// Ağır / seyrek kullanılan sayfalar ayrı chunk'lara bölünür (lazy loading)
+const SanalDeneme = lazy(() => import('./pages/SanalDeneme'));
+const AITryonPlayground = lazy(() => import('./pages/AITryonPlayground'));
+const AdminLayout = lazy(() => import('./admin/AdminLayout'));
+const AdminDashboard = lazy(() => import('./admin/AdminDashboard'));
+const AdminProducts = lazy(() => import('./admin/AdminProducts'));
+const AdminProductForm = lazy(() => import('./admin/AdminProductForm'));
+const AdminOrders = lazy(() => import('./admin/AdminOrders'));
+const AdminSettings = lazy(() => import('./admin/AdminSettings'));
+const AdminAITryon = lazy(() => import('./admin/AdminAITryon'));
+
+function PageFallback() {
+  return <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="loading__spinner" /></div>;
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -68,8 +73,8 @@ function StorefrontLayout() {
         <Route path="/sss" element={<SSS />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/instagram" element={<InstagramPage />} />
-        <Route path="/sanal-deneme" element={<SanalDeneme />} />
-        <Route path="/ai-playground" element={<AITryonPlayground />} />
+        <Route path="/sanal-deneme" element={<Suspense fallback={<PageFallback />}><SanalDeneme /></Suspense>} />
+        <Route path="/ai-playground" element={<Suspense fallback={<PageFallback />}><AITryonPlayground /></Suspense>} />
       </Routes>
       <Footer />
       <WhatsAppButton />
@@ -100,18 +105,20 @@ export default function App() {
             <BrowserRouter>
               {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
               <ScrollToTop />
-              <Routes>
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="products" element={<AdminProducts />} />
-                  <Route path="products/new" element={<AdminProductForm />} />
-                  <Route path="products/edit/:id" element={<AdminProductForm />} />
-                  <Route path="orders" element={<AdminOrders />} />
-                  <Route path="ai-tryon" element={<AdminAITryon />} />
-                  <Route path="settings" element={<AdminSettings />} />
-                </Route>
-                <Route path="/*" element={<StorefrontLayout />} />
-              </Routes>
+              <Suspense fallback={<PageFallback />}>
+                <Routes>
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="products" element={<AdminProducts />} />
+                    <Route path="products/new" element={<AdminProductForm />} />
+                    <Route path="products/edit/:id" element={<AdminProductForm />} />
+                    <Route path="orders" element={<AdminOrders />} />
+                    <Route path="ai-tryon" element={<AdminAITryon />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                  </Route>
+                  <Route path="/*" element={<StorefrontLayout />} />
+                </Routes>
+              </Suspense>
             </BrowserRouter>
           </WishlistProvider>
           </UserProvider>

@@ -20,6 +20,7 @@ function Stat({ label, value, accent }) {
 
 const STATUS_BADGE = {
   generated: { bg: '#e8f5e9', c: '#2e7d32', t: 'Üretildi' },
+  failed: { bg: '#fce4ec', c: '#ad1457', t: 'QA Başarısız' },
   rejected: { bg: '#fff3e0', c: '#e65100', t: 'Reddedildi' },
   error: { bg: '#ffebee', c: '#c62828', t: 'Hata' },
   unknown: { bg: '#eee', c: '#666', t: '—' },
@@ -101,6 +102,8 @@ export default function AdminAITryon() {
                 <th style={{ padding: '10px 14px' }}>Durum</th>
                 <th style={{ padding: '10px 14px' }}>SKU</th>
                 <th style={{ padding: '10px 14px' }}>Stil</th>
+                <th style={{ padding: '10px 14px' }}>Prompt</th>
+                <th style={{ padding: '10px 14px' }}>QA</th>
                 <th style={{ padding: '10px 14px' }}>Süre</th>
                 <th style={{ padding: '10px 14px' }}>Maliyet</th>
                 <th style={{ padding: '10px 14px' }}>Not</th>
@@ -117,6 +120,8 @@ export default function AdminAITryon() {
                     </td>
                     <td style={{ padding: '10px 14px' }}>{row.sku || '—'}</td>
                     <td style={{ padding: '10px 14px' }}>{row.style || '—'}</td>
+                    <td style={{ padding: '10px 14px' }}>{row.promptVersion || '—'}</td>
+                    <td style={{ padding: '10px 14px' }}>{row.qaScore != null ? <b style={{ color: row.qaScore >= 90 ? '#2e7d32' : '#c62828' }}>{row.qaScore}</b> : '—'}</td>
                     <td style={{ padding: '10px 14px' }}>{row.durationMs ? `${(row.durationMs / 1000).toFixed(1)}s` : '—'}</td>
                     <td style={{ padding: '10px 14px' }}>{row.costUsd ? usd(row.costUsd) : '—'}</td>
                     <td style={{ padding: '10px 14px', color: '#999' }}>{row.rejectCode || row.note || '—'}</td>

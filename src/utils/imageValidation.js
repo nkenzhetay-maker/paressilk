@@ -46,6 +46,35 @@ function measureBrightness(img) {
   return sum / (data.length / 4);
 }
 
+// Bulanıklık ölçümü — Laplacian variance. Düşük varyans = bulanık/odaksız.
+// Görsel gri tonlamaya indirgenir, Laplacian kenar operatörü uygulanır,
+// sonucun varyansı hesaplanır. Net görsellerde kenarlar güçlü → yüksek varyans.
+function measureSharpness(img) {
+  const w = 320, h = Math.max(1, Math.round((img.naturalHeight / img.naturalWidth) * 320));
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+  const { data } = ctx.getImageData(0, 0, w, h);
+  // gri tonlama
+  const gray = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    const p = i * 4;
+    gray[i] = 0.299 * data[p] + 0.587 * data[p + 1] + 0.114 * data[p + 2];
+  }
+  // Laplacian (4-komşu) + varyans
+  let sum = 0, sumSq = 0, n = 0;
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const lap = gray[i - 1] + gray[i + 1] + gray[i - w] + gray[i + w] - 4 * gray[i];
+      sum += lap; sumSq += lap * lap; n++;
+    }
+  }
+  const mean = sum / n;
+  return sumSq / n - mean * mean; // varyans
+}
+
 const FOREHEAD = 10, CHIN = 152, LEFT = 234, RIGHT = 454;
 
 /**
@@ -59,6 +88,12 @@ export async function validatePhoto(img) {
   }
   if (brightness > 235) {
     return { ok: false, code: 'too_bright', reason: 'Fotoğraf çok parlak/patlamış. Lütfen daha dengeli ışıklı bir fotoğraf yükleyin.', metrics: { brightness } };
+  }
+
+  // 2) Bulanıklık (Laplacian variance)
+  const sharpness = measureSharpness(img);
+  if (sharpness < 60) {
+    return { ok: false, code: 'blurry', reason: 'Fotoğraf bulanık görünüyor. Lütfen net, odaklanmış bir fotoğraf yükleyin.', metrics: { brightness, sharpness } };
   }
 
   // 2) Yüz tespiti
@@ -99,5 +134,5 @@ export async function validatePhoto(img) {
     return { ok: false, code: 'shoulders_missing', reason: 'Omuzlarınız görünmüyor. Başörtüsü denemesi için en az omuz ve göğüs hizasının göründüğü bir fotoğraf gerekir.', metrics: { brightness, chinY } };
   }
 
-  return { ok: true, metrics: { brightness, faceWidth: fw, faces: 1 } };
+  return { ok: true, metrics: { brightness, sharpness, faceWidth: fw, faces: 1 } };
 }
