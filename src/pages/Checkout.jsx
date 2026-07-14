@@ -11,6 +11,17 @@ function validatePhone(phone) {
   return /^0?5\d{9}$/.test(phone.replace(/\s/g, ''));
 }
 
+// TC Kimlik No — resmi algoritma (sunucu da ayrıca doğrular)
+function validateTcNo(tc) {
+  const s = String(tc || '').trim();
+  if (!/^[1-9]\d{10}$/.test(s)) return false;
+  const d = s.split('').map(Number);
+  const odd = d[0] + d[2] + d[4] + d[6] + d[8];
+  const even = d[1] + d[3] + d[5] + d[7];
+  if ((odd * 7 - even + 100) % 10 !== d[9]) return false;
+  return d.slice(0, 10).reduce((a, b) => a + b, 0) % 10 === d[10];
+}
+
 export default function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
   const [step, setStep] = useState(1);
@@ -26,7 +37,10 @@ export default function Checkout() {
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '',
     address: '', city: '', district: '', postalCode: '', note: '',
+    invoiceType: 'bireysel', tcNo: '', companyName: '', taxOffice: '', taxNo: '',
   });
+  const [billingError, setBillingError] = useState('');
+  const [notifyStatus, setNotifyStatus] = useState(null);
 
   const formatPrice = (price) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(price);
   const baseShipping = totalPrice >= 1000 ? 0 : 49.90;
@@ -75,6 +89,35 @@ export default function Checkout() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Fatura alanlarını client'ta doğrula (sunucu ayrıca doğrular)
+  const validateBillingFields = () => {
+    if (formData.invoiceType === 'kurumsal') {
+      if (formData.companyName.trim().length < 3) return 'Şirket ünvanı gerekli';
+      if (formData.taxOffice.trim().length < 2) return 'Vergi dairesi gerekli';
+      if (!/^\d{10}$/.test(formData.taxNo.trim())) return 'Vergi numarası 10 haneli olmalıdır';
+      return '';
+    }
+    if (!validateTcNo(formData.tcNo)) return 'Geçerli bir TC Kimlik Numarası giriniz (11 hane)';
+    return '';
+  };
+
+  const buildBilling = () => ({
+    invoiceType: formData.invoiceType,
+    tcNo: formData.tcNo.trim(),
+    companyName: formData.companyName.trim(),
+    taxOffice: formData.taxOffice.trim(),
+    taxNo: formData.taxNo.trim(),
+  });
+
+  const buildShippingInfo = () => ({
+    name: `${formData.firstName} ${formData.lastName}`,
+    phone: formData.phone,
+    address: formData.address,
+    city: formData.city,
+    district: formData.district,
+    postalCode: formData.postalCode,
+  });
+
   const handleStripeCheckout = async () => {
     setLoading(true);
     try {
@@ -84,16 +127,9 @@ export default function Checkout() {
         body: JSON.stringify({
           items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, images: i.images })),
           promoCode: promoDiscount ? promoDiscount.code : null,
-          promoDiscount: promoDiscount || null,
           customerEmail: formData.email,
-          shippingAddress: {
-            name: `${formData.firstName} ${formData.lastName}`,
-            phone: formData.phone,
-            address: formData.address,
-            city: formData.city,
-            district: formData.district,
-            postalCode: formData.postalCode,
-          },
+          billing: buildBilling(),
+          shippingAddress: buildShippingInfo(),
         }),
       });
 
@@ -102,7 +138,7 @@ export default function Checkout() {
         clearCart();
         window.location.href = data.url;
       } else {
-        alert('Ödeme sayfası oluşturulamadı. Lütfen tekrar deneyin.');
+        alert(data.error || 'Ödeme sayfası oluşturulamadı. Lütfen tekrar deneyin.');
       }
     } catch {
       alert('Bir hata oluştu. Lütfen tekrar deneyin veya WhatsApp ile iletişime geçin.');
@@ -111,15 +147,44 @@ export default function Checkout() {
     }
   };
 
-  const handleBankTransfer = () => {
-    const num = `PS-${Date.now().toString().slice(-6)}`;
-    setOrderNumber(num);
-    setOrderPlaced(true);
+  // Havale siparişi artık SUNUCUDA oluşturulur: kayıt + e-posta dekontu + SMS
+  const handleBankTransfer = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/.netlify/functions/place-bank-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map(i => ({ id: i.id, name: i.name, qty: i.qty })),
+          customerEmail: formData.email,
+          shippingInfo: buildShippingInfo(),
+          billing: buildBilling(),
+          promoCode: promoDiscount ? promoDiscount.code : null,
+          note: formData.note,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok && data.orderNumber) {
+        setOrderNumber(data.orderNumber);
+        setNotifyStatus({ email: data.emailSent, sms: data.smsSent });
+        setOrderPlaced(true);
+        clearCart();
+      } else {
+        alert(data.error || 'Sipariş oluşturulamadı. Lütfen tekrar deneyin.');
+      }
+    } catch {
+      alert('Bir hata oluştu. Lütfen tekrar deneyin veya WhatsApp ile iletişime geçin.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (step === 1) {
+      const err = validateBillingFields();
+      if (err) { setBillingError(err); return; }
+      setBillingError('');
       setStep(2);
       return;
     }
@@ -127,7 +192,6 @@ export default function Checkout() {
       handleStripeCheckout();
     } else {
       handleBankTransfer();
-      clearCart();
     }
   };
 
@@ -149,7 +213,15 @@ export default function Checkout() {
               <p style={{ color: 'var(--gold-dark)', marginTop: 8 }}>Açıklama: <strong>{orderNumber}</strong></p>
             </div>
           )}
-          <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: 32 }}>Sipariş detayları e-posta adresinize gönderilecektir.</p>
+          <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: 8 }}>
+            {notifyStatus?.email
+              ? '📧 Sipariş dekontu e-posta adresinize gönderildi.'
+              : 'Sipariş detayları e-posta adresinize gönderilecektir.'}
+          </p>
+          {notifyStatus?.sms && (
+            <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: 8 }}>📱 Onay SMS'i telefonunuza gönderildi.</p>
+          )}
+          <div style={{ marginBottom: 32 }} />
           <Link to="/shop" className="btn btn--primary">Alışverişe Devam Et</Link>
         </div>
       </div>
@@ -229,6 +301,76 @@ export default function Checkout() {
                     <label>Posta Kodu</label>
                     <input type="text" value={formData.postalCode} onChange={e => handleInputChange('postalCode', e.target.value)} />
                   </div>
+
+                  {/* Fatura Bilgileri */}
+                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', margin: '32px 0 16px' }}>Fatura Bilgileri</h2>
+                  <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+                    {[
+                      { key: 'bireysel', label: 'Bireysel' },
+                      { key: 'kurumsal', label: 'Kurumsal' },
+                    ].map(opt => (
+                      <label
+                        key={opt.key}
+                        style={{
+                          flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                          padding: '14px 12px',
+                          border: `2px solid ${formData.invoiceType === opt.key ? 'var(--gold)' : '#eee'}`,
+                          background: formData.invoiceType === opt.key ? '#FFFDF5' : '#fff',
+                          cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500,
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="invoiceType"
+                          value={opt.key}
+                          checked={formData.invoiceType === opt.key}
+                          onChange={() => { handleInputChange('invoiceType', opt.key); setBillingError(''); }}
+                          style={{ accentColor: 'var(--gold)' }}
+                        />
+                        {opt.label}
+                      </label>
+                    ))}
+                  </div>
+
+                  {formData.invoiceType === 'bireysel' ? (
+                    <div className="form-group">
+                      <label>TC Kimlik No</label>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={11}
+                        required
+                        placeholder="11 haneli TC Kimlik Numaranız"
+                        value={formData.tcNo}
+                        onChange={e => { handleInputChange('tcNo', e.target.value.replace(/\D/g, '')); setBillingError(''); }}
+                      />
+                      <p style={{ fontSize: '0.72rem', color: '#999', marginTop: 4 }}>
+                        Fatura düzenlenebilmesi için yasal olarak zorunludur. Bilgileriniz KVKK kapsamında yalnızca fatura için kullanılır.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="form-group">
+                        <label>Şirket Ünvanı</label>
+                        <input type="text" required placeholder="Örn. ABC Tekstil San. ve Tic. Ltd. Şti." value={formData.companyName} onChange={e => { handleInputChange('companyName', e.target.value); setBillingError(''); }} />
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label>Vergi Dairesi</label>
+                          <input type="text" required value={formData.taxOffice} onChange={e => { handleInputChange('taxOffice', e.target.value); setBillingError(''); }} />
+                        </div>
+                        <div className="form-group">
+                          <label>Vergi No</label>
+                          <input type="text" inputMode="numeric" maxLength={10} required placeholder="10 haneli" value={formData.taxNo} onChange={e => { handleInputChange('taxNo', e.target.value.replace(/\D/g, '')); setBillingError(''); }} />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {billingError && (
+                    <p style={{ color: '#E74C3C', fontSize: '0.82rem', marginBottom: 12 }}>{billingError}</p>
+                  )}
+
                   <button type="submit" className="btn btn--primary" style={{ width: '100%', marginTop: 16 }}>Ödemeye Geç</button>
                 </div>
               )}

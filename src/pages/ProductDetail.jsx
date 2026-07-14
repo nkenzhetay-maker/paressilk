@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -8,6 +8,7 @@ import ProductCard from '../components/ProductCard';
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { getProduct, getByCategory } = useProducts();
   const { addItem } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
@@ -137,6 +138,15 @@ export default function ProductDetail() {
                 <button className="btn btn--primary" onClick={() => addItem(product)} disabled={!product.inStock}>
                   {product.inStock ? 'Sepete Ekle' : 'Stokta Yok'}
                 </button>
+                {product.inStock && (
+                  <button
+                    className="btn"
+                    onClick={() => { addItem(product); navigate('/checkout'); }}
+                    style={{ background: '#1A1A1A', color: '#C8A456', border: '1px solid #1A1A1A' }}
+                  >
+                    Hemen Al
+                  </button>
+                )}
                 <button
                   className="btn btn--outline"
                   onClick={() => toggleItem(product)}

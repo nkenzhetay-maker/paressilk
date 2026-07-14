@@ -5,6 +5,7 @@
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
+const { sendOrderEmail, sendOrderSms } = require('../lib/notify.cjs');
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
@@ -67,6 +68,11 @@ exports.handler = async (event) => {
           : {};
       } catch { /* yut */ }
 
+      let billing = {};
+      try {
+        billing = session.metadata?.billing ? JSON.parse(session.metadata.billing) : {};
+      } catch { /* yut */ }
+
       // Idempotent: aynı session için webhook tekrar gelirse çift kayıt olmaz
       const { error: upsertError } = await supabase
         .from('orders')
@@ -82,6 +88,7 @@ exports.handler = async (event) => {
             status: 'paid',
             items: lineItems,
             shipping_address: shippingAddress,
+            billing,
             created_at: new Date().toISOString(),
           },
           { onConflict: 'stripe_session_id' }
@@ -100,6 +107,41 @@ exports.handler = async (event) => {
           () => {},
           (e) => console.error('cart clear error:', e?.message)
         );
+      }
+
+      // Sipariş onayı bildirimleri: e-posta (dekont) + SMS
+      // Bildirim hatası webhook'u başarısız saymaz (Stripe retry'ı çift mail atardı)
+      try {
+        const customerName = session.customer_details?.name || shippingAddress.name || '';
+        const orderNumber = session.id.slice(-12);
+        const subtotal = (session.amount_subtotal ?? session.amount_total) / 100;
+        const grandTotal = session.amount_total / 100;
+        const discountTL = (session.total_details?.amount_discount || 0) / 100;
+        const shippingTL = lineItems.find(li => li.name === 'Kargo Ücreti')
+          ? (lineItems.find(li => li.name === 'Kargo Ücreti').amount_total / 100) : 0;
+        await Promise.all([
+          sendOrderEmail({
+            orderNumber,
+            customerName,
+            customerEmail: email,
+            paymentLabel: 'Kredi/Banka Kartı (Stripe)',
+            items: lineItems
+              .filter(li => li.name !== 'Kargo Ücreti')
+              .map(li => ({ name: li.name, price: (li.amount_total / 100) / (li.quantity || 1), qty: li.quantity || 1 })),
+            subtotal,
+            discountTL,
+            promoLabel: session.metadata?.promo || null,
+            shippingTL,
+            grandTotal,
+            shippingInfo: shippingAddress,
+            billing,
+          }),
+          shippingAddress.phone
+            ? sendOrderSms({ phone: shippingAddress.phone, customerName, orderNumber })
+            : Promise.resolve({ sent: false }),
+        ]);
+      } catch (e) {
+        console.error('order notify error:', e.message);
       }
     }
 

@@ -1,33 +1,5 @@
-const PROMO_CODES = {
-  HOSGELDIN10: {
-    type: 'percentage',
-    value: 10,
-    minAmount: 500,
-    label: '%10 İndirim',
-    singleUse: true,
-  },
-  IPEK20: {
-    type: 'percentage',
-    value: 20,
-    minAmount: 1000,
-    label: '%20 İndirim',
-    singleUse: false,
-  },
-  KARGO: {
-    type: 'shipping',
-    value: 0,
-    minAmount: 0,
-    label: 'Ücretsiz Kargo',
-    singleUse: false,
-  },
-  YAZ15: {
-    type: 'percentage',
-    value: 15,
-    minAmount: 750,
-    label: '%15 İndirim',
-    singleUse: false,
-  },
-};
+// Kod listesi tek kaynaktan gelir (create-checkout ve place-bank-order da aynı listeyi uygular)
+const { PROMO_CODES } = require('../lib/promos.cjs');
 
 exports.handler = async (event) => {
   const origin = process.env.SITE_URL || 'https://paressilk.com';
