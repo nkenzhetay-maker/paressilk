@@ -15,10 +15,10 @@ function HomeProductCard({ product }) {
       {!product.inStock && (
         <div style={{
           position: 'absolute', top: 10, left: 10, zIndex: 5,
-          background: '#1a1a1a', color: '#fff', padding: '4px 12px',
-          fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+          background: 'var(--gold-dark, #B8860B)', color: '#fff', padding: '4px 12px',
+          fontSize: '0.7rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600,
         }}>
-          Tükendi
+          Yakında Stokta
         </div>
       )}
       <Link to={`/product/${product.id}`} className="home-product__link">

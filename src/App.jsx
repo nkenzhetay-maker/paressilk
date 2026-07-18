@@ -39,6 +39,7 @@ const AdminDashboard = lazy(() => import('./admin/AdminDashboard'));
 const AdminProducts = lazy(() => import('./admin/AdminProducts'));
 const AdminProductForm = lazy(() => import('./admin/AdminProductForm'));
 const AdminOrders = lazy(() => import('./admin/AdminOrders'));
+const AdminPreorders = lazy(() => import('./admin/AdminPreorders'));
 const AdminSettings = lazy(() => import('./admin/AdminSettings'));
 const AdminAITryon = lazy(() => import('./admin/AdminAITryon'));
 
@@ -113,6 +114,7 @@ export default function App() {
                     <Route path="products/new" element={<AdminProductForm />} />
                     <Route path="products/edit/:id" element={<AdminProductForm />} />
                     <Route path="orders" element={<AdminOrders />} />
+                    <Route path="preorders" element={<AdminPreorders />} />
                     <Route path="ai-tryon" element={<AdminAITryon />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>

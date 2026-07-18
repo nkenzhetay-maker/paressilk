@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { Helmet } from 'react-helmet-async';
 import ProductCard from '../components/ProductCard';
+import PreorderForm from '../components/PreorderForm';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -135,17 +136,29 @@ export default function ProductDetail() {
               )}
 
               <div className="product-detail__actions">
-                <button className="btn btn--primary" onClick={() => addItem(product)} disabled={!product.inStock}>
-                  {product.inStock ? 'Sepete Ekle' : 'Stokta Yok'}
-                </button>
-                {product.inStock && (
-                  <button
-                    className="btn"
-                    onClick={() => { addItem(product); navigate('/checkout'); }}
-                    style={{ background: '#1A1A1A', color: '#C8A456', border: '1px solid #1A1A1A' }}
-                  >
-                    Hemen Al
-                  </button>
+                {product.inStock ? (
+                  <>
+                    <button className="btn btn--primary" onClick={() => addItem(product)}>
+                      Sepete Ekle
+                    </button>
+                    <button
+                      className="btn"
+                      onClick={() => { addItem(product); navigate('/checkout'); }}
+                      style={{ background: '#1A1A1A', color: '#C8A456', border: '1px solid #1A1A1A' }}
+                    >
+                      Hemen Al
+                    </button>
+                  </>
+                ) : (
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 18px',
+                    background: 'rgba(200,164,86,0.12)', border: '1px solid var(--gold)',
+                    borderRadius: 4, color: 'var(--gold-dark)', fontSize: '0.82rem',
+                    fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
+                  }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--gold)' }} />
+                    Yakında Stokta
+                  </div>
                 )}
                 <button
                   className="btn btn--outline"
@@ -161,6 +174,9 @@ export default function ProductDetail() {
                   WhatsApp ile Sor
                 </a>
               </div>
+
+              {/* Stokta yoksa: talep toplama formu (para almaz) */}
+              {!product.inStock && <PreorderForm product={product} />}
 
               {/* Limitli Üretim Sayacı */}
               <div style={{ marginTop: 24, padding: '16px 20px', border: '1px solid rgba(200,164,86,0.3)', background: 'rgba(200,164,86,0.05)', display: 'flex', alignItems: 'center', gap: 16 }}>
