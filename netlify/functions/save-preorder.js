@@ -1,12 +1,13 @@
-// Ön sipariş / talep toplama — "Stok Gelince Haber Ver".
-// Para ALINMAZ; yalnızca ürün stoğa girince bilgilendirmek için iletişim toplar.
-// Hangi ürüne ne kadar talep olduğu admin panelinde görülür (üretim kararı için).
-// KVKK: açık rıza zorunlu; veriler yalnızca stok bildirimi için kullanılır.
+// Ön sipariş — stokta olmayan ürünler için talep + iletişim/teslimat bilgisi.
+// PARA ALINMAZ. Ad/soyad/telefon/e-posta/adres alınır, Supabase'e kaydedilir,
+// "Ön siparişiniz onaylandı" e-postası + SMS gönderilir. Ürün stoğa girince
+// admin bu listedeki müşterilere öncelik verir. KVKK: açık rıza zorunlu.
 
 const { createClient } = require('@supabase/supabase-js');
 const PRODUCTS = require('../../src/data/products.json');
+const { sendPreorderEmail, sendPreorderSms } = require('../lib/notify.cjs');
 
-const PRODUCT_IDS = new Set(PRODUCTS.map(p => String(p.id)));
+const PRODUCT_BY_ID = new Map(PRODUCTS.map(p => [String(p.id), p]));
 
 const ALLOWED_ORIGINS = [
   process.env.SITE_URL || 'https://paressilk.com',
@@ -24,13 +25,28 @@ function getHeaders(event) {
   };
 }
 
+// Spam koruması: IP başına dakikada 5, günde 30
+const RATE_WINDOW_MS = 60 * 1000, RATE_MAX = 5, DAY_MS = 86400000, DAY_MAX = 30;
+const hits = new Map();
+function checkRate(ip) {
+  const now = Date.now();
+  let h = hits.get(ip);
+  if (!h) { h = { w: now, c: 0, d: now, dc: 0 }; hits.set(ip, h); }
+  if (now - h.w > RATE_WINDOW_MS) { h.w = now; h.c = 0; }
+  if (now - h.d > DAY_MS) { h.d = now; h.dc = 0; }
+  h.c++; h.dc++;
+  if (hits.size > 5000) for (const [k, v] of hits) if (now - v.d > DAY_MS) hits.delete(k);
+  return h.c <= RATE_MAX && h.dc <= DAY_MAX;
+}
+
 function normalizePhoneTR(phone) {
-  if (!phone) return null;
-  let p = String(phone).replace(/\D/g, '');
+  let p = String(phone || '').replace(/\D/g, '');
   if (p.startsWith('90')) p = p.slice(2);
   if (p.startsWith('0')) p = p.slice(1);
   return /^5\d{9}$/.test(p) ? `0${p}` : null;
 }
+
+const validEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || ''));
 
 exports.handler = async (event) => {
   const headers = getHeaders(event);
@@ -39,51 +55,74 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  try {
-    const { productId, email, phone, consent } = JSON.parse(event.body || '{}');
+  const ip = event.headers['x-nf-client-connection-ip']
+    || event.headers['client-ip']
+    || (event.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  if (!checkRate(ip)) {
+    return { statusCode: 429, headers, body: JSON.stringify({ error: 'Çok fazla istek. Lütfen biraz sonra tekrar deneyin.' }) };
+  }
 
-    if (!PRODUCT_IDS.has(String(productId))) {
+  try {
+    const { productId, firstName, lastName, email, phone, address, note, kvkkConsent } = JSON.parse(event.body || '{}');
+
+    const product = PRODUCT_BY_ID.get(String(productId));
+    if (!product) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçersiz ürün' }) };
     }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir e-posta adresi giriniz' }) };
+    if (!firstName || !lastName || String(firstName).trim().length < 2 || String(lastName).trim().length < 2) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Ad ve soyad gerekli' }) };
     }
-    if (!consent) {
-      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Bilgilendirme için onay vermelisiniz' }) };
+    if (!validEmail(email)) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir e-posta adresi gerekli' }) };
     }
-    const normPhone = phone ? normalizePhoneTR(phone) : null;
-    if (phone && !normPhone) {
-      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir telefon numarası giriniz (05XX...)' }) };
+    const normPhone = normalizePhoneTR(phone);
+    if (!normPhone) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir telefon numarası gerekli (05XX XXX XX XX)' }) };
+    }
+    if (!address || String(address).trim().length < 10) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Teslimat adresi gerekli' }) };
+    }
+    if (!kvkkConsent) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Devam etmek için KVKK onayı gereklidir' }) };
     }
 
-    const product = PRODUCTS.find(p => String(p.id) === String(productId));
+    const customerName = `${String(firstName).trim()} ${String(lastName).trim()}`;
+    const preorderNumber = `POS-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
+
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-
-    // Aynı e-posta + ürün için tekrarları önle (upsert)
-    const { error } = await supabase
-      .from('preorders')
-      .upsert(
-        {
-          product_id: String(productId),
-          product_name: product?.name || null,
-          product_sku: product?.sku || null,
-          email: String(email).toLowerCase().trim(),
-          phone: normPhone,
-          notified: false,
-          created_at: new Date().toISOString(),
-        },
-        { onConflict: 'product_id,email' }
-      );
-
+    // Aynı e-posta + ürün için tekrarı önle (upsert), bilgileri güncelle
+    const { error } = await supabase.from('preorders').upsert(
+      {
+        preorder_number: preorderNumber,
+        product_id: String(productId),
+        product_name: product.name,
+        product_sku: product.sku || null,
+        customer_name: customerName,
+        email: String(email).toLowerCase().trim(),
+        phone: normPhone,
+        address: String(address).trim().slice(0, 500),
+        note: String(note || '').slice(0, 500),
+        notified: false,
+        created_at: new Date().toISOString(),
+      },
+      { onConflict: 'product_id,email' }
+    );
     if (error) {
       console.error('preorder upsert error:', error.message);
-      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Kayıt yapılamadı. Lütfen tekrar deneyin.' }) };
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Ön sipariş kaydedilemedi. Lütfen tekrar deneyin.' }) };
     }
+
+    // Onay bildirimleri (başarısız olsa da kayıt geçerli)
+    const shippingInfo = { name: customerName, phone: normPhone, address: String(address).trim() };
+    const [emailRes, smsRes] = await Promise.all([
+      sendPreorderEmail({ preorderNumber, customerName, customerEmail: email, productName: product.name, sku: product.sku, shippingInfo }),
+      sendPreorderSms({ phone: normPhone, customerName, productName: product.name, preorderNumber }),
+    ]);
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ ok: true, message: 'Talebiniz alındı. Ürün stoğa girince size haber vereceğiz.' }),
+      body: JSON.stringify({ preorderNumber, emailSent: emailRes.sent, smsSent: smsRes.sent }),
     };
   } catch (err) {
     console.error('save-preorder error:', err.message);

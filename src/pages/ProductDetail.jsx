@@ -157,7 +157,7 @@ export default function ProductDetail() {
                     fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
                   }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--gold)' }} />
-                    Yakında Stokta
+                    Yakında Stokta · Ön Sipariş Alınıyor
                   </div>
                 )}
                 <button

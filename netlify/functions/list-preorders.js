@@ -50,7 +50,7 @@ exports.handler = async (event) => {
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
     const { data, error } = await supabase
       .from('preorders')
-      .select('product_id, product_name, product_sku, email, phone, notified, created_at')
+      .select('product_id, product_name, product_sku, preorder_number, customer_name, email, phone, address, note, notified, created_at')
       .order('created_at', { ascending: false })
       .limit(2000);
 
@@ -77,16 +77,40 @@ exports.handler = async (event) => {
       const g = byProduct.get(key);
       g.count += 1;
       if (r.notified) g.notified += 1; else g.pending += 1;
-      g.requests.push({ email: r.email, phone: r.phone, notified: r.notified, createdAt: r.created_at });
+      g.requests.push({
+        preorderNumber: r.preorder_number,
+        customerName: r.customer_name,
+        email: r.email,
+        phone: r.phone,
+        address: r.address,
+        note: r.note,
+        notified: r.notified,
+        createdAt: r.created_at,
+      });
     }
 
     const groups = [...byProduct.values()].sort((a, b) => b.count - a.count);
     const totalDemand = data?.length || 0;
 
+    // Bildirim akışı: en yeni ön siparişler (kronolojik, düz liste)
+    const recent = (data || []).slice(0, 50).map(r => ({
+      preorderNumber: r.preorder_number,
+      productId: r.product_id,
+      productName: r.product_name,
+      productSku: r.product_sku,
+      customerName: r.customer_name,
+      email: r.email,
+      phone: r.phone,
+      address: r.address,
+      note: r.note,
+      notified: r.notified,
+      createdAt: r.created_at,
+    }));
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ totalDemand, products: groups }),
+      body: JSON.stringify({ totalDemand, products: groups, recent }),
     };
   } catch (err) {
     console.error('list-preorders exception:', err.message);
