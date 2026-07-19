@@ -1115,7 +1115,7 @@
     "id": "sofi-mustard-bandhani",
     "name": "Bandhani Hardal İpek Eşarp",
     "nameEn": "Bandhani Mustard Silk Scarf",
-    "category": "scarves",
+    "category": "yeni-koleksiyon",
     "price": 5499,
     "currency": "TRY",
     "description": "Hardal sarısı zemin üzerine beyaz bandhani (buta) motifleriyle bezeli %100 doğal ipek eşarp. El işçiliği nokta baskı ve zarif kıvrımlı bordür ile işlenmiştir. Başörtüsü, omuz şalı veya boyun eşarbı olarak zarif bir şekilde kullanılabilir. Kare kesim, hafif ve akışkan ipek dokusu.",
@@ -1144,6 +1144,10 @@
       "hardal",
       "yeni"
     ],
-    "sku": "PRS-0039"
+    "sku": "PRS-0039",
+    "categories": [
+      "yeni-koleksiyon",
+      "kelaghayi"
+    ]
   }
 ]

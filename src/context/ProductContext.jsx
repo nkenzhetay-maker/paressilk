@@ -3,7 +3,7 @@ import initialProducts from '../data/products.json';
 
 const ProductContext = createContext();
 
-const PRODUCTS_VERSION = 5;
+const PRODUCTS_VERSION = 6;
 
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState(() => {
@@ -43,7 +43,8 @@ export function ProductProvider({ children }) {
 
   const getByCategory = (category) => {
     if (!category || category === 'all') return products;
-    return products.filter(p => p.category === category);
+    // Ürün birden fazla kategoride olabilir (categories dizisi); geriye uyumlu
+    return products.filter(p => p.category === category || (Array.isArray(p.categories) && p.categories.includes(category)));
   };
 
   const getFeatured = () => products.filter(p => p.featured);
