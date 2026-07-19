@@ -1110,5 +1110,40 @@
       "premium"
     ],
     "sku": "PRS-0038"
+  },
+  {
+    "id": "sofi-mustard-bandhani",
+    "name": "Bandhani Hardal İpek Eşarp",
+    "nameEn": "Bandhani Mustard Silk Scarf",
+    "category": "scarves",
+    "price": 5499,
+    "currency": "TRY",
+    "description": "Hardal sarısı zemin üzerine beyaz bandhani (buta) motifleriyle bezeli %100 doğal ipek eşarp. El işçiliği nokta baskı ve zarif kıvrımlı bordür ile işlenmiştir. Başörtüsü, omuz şalı veya boyun eşarbı olarak zarif bir şekilde kullanılabilir. Kare kesim, hafif ve akışkan ipek dokusu.",
+    "descriptionEn": "100% natural silk scarf on a mustard-yellow ground adorned with white bandhani (buta) motifs. Hand-crafted dot print with an elegant scalloped border. Wear as a headscarf, shoulder shawl or neck scarf. Square cut, light and fluid silk.",
+    "images": [
+      "/images/products/sofi-mustard-model.jpg",
+      "/images/products/sofi-mustard-flatlay.jpg",
+      "/images/products/sofi-mustard-hijab.jpg",
+      "/images/products/sofi-mustard-shawl.jpg",
+      "/images/products/sofi-mustard-detail.jpg"
+    ],
+    "video": "/videos/sofi-mustard.mp4",
+    "details": {
+      "material": "%100 Doğal İpek",
+      "dimensions": "150 x 150 cm",
+      "origin": "El Yapımı — Bandhani Baskı",
+      "care": "Kuru temizleme önerilir"
+    },
+    "inStock": true,
+    "featured": true,
+    "tags": [
+      "ipek",
+      "eşarp",
+      "bandhani",
+      "buta",
+      "hardal",
+      "yeni"
+    ],
+    "sku": "PRS-0039"
   }
 ]
