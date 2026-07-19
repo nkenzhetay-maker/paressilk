@@ -17,6 +17,13 @@ export default function ProductDetail() {
   const liked = product ? isInWishlist(product.id) : false;
   const [activeImage, setActiveImage] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
+
+  const imageList = product?.images?.length ? product.images : ['/images/products/kelaghayi-1.jpg'];
+  const openZoom = () => { setZoomed(false); setZoomOpen(true); };
+  const prevZoom = (e) => { e.stopPropagation(); setActiveImage(i => (i - 1 + imageList.length) % imageList.length); setZoomed(false); };
+  const nextZoom = (e) => { e.stopPropagation(); setActiveImage(i => (i + 1) % imageList.length); setZoomed(false); };
 
   if (!product) {
     return (
@@ -84,11 +91,23 @@ export default function ProductDetail() {
                     className="product-gallery__video"
                   />
                 ) : (
-                  <img
-                    src={product.images?.[activeImage] || '/images/products/kelaghayi-1.jpg'}
-                    alt={`${product.name} - ${activeImage + 1}`}
-                    className="product-detail__image"
-                  />
+                  <div style={{ position: 'relative', cursor: 'zoom-in' }} onClick={openZoom} title="Yakınlaştırmak için tıklayın">
+                    <img
+                      src={product.images?.[activeImage] || '/images/products/kelaghayi-1.jpg'}
+                      alt={`${product.name} - ${activeImage + 1}`}
+                      className="product-detail__image"
+                    />
+                    <span style={{
+                      position: 'absolute', bottom: 12, right: 12, display: 'flex', alignItems: 'center', gap: 6,
+                      background: 'rgba(26,26,26,0.72)', color: '#fff', padding: '6px 10px', borderRadius: 20,
+                      fontSize: '0.72rem', letterSpacing: '0.03em', pointerEvents: 'none',
+                    }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />
+                      </svg>
+                      Yakınlaştır
+                    </span>
+                  </div>
                 )}
               </div>
               {(product.images?.length > 1 || product.video) && (
@@ -252,6 +271,49 @@ export default function ProductDetail() {
           )}
         </div>
       </div>
+
+      {/* Tam ekran yakınlaştırma (zoom) — tüm ürün ilanlarında */}
+      {zoomOpen && (
+        <div
+          onClick={() => setZoomOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9000, background: 'rgba(0,0,0,0.94)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'auto',
+          }}
+        >
+          <button
+            onClick={() => setZoomOpen(false)} aria-label="Kapat"
+            style={{
+              position: 'fixed', top: 20, right: 20, zIndex: 9001, width: 44, height: 44, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.25)',
+              fontSize: '1.3rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >×</button>
+
+          {imageList.length > 1 && (
+            <>
+              <button onClick={prevZoom} aria-label="Önceki"
+                style={{ position: 'fixed', left: 16, top: '50%', transform: 'translateY(-50%)', zIndex: 9001, width: 46, height: 46, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.25)', fontSize: '1.4rem', cursor: 'pointer' }}>‹</button>
+              <button onClick={nextZoom} aria-label="Sonraki"
+                style={{ position: 'fixed', right: 16, top: '50%', transform: 'translateY(-50%)', zIndex: 9001, width: 46, height: 46, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.25)', fontSize: '1.4rem', cursor: 'pointer' }}>›</button>
+            </>
+          )}
+
+          <p style={{ position: 'fixed', bottom: 18, left: 0, right: 0, textAlign: 'center', color: '#888', fontSize: '0.72rem', letterSpacing: '0.08em', zIndex: 9001, pointerEvents: 'none' }}>
+            {zoomed ? 'UZAKLAŞTIRMAK İÇİN TIKLAYIN' : 'DAHA FAZLA YAKINLAŞTIRMAK İÇİN GÖRSELE TIKLAYIN'}
+            {imageList.length > 1 ? `  ·  ${activeImage + 1} / ${imageList.length}` : ''}
+          </p>
+
+          <img
+            src={imageList[activeImage]}
+            alt={`${product.name} yakın görünüm`}
+            onClick={(e) => { e.stopPropagation(); setZoomed(z => !z); }}
+            style={zoomed
+              ? { width: 'auto', maxWidth: 'none', minWidth: '150vw', cursor: 'zoom-out', margin: 'auto' }
+              : { maxWidth: '92vw', maxHeight: '88vh', objectFit: 'contain', cursor: 'zoom-in' }}
+          />
+        </div>
+      )}
     </>
   );
 }
