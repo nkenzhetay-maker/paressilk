@@ -3,7 +3,7 @@ import initialProducts from '../data/products.json';
 
 const ProductContext = createContext();
 
-const PRODUCTS_VERSION = 8;
+const PRODUCTS_VERSION = 9;
 
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState(() => {
