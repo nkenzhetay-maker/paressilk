@@ -7,9 +7,9 @@ import { Helmet } from 'react-helmet-async';
 const categories = [
   { key: 'all', label: 'Tümü' },
   { key: 'yeni-koleksiyon', label: 'Yeni Koleksiyon' },
-  { key: 'kelaghayi', label: 'Kelaghayi' },
+  { key: 'kelaghayi', label: 'Kelağayı' },
   { key: 'scarves', label: 'Eşarplar' },
-  { key: 'chitme', label: 'Chitme' },
+  { key: 'chitme', label: 'Çitme' },
   { key: 'raw-silk', label: 'Ham İpek' },
   { key: 'carpet', label: 'Halılar' },
   { key: 'hediye-seti', label: 'Hediye Setleri' },

@@ -12,9 +12,9 @@ export default function Footer() {
           <div>
             <h4 className="footer__heading">Koleksiyon</h4>
             <ul className="footer__links">
-              <li><Link to="/shop?category=kelaghayi">Kelaghayi</Link></li>
+              <li><Link to="/shop?category=kelaghayi">Kelağayı</Link></li>
               <li><Link to="/shop?category=scarves">Eşarplar</Link></li>
-              <li><Link to="/shop?category=chitme">Chitme</Link></li>
+              <li><Link to="/shop?category=chitme">Çitme</Link></li>
               <li><Link to="/shop?category=raw-silk">Ham İpek</Link></li>
               <li><Link to="/shop?category=carpet">Halılar</Link></li>
             </ul>

@@ -17,14 +17,14 @@ const PRODUCTS = [
 
 const HIGHLIGHTS = [
   { img: 'kelaghayi-1.jpg', label: 'Koleksiyon' },
-  { img: 'kelaghayi-6.jpg', label: 'Kelaghayi'  },
+  { img: 'kelaghayi-6.jpg', label: 'Kelağayı'  },
   { img: 'scarf-3.jpg',     label: 'Eşarp'       },
   { img: 'scarf-5.jpg',     label: 'Hediye'      },
   { img: 'kelaghayi-3.jpg', label: 'Hakkımızda'  },
 ];
 
 const REELS = [
-  { img: 'kelaghayi-1.jpg', label: 'Kelaghayi' },
+  { img: 'kelaghayi-1.jpg', label: 'Kelağayı' },
   { img: 'scarf-5.jpg',     label: 'Pink Buta'  },
   { img: 'kelaghayi-6.jpg', label: 'Elegant'    },
   { img: 'scarf-3.jpg',     label: 'Kurumsal'   },

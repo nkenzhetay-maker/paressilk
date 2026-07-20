@@ -188,9 +188,9 @@ export default function Home() {
               </div>
             </Link>
             <Link to="/shop?category=kelaghayi" className="category-card">
-              <img src="/images/products/kelaghayi-2.jpg" alt="Kelaghayi" className="category-card__image" />
+              <img src="/images/products/kelaghayi-2.jpg" alt="Kelağayı" className="category-card__image" />
               <div className="category-card__overlay">
-                <h3 className="category-card__title">Kelaghayi</h3>
+                <h3 className="category-card__title">Kelağayı</h3>
                 <span className="category-card__count">{kelaghayi.length} Ürün</span>
               </div>
             </Link>
@@ -202,9 +202,9 @@ export default function Home() {
               </div>
             </Link>
             <Link to="/shop?category=chitme" className="category-card">
-              <img src="/images/products/kelaghayi-6.jpg" alt="Chitme" className="category-card__image" />
+              <img src="/images/products/kelaghayi-6.jpg" alt="Çitme" className="category-card__image" />
               <div className="category-card__overlay">
-                <h3 className="category-card__title">Chitme</h3>
+                <h3 className="category-card__title">Çitme</h3>
                 <span className="category-card__count">Yakında</span>
               </div>
             </Link>

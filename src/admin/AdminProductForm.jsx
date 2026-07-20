@@ -4,15 +4,15 @@ import { useProducts } from '../context/ProductContext';
 
 const categoryOptions = [
   { value: 'yeni-koleksiyon', label: 'Yeni Koleksiyon' },
-  { value: 'kelaghayi', label: 'Kelaghayi' },
+  { value: 'kelaghayi', label: 'Kelağayı' },
   { value: 'scarves', label: 'Eşarplar' },
-  { value: 'chitme', label: 'Chitme' },
+  { value: 'chitme', label: 'Çitme' },
   { value: 'raw-silk', label: 'Ham İpek' },
   { value: 'carpet', label: 'Halılar' },
 ];
 
 const emptyProduct = {
-  name: '', nameEn: '', category: 'kelaghayi', price: '', description: '', descriptionEn: '',
+  name: '', nameEn: '', category: 'kelaghayi', price: '', sku: '', description: '', descriptionEn: '',
   images: [], inStock: true, featured: false, tags: [],
   details: { material: '%100 Doğal İpek', dimensions: '', origin: 'El Yapımı', care: 'Kuru temizleme önerilir' },
 };
@@ -20,7 +20,7 @@ const emptyProduct = {
 export default function AdminProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProduct, addProduct, updateProduct } = useProducts();
+  const { products, getProduct, addProduct, updateProduct } = useProducts();
   const isEdit = !!id;
   const fileRef = useRef();
   const videoRef = useRef();
@@ -28,13 +28,24 @@ export default function AdminProductForm() {
   const [form, setForm] = useState(emptyProduct);
   const [tagsInput, setTagsInput] = useState('');
 
+  // Yeni ürün için otomatik SKU önerisi: en büyük PRS-#### numarası + 1
+  const suggestSku = () => {
+    const maxNum = (products || []).reduce((max, p) => {
+      const match = /^PRS-(\d+)$/.exec(p.sku || '');
+      return match ? Math.max(max, parseInt(match[1], 10)) : max;
+    }, 0);
+    return `PRS-${String(maxNum + 1).padStart(4, '0')}`;
+  };
+
   useEffect(() => {
     if (isEdit) {
       const existing = getProduct(id);
       if (existing) {
-        setForm(existing);
+        setForm({ ...existing, sku: existing.sku || '' });
         setTagsInput(existing.tags?.join(', ') || '');
       }
+    } else {
+      setForm(prev => ({ ...prev, sku: prev.sku || suggestSku() }));
     }
   }, [id]);
 
@@ -65,6 +76,25 @@ export default function AdminProductForm() {
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
     }));
+  };
+
+  const makeMainImage = (index) => {
+    setForm(prev => {
+      const images = [...prev.images];
+      const [img] = images.splice(index, 1);
+      images.unshift(img);
+      return { ...prev, images };
+    });
+  };
+
+  const moveImage = (index, direction) => {
+    setForm(prev => {
+      const images = [...prev.images];
+      const target = index + direction;
+      if (target < 0 || target >= images.length) return prev;
+      [images[index], images[target]] = [images[target], images[index]];
+      return { ...prev, images };
+    });
   };
 
   const handleVideoUpload = (e) => {
@@ -138,6 +168,10 @@ export default function AdminProductForm() {
                 </div>
               </div>
               <div className="form-group">
+                <label>SKU</label>
+                <input type="text" value={form.sku || ''} onChange={e => handleChange('sku', e.target.value)} placeholder="PRS-0001" />
+              </div>
+              <div className="form-group">
                 <label>Etiketler (virgülle ayırın)</label>
                 <input type="text" value={tagsInput} onChange={e => setTagsInput(e.target.value)} placeholder="ipek, eşarp, hediye" />
               </div>
@@ -180,18 +214,51 @@ export default function AdminProductForm() {
                 <p style={{ fontSize: '0.72rem', color: '#bbb' }}>JPG, PNG - Maks. 5MB</p>
               </div>
               {form.images?.length > 0 && (
-                <div className="product-form__preview">
-                  {form.images.map((img, i) => (
-                    <div key={i} style={{ position: 'relative' }}>
-                      <img src={img} alt={`Ürün ${i + 1}`} />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(i)}
-                        style={{ position: 'absolute', top: 4, right: 4, width: 20, height: 20, borderRadius: '50%', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
-                      >x</button>
-                    </div>
-                  ))}
-                </div>
+                <>
+                  <div className="product-form__preview">
+                    {form.images.map((img, i) => (
+                      <div key={i} style={{ position: 'relative' }}>
+                        <img src={img} alt={`Ürün ${i + 1}`} />
+                        {i === 0 && (
+                          <span style={{ position: 'absolute', top: 4, left: 4, padding: '2px 6px', background: '#C8A456', color: '#fff', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.05em', borderRadius: 3 }}>ANA</span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => removeImage(i)}
+                          style={{ position: 'absolute', top: 4, right: 4, width: 20, height: 20, borderRadius: '50%', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
+                        >x</button>
+                        <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
+                          <button
+                            type="button"
+                            onClick={() => moveImage(i, -1)}
+                            disabled={i === 0}
+                            title="Sola taşı"
+                            style={{ flex: '0 0 auto', padding: '2px 6px', fontSize: '0.65rem', background: '#fff', border: '1px solid #ddd', borderRadius: 3, cursor: i === 0 ? 'default' : 'pointer', opacity: i === 0 ? 0.4 : 1 }}
+                          >◀</button>
+                          {i !== 0 && (
+                            <button
+                              type="button"
+                              onClick={() => makeMainImage(i)}
+                              title="Ana görsel yap"
+                              style={{ flex: 1, padding: '2px 4px', fontSize: '0.6rem', background: '#fff', border: '1px solid #C8A456', color: '#B8860B', borderRadius: 3, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                            >⭐ Ana Yap</button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => moveImage(i, 1)}
+                            disabled={i === form.images.length - 1}
+                            title="Sağa taşı"
+                            style={{ flex: '0 0 auto', marginLeft: i === 0 ? 'auto' : 0, padding: '2px 6px', fontSize: '0.65rem', background: '#fff', border: '1px solid #ddd', borderRadius: 3, cursor: i === form.images.length - 1 ? 'default' : 'pointer', opacity: i === form.images.length - 1 ? 0.4 : 1 }}
+                          >▶</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 12, fontSize: '0.72rem', color: '#999', lineHeight: 1.6 }}>
+                    <p>1. görsel ürün kartlarında görünen ana görseldir.</p>
+                    <p>2. görsel sanal deneme için ürünün düz serili (flatlay) fotoğrafı olmalıdır.</p>
+                  </div>
+                </>
               )}
             </div>
 

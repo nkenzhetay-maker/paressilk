@@ -41,9 +41,9 @@ export default function ProductDetail() {
 
   const categoryLabels = {
     'yeni-koleksiyon': 'Yeni Koleksiyon',
-    kelaghayi: 'Kelaghayi',
+    kelaghayi: 'Kelağayı',
     scarves: 'Eşarplar',
-    chitme: 'Chitme',
+    chitme: 'Çitme',
     'raw-silk': 'Ham İpek',
     carpet: 'Halılar',
     'hediye-seti': 'Hediye Setleri',
