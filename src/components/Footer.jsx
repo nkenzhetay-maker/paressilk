@@ -27,6 +27,8 @@ export default function Footer() {
               <li><Link to="/sss">Sıkça Sorulan Sorular</Link></li>
               <li><Link to="/kvkk">KVKK Aydınlatma Metni</Link></li>
               <li><Link to="/cerez-politikasi">Çerez Politikası</Link></li>
+              <li><Link to="/gizlilik-politikasi">Gizlilik Politikası</Link></li>
+              <li><Link to="/uyelik-sozlesmesi">Üyelik Sözleşmesi</Link></li>
               <li><Link to="/mesafeli-satis">Mesafeli Satış Sözleşmesi</Link></li>
               <li><Link to="/iade-politikasi">İade Politikası</Link></li>
             </ul>

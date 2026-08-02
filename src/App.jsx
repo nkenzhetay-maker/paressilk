@@ -29,6 +29,8 @@ import IadePolitikasi from './pages/IadePolitikasi';
 import SSS from './pages/SSS';
 import Wishlist from './pages/Wishlist';
 import Hesap from './pages/Hesap';
+import GizlilikPolitikasi from './pages/GizlilikPolitikasi';
+import UyelikSozlesmesi from './pages/UyelikSozlesmesi';
 import InstagramPage from './pages/InstagramPage';
 import CookieConsent from './components/CookieConsent';
 
@@ -72,6 +74,8 @@ function StorefrontLayout() {
         <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
         <Route path="/mesafeli-satis" element={<MesafeliSatis />} />
         <Route path="/iade-politikasi" element={<IadePolitikasi />} />
+        <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
+        <Route path="/uyelik-sozlesmesi" element={<UyelikSozlesmesi />} />
         <Route path="/sss" element={<SSS />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/hesap" element={<Hesap />} />

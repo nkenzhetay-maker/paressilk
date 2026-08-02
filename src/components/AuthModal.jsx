@@ -22,6 +22,8 @@ export default function AuthModal() {
     firstName: '', lastName: '', email: '', password: '',
     phone: '', address: '', city: '', district: '', postalCode: '',
   });
+  const [consentTerms, setConsentTerms] = useState(false);
+  const [consentMarketing, setConsentMarketing] = useState(false);
 
   if (!showAuthModal) return null;
 
@@ -31,6 +33,8 @@ export default function AuthModal() {
     setSuccess('');
     setMode('login');
     setForm({ firstName: '', lastName: '', email: '', password: '', phone: '', address: '', city: '', district: '', postalCode: '' });
+    setConsentTerms(false);
+    setConsentMarketing(false);
   };
 
   const handleChange = (field, value) => {
@@ -48,7 +52,12 @@ export default function AuthModal() {
       if (mode === 'login') {
         await login(form.email, form.password);
       } else {
-        await register(form);
+        if (!consentTerms) {
+          setError('Devam etmek için Üyelik Sözleşmesi, KVKK Aydınlatma Metni ve Gizlilik Politikası\'nı onaylamalısınız.');
+          setLoading(false);
+          return;
+        }
+        await register({ ...form, kvkkConsent: consentTerms, marketingConsent: consentMarketing });
         setSuccess('Kayıt başarılı! E-posta adresinize doğrulama linki gönderildi.');
         setMode('login');
         setForm(prev => ({ ...prev, password: '' }));
@@ -195,6 +204,23 @@ export default function AuthModal() {
                   <input type="text" value={form.postalCode} onChange={e => handleChange('postalCode', e.target.value)} placeholder="34000" maxLength={5} />
                 </div>
               </>
+            )}
+
+            {mode === 'register' && (
+              <div style={{ margin: '16px 0 4px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <label style={{ display: 'flex', gap: 8, fontSize: '0.78rem', color: '#555', lineHeight: 1.5, cursor: 'pointer' }}>
+                  <input type="checkbox" checked={consentTerms} onChange={e => setConsentTerms(e.target.checked)} style={{ marginTop: 2, flexShrink: 0 }} />
+                  <span>
+                    <a href="/uyelik-sozlesmesi" target="_blank" rel="noreferrer" style={{ color: 'var(--gold-dark)' }}>Üyelik Sözleşmesi</a>,{' '}
+                    <a href="/kvkk" target="_blank" rel="noreferrer" style={{ color: 'var(--gold-dark)' }}>KVKK Aydınlatma Metni</a> ve{' '}
+                    <a href="/gizlilik-politikasi" target="_blank" rel="noreferrer" style={{ color: 'var(--gold-dark)' }}>Gizlilik Politikası</a>'nı okudum, onaylıyorum. <span style={{ color: '#c0392b' }}>*</span>
+                  </span>
+                </label>
+                <label style={{ display: 'flex', gap: 8, fontSize: '0.78rem', color: '#555', lineHeight: 1.5, cursor: 'pointer' }}>
+                  <input type="checkbox" checked={consentMarketing} onChange={e => setConsentMarketing(e.target.checked)} style={{ marginTop: 2, flexShrink: 0 }} />
+                  <span>Kampanya, indirim ve yeniliklerden e-posta ile haberdar olmak istiyorum. (isteğe bağlı)</span>
+                </label>
+              </div>
             )}
 
             <button type="submit" className="btn btn--primary" style={{ width: '100%', marginTop: 8 }} disabled={loading}>

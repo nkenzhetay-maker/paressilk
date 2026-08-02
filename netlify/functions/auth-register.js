@@ -24,7 +24,7 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
 
   try {
-    const { email, password, firstName, lastName, phone, address, city, district, postalCode } = JSON.parse(event.body);
+    const { email, password, firstName, lastName, phone, address, city, district, postalCode, kvkkConsent, marketingConsent } = JSON.parse(event.body);
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir e-posta adresi girin' }) };
@@ -34,6 +34,10 @@ exports.handler = async (event) => {
     }
     if (!firstName || firstName.trim().length < 2) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Ad alanı gereklidir' }) };
+    }
+    // KVKK / sözleşme onayı zorunlu (açık rıza kaydı)
+    if (!kvkkConsent) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Üyelik Sözleşmesi ve KVKK onayı gereklidir' }) };
     }
 
     const { data, error } = await supabase.auth.admin.createUser({
@@ -48,6 +52,9 @@ exports.handler = async (event) => {
         city: (city || '').trim(),
         district: (district || '').trim(),
         postal_code: (postalCode || '').trim(),
+        kvkk_consent: true,
+        kvkk_consent_at: new Date().toISOString(),
+        marketing_consent: !!marketingConsent,
       },
     });
 

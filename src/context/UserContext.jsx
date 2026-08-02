@@ -52,11 +52,11 @@ export function UserProvider({ children }) {
     }
   }, [token]);
 
-  const register = useCallback(async ({ email, password, firstName, lastName, phone, address, city, district, postalCode }) => {
+  const register = useCallback(async ({ email, password, firstName, lastName, phone, address, city, district, postalCode, kvkkConsent, marketingConsent }) => {
     const res = await fetch('/.netlify/functions/auth-register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, firstName, lastName, phone, address, city, district, postalCode }),
+      body: JSON.stringify({ email, password, firstName, lastName, phone, address, city, district, postalCode, kvkkConsent, marketingConsent }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
