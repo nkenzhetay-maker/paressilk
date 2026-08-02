@@ -3,7 +3,7 @@ import initialProducts from '../data/products.json';
 
 const ProductContext = createContext();
 
-const PRODUCTS_VERSION = 9;
+const PRODUCTS_VERSION = 10;
 
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState(() => {
@@ -18,7 +18,13 @@ export function ProductProvider({ children }) {
   });
 
   useEffect(() => {
-    localStorage.setItem('paressilk_products', JSON.stringify(products));
+    // Kota aşımına (ör. büyük base64 görsel) karşı korumalı yazma: hata olursa
+    // uygulama çökmesin (beyaz ekran) — sadece uyar. Kalıcılık backend'e taşınacak.
+    try {
+      localStorage.setItem('paressilk_products', JSON.stringify(products));
+    } catch (err) {
+      console.warn('Ürünler kaydedilemedi (localStorage kotası dolmuş olabilir):', err?.name || err);
+    }
   }, [products]);
 
   const addProduct = (product) => {
