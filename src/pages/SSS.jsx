@@ -23,7 +23,7 @@ const faqData = [
   {
     category: 'Kargo & Teslimat',
     items: [
-      { q: 'Kargo ücreti ne kadar?', a: '1.000 TL ve üzeri siparişlerde kargo ücretsizdir. 1.000 TL altı siparişlerde kargo ücreti 49,90 TL\'dir.' },
+      { q: 'Kargo ücreti ne kadar?', a: '6.500 TL ve üzeri siparişlerde kargo ücretsizdir. 6.500 TL altı siparişlerde kargo ücreti 300 TL\'dir.' },
       { q: 'Teslimat süresi ne kadar?', a: 'Siparişler 1-5 iş günü içerisinde kargoya verilir. Teslimat süresi bulunduğunuz bölgeye göre 1-3 iş günü arasında değişmektedir.' },
       { q: 'Yurt dışına kargo yapıyor musunuz?', a: 'Şu anda sadece Türkiye içi teslimat yapmaktayız. Yurt dışı kargo için WhatsApp üzerinden bizimle iletişime geçebilirsiniz.' },
     ],

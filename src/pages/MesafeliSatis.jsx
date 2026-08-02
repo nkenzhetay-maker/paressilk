@@ -36,7 +36,7 @@ export default function MesafeliSatis() {
             <h2>5. ÖDEME VE TESLİMAT</h2>
             <p>5.1 Ürün ödemeleri kredi kartı veya havale/EFT ile yapılabilir.</p>
             <p>5.2 Sipariş onayından sonra ürünler 1-5 iş günü içerisinde kargoya verilir.</p>
-            <p>5.3 1.000 TL ve üzeri siparişlerde kargo ücretsizdir. 1.000 TL altı siparişlerde kargo ücreti 49,90 TL'dir.</p>
+            <p>5.3 6.500 TL ve üzeri siparişlerde kargo ücretsizdir. 6.500 TL altı siparişlerde kargo ücreti 300 TL'dir.</p>
             <p>5.4 Teslimat, anlaşmalı kargo şirketi aracılığıyla yapılır.</p>
 
             <h2>6. CAYMA HAKKI</h2>

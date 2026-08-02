@@ -589,7 +589,7 @@ export default function Checkout() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {[
                     { icon: '🔒', text: '256-bit SSL Güvenli Alışveriş' },
-                    { icon: '🚚', text: '1.000 TL Üzeri Ücretsiz Kargo' },
+                    { icon: '🚚', text: '6.500 TL Üzeri Ücretsiz Kargo' },
                     { icon: '↩️', text: '14 Gün Koşulsuz İade Garantisi' },
                     { icon: '✅', text: '%100 Orijinal Ürün Garantisi' },
                   ].map((badge, i) => (
