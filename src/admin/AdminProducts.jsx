@@ -3,24 +3,10 @@ import { Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 
 export default function AdminProducts() {
-  const { products, deleteProduct, updateProduct, migrateProducts } = useProducts();
+  const { products, deleteProduct, updateProduct } = useProducts();
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState('all');
   const [busy, setBusy] = useState(false);
-  const [migrating, setMigrating] = useState(false);
-
-  const handleMigrate = async () => {
-    if (!window.confirm('Yerel ürünler Supabase veritabanına aktarılacak. Bu işlemi ilk kurulumda bir kez yapmanız yeterli. Devam edilsin mi?')) return;
-    setMigrating(true);
-    try {
-      const r = await migrateProducts();
-      window.alert(`Aktarım tamam: ${r.inserted ?? 0} ürün eklendi${r.message ? ' — ' + r.message : ''}.`);
-    } catch (err) {
-      window.alert('Aktarım başarısız: ' + (err.message || 'bilinmeyen hata'));
-    } finally {
-      setMigrating(false);
-    }
-  };
 
   const safe = async (fn) => {
     if (busy) return;
@@ -43,12 +29,7 @@ export default function AdminProducts() {
     <div>
       <div className="admin-header">
         <h1>Ürünler ({products.length})</h1>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={handleMigrate} className="btn btn--outline" disabled={migrating} title="İlk kurulum: yerel ürünleri Supabase'e aktarır">
-            {migrating ? 'Aktarılıyor…' : 'Veritabanına Aktar'}
-          </button>
-          <Link to="/admin/products/new" className="btn btn--primary">Yeni Ürün Ekle</Link>
-        </div>
+        <Link to="/admin/products/new" className="btn btn--primary">Yeni Ürün Ekle</Link>
       </div>
 
       <div className="admin-card">
