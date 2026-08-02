@@ -20,13 +20,15 @@ const emptyProduct = {
 export default function AdminProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, getProduct, addProduct, updateProduct } = useProducts();
+  const { products, getProduct, addProduct, updateProduct, uploadImage } = useProducts();
   const isEdit = !!id;
   const fileRef = useRef();
   const videoRef = useRef();
 
   const [form, setForm] = useState(emptyProduct);
   const [tagsInput, setTagsInput] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   // Yeni ürün için otomatik SKU önerisi: en büyük PRS-#### numarası + 1
   const suggestSku = () => {
@@ -138,20 +140,40 @@ export default function AdminProductForm() {
     setForm(prev => ({ ...prev, video: null }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const product = {
-      ...form,
-      price: Number(form.price),
-      tags: tagsInput.split(',').map(t => t.trim()).filter(Boolean),
-    };
+    if (saving) return;
+    setSaveError('');
+    setSaving(true);
+    try {
+      // Yeni (data: URI) görselleri Supabase Storage'a yükleyip kalıcı URL'e çevir.
+      // Zaten URL/statik yol olanlara dokunma.
+      const images = [];
+      for (const img of (form.images || [])) {
+        if (typeof img === 'string' && img.startsWith('data:')) {
+          images.push(await uploadImage(img));
+        } else {
+          images.push(img);
+        }
+      }
 
-    if (isEdit) {
-      updateProduct(id, product);
-    } else {
-      addProduct(product);
+      const product = {
+        ...form,
+        images,
+        price: Number(form.price),
+        tags: tagsInput.split(',').map(t => t.trim()).filter(Boolean),
+      };
+
+      if (isEdit) {
+        await updateProduct(id, product);
+      } else {
+        await addProduct(product);
+      }
+      navigate('/admin/products');
+    } catch (err) {
+      setSaveError(err.message || 'Kaydedilemedi. Lütfen tekrar deneyin.');
+      setSaving(false);
     }
-    navigate('/admin/products');
   };
 
   return (
@@ -335,8 +357,11 @@ export default function AdminProductForm() {
               </div>
             </div>
 
-            <button type="submit" className="btn btn--primary" style={{ width: '100%' }}>
-              {isEdit ? 'Güncelle' : 'Ürünü Kaydet'}
+            {saveError && (
+              <p style={{ color: 'var(--error, #c0392b)', fontSize: '0.82rem', marginBottom: 12, textAlign: 'center' }}>{saveError}</p>
+            )}
+            <button type="submit" className="btn btn--primary" style={{ width: '100%', opacity: saving ? 0.7 : 1, cursor: saving ? 'wait' : 'pointer' }} disabled={saving}>
+              {saving ? 'Kaydediliyor…' : (isEdit ? 'Güncelle' : 'Ürünü Kaydet')}
             </button>
           </div>
         </div>

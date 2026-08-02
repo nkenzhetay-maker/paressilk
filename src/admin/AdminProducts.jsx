@@ -3,9 +3,32 @@ import { Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 
 export default function AdminProducts() {
-  const { products, deleteProduct, updateProduct } = useProducts();
+  const { products, deleteProduct, updateProduct, migrateProducts } = useProducts();
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState('all');
+  const [busy, setBusy] = useState(false);
+  const [migrating, setMigrating] = useState(false);
+
+  const handleMigrate = async () => {
+    if (!window.confirm('Yerel ürünler Supabase veritabanına aktarılacak. Bu işlemi ilk kurulumda bir kez yapmanız yeterli. Devam edilsin mi?')) return;
+    setMigrating(true);
+    try {
+      const r = await migrateProducts();
+      window.alert(`Aktarım tamam: ${r.inserted ?? 0} ürün eklendi${r.message ? ' — ' + r.message : ''}.`);
+    } catch (err) {
+      window.alert('Aktarım başarısız: ' + (err.message || 'bilinmeyen hata'));
+    } finally {
+      setMigrating(false);
+    }
+  };
+
+  const safe = async (fn) => {
+    if (busy) return;
+    setBusy(true);
+    try { await fn(); }
+    catch (err) { window.alert(err.message || 'İşlem başarısız oldu.'); }
+    finally { setBusy(false); }
+  };
 
   const filtered = products.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
@@ -20,7 +43,12 @@ export default function AdminProducts() {
     <div>
       <div className="admin-header">
         <h1>Ürünler ({products.length})</h1>
-        <Link to="/admin/products/new" className="btn btn--primary">Yeni Ürün Ekle</Link>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button onClick={handleMigrate} className="btn btn--outline" disabled={migrating} title="İlk kurulum: yerel ürünleri Supabase'e aktarır">
+            {migrating ? 'Aktarılıyor…' : 'Veritabanına Aktar'}
+          </button>
+          <Link to="/admin/products/new" className="btn btn--primary">Yeni Ürün Ekle</Link>
+        </div>
       </div>
 
       <div className="admin-card">
@@ -62,7 +90,7 @@ export default function AdminProducts() {
                 <td>
                   <button
                     className={`badge ${p.inStock ? 'badge--success' : 'badge--error'}`}
-                    onClick={() => updateProduct(p.id, { inStock: !p.inStock })}
+                    onClick={() => safe(() => updateProduct(p.id, { inStock: !p.inStock }))}
                     style={{ cursor: 'pointer', border: 'none' }}
                   >
                     {p.inStock ? 'Stokta' : 'Tükendi'}
@@ -71,7 +99,7 @@ export default function AdminProducts() {
                 <td>
                   <button
                     className={`badge ${p.active === false ? 'badge--error' : 'badge--success'}`}
-                    onClick={() => updateProduct(p.id, { active: p.active === false })}
+                    onClick={() => safe(() => updateProduct(p.id, { active: p.active === false }))}
                     style={{ cursor: 'pointer', border: 'none' }}
                     title={p.active === false ? 'Ürün yayında değil — tıklayarak yayına al' : 'Ürün yayında — tıklayarak yayından kaldır'}
                   >
@@ -81,7 +109,7 @@ export default function AdminProducts() {
                 <td>
                   <button
                     className={`badge ${p.featured ? 'badge--warning' : ''}`}
-                    onClick={() => updateProduct(p.id, { featured: !p.featured })}
+                    onClick={() => safe(() => updateProduct(p.id, { featured: !p.featured }))}
                     style={{ cursor: 'pointer', border: p.featured ? 'none' : '1px solid #ddd', background: p.featured ? undefined : '#fff' }}
                   >
                     {p.featured ? 'Evet' : 'Hayır'}
@@ -91,7 +119,7 @@ export default function AdminProducts() {
                   <div style={{ display: 'flex', gap: 8 }}>
                     <Link to={`/admin/products/edit/${p.id}`} style={{ color: 'var(--gold-dark)', fontSize: '0.8rem', textDecoration: 'underline' }}>Düzenle</Link>
                     <button
-                      onClick={() => { if (window.confirm('Bu ürünü silmek istediğinize emin misiniz?')) deleteProduct(p.id); }}
+                      onClick={() => { if (window.confirm('Bu ürünü silmek istediğinize emin misiniz?')) safe(() => deleteProduct(p.id)); }}
                       style={{ color: 'var(--error)', fontSize: '0.8rem', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
                     >Sil</button>
                   </div>
