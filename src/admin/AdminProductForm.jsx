@@ -57,18 +57,45 @@ export default function AdminProductForm() {
     setForm(prev => ({ ...prev, details: { ...prev.details, [field]: value } }));
   };
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setForm(prev => ({
-          ...prev,
-          images: [...(prev.images || []), ev.target.result]
-        }));
+  // Görseli hafızaya yazmadan önce küçült (maks 1400px, JPEG) — localStorage
+  // kotasının dolup uygulamanın çökmesini önler ve önizlemeyi hızlandırır.
+  const compressImage = (file) => new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1400;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+          if (width >= height) { height = Math.round(height * MAX / width); width = MAX; }
+          else { width = Math.round(width * MAX / height); height = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
       };
-      reader.readAsDataURL(file);
-    });
+      img.onerror = () => resolve(ev.target.result); // olmazsa orijinali kullan
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  const addFiles = async (fileList) => {
+    const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    for (const file of files) {
+      const dataUrl = await compressImage(file);
+      setForm(prev => ({ ...prev, images: [...(prev.images || []), dataUrl] }));
+    }
+  };
+
+  const handleImageUpload = (e) => { addFiles(e.target.files); e.target.value = ''; };
+
+  const [dragActive, setDragActive] = useState(false);
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files);
   };
 
   const removeImage = (index) => {
@@ -205,13 +232,22 @@ export default function AdminProductForm() {
           <div>
             <div className="admin-card">
               <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: 20 }}>Görseller</h3>
-              <div className="product-form__image-upload" onClick={() => fileRef.current?.click()}>
+              <div
+                className="product-form__image-upload"
+                onClick={() => fileRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                onDrop={handleDrop}
+                style={dragActive ? { borderColor: '#C8A456', background: 'rgba(200,164,86,0.08)' } : undefined}
+              >
                 <input type="file" ref={fileRef} accept="image/*" multiple onChange={handleImageUpload} />
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" style={{ marginBottom: 8 }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={dragActive ? '#C8A456' : '#ccc'} strokeWidth="1.5" style={{ marginBottom: 8 }}>
                   <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
                 </svg>
-                <p style={{ fontSize: '0.85rem', color: '#888' }}>Görsel yüklemek için tıklayın</p>
-                <p style={{ fontSize: '0.72rem', color: '#bbb' }}>JPG, PNG - Maks. 5MB</p>
+                <p style={{ fontSize: '0.85rem', color: dragActive ? '#B8860B' : '#888' }}>
+                  {dragActive ? 'Bırakın, yükleyelim' : 'Görsel yüklemek için tıklayın veya sürükleyin'}
+                </p>
+                <p style={{ fontSize: '0.72rem', color: '#bbb' }}>JPG, PNG · otomatik optimize edilir</p>
               </div>
               {form.images?.length > 0 && (
                 <>
