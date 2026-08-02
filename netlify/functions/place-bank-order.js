@@ -60,7 +60,7 @@ exports.handler = async (event) => {
     });
     const subtotal = orderItems.reduce((s, it) => s + it.price * it.qty, 0);
     const { promo, discountTL, freeShipping } = applyPromo(promoCode, subtotal);
-    const shippingTL = freeShipping || (subtotal - discountTL) >= 1000 ? 0 : 49.90;
+    const shippingTL = freeShipping || (subtotal - discountTL) >= 6500 ? 0 : 300;
     const grandTotal = Math.round((subtotal - discountTL + shippingTL) * 100) / 100;
 
     const orderNumber = `PS-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;

@@ -97,7 +97,7 @@ exports.handler = async (event) => {
     // Promosyon/hediye çeki SUNUCUDA doğrulanıp uygulanır (client indirimine güvenilmez)
     const { promo, discountTL, freeShipping } = applyPromo(promoCode, totalAmount);
 
-    const shippingCost = freeShipping || (totalAmount - discountTL) >= 1000 ? 0 : 4990;
+    const shippingCost = freeShipping || (totalAmount - discountTL) >= 6500 ? 0 : 30000;
     if (shippingCost > 0) {
       lineItems.push({
         price_data: {

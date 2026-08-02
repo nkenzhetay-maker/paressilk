@@ -19,7 +19,7 @@ export default function TrustBar() {
     localStorage.setItem('paressilk_trustbar_closed', 'true');
   };
 
-  const desktopText = 'Ücretsiz Kargo (1000₺+) | %100 Doğal İpek | 14 Gün İade Garantisi | Güvenli Ödeme';
+  const desktopText = 'Ücretsiz Kargo (6500₺+) | %100 Doğal İpek | 14 Gün İade Garantisi | Güvenli Ödeme';
   const mobileText = 'Ücretsiz Kargo | Güvenli Ödeme | 14 Gün İade';
 
   return (

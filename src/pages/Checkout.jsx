@@ -43,7 +43,7 @@ export default function Checkout() {
   const [notifyStatus, setNotifyStatus] = useState(null);
 
   const formatPrice = (price) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(price);
-  const baseShipping = totalPrice >= 1000 ? 0 : 49.90;
+  const baseShipping = totalPrice >= 6500 ? 0 : 300;
   const shipping = promoDiscount?.type === 'shipping' ? 0 : baseShipping;
   const promoAmount = promoDiscount?.type === 'percentage' ? (totalPrice * promoDiscount.value / 100) : 0;
   const grandTotal = totalPrice - promoAmount + shipping;

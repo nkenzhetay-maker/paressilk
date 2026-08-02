@@ -56,19 +56,20 @@ export default function AdminSettings() {
 
       <div className="admin-card">
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: 20 }}>Kargo Ayarları</h3>
-        <form onSubmit={handleSave}>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Ücretsiz Kargo Limiti (TRY)</label>
-              <input type="number" defaultValue={1000} />
-            </div>
-            <div className="form-group">
-              <label>Kargo Ücreti (TRY)</label>
-              <input type="number" defaultValue={49.90} step="0.01" />
-            </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Ücretsiz Kargo Limiti (TRY)</label>
+            <input type="number" value={6500} disabled />
           </div>
-          <button type="submit" className="btn btn--primary">Kaydet</button>
-        </form>
+          <div className="form-group">
+            <label>Kargo Ücreti (TRY)</label>
+            <input type="number" value={300} disabled />
+          </div>
+        </div>
+        <p style={{ fontSize: '0.8rem', color: '#888', marginTop: 8 }}>
+          Şu an aktif değerler: 6500₺ üzeri ücretsiz kargo, altında 300₺.
+          Bu değerleri değiştirmek için lütfen geliştiriciye bildirin (site genelinde ve ödeme akışında güncellenir).
+        </p>
       </div>
 
       <div className="admin-card">
