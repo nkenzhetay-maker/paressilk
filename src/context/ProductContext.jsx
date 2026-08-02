@@ -41,13 +41,18 @@ export function ProductProvider({ children }) {
 
   const getProduct = (id) => products.find(p => p.id === id);
 
+  // Vitrinde yalnızca yayında olan ürünler görünür (active !== false; eski
+  // ürünlerde alan olmadığı için varsayılan yayında). Admin tam listeyi görür.
+  const isActive = (p) => p.active !== false;
+
   const getByCategory = (category) => {
-    if (!category || category === 'all') return products;
+    const visible = products.filter(isActive);
+    if (!category || category === 'all') return visible;
     // Ürün birden fazla kategoride olabilir (categories dizisi); geriye uyumlu
-    return products.filter(p => p.category === category || (Array.isArray(p.categories) && p.categories.includes(category)));
+    return visible.filter(p => p.category === category || (Array.isArray(p.categories) && p.categories.includes(category)));
   };
 
-  const getFeatured = () => products.filter(p => p.featured);
+  const getFeatured = () => products.filter(p => p.featured && isActive(p));
 
   const resetProducts = () => {
     setProducts(initialProducts);

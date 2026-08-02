@@ -25,7 +25,7 @@ export default function ProductDetail() {
   const prevZoom = (e) => { e.stopPropagation(); setActiveImage(i => (i - 1 + imageList.length) % imageList.length); setZoomed(false); };
   const nextZoom = (e) => { e.stopPropagation(); setActiveImage(i => (i + 1) % imageList.length); setZoomed(false); };
 
-  if (!product) {
+  if (!product || product.active === false) {
     return (
       <div className="product-detail">
         <div className="container" style={{ textAlign: 'center', padding: '120px 20px' }}>

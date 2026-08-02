@@ -47,6 +47,7 @@ export default function AdminProducts() {
               <th>Kategori</th>
               <th>Fiyat</th>
               <th>Durum</th>
+              <th>Yayın</th>
               <th>Öne Çıkan</th>
               <th>İşlem</th>
             </tr>
@@ -65,6 +66,16 @@ export default function AdminProducts() {
                     style={{ cursor: 'pointer', border: 'none' }}
                   >
                     {p.inStock ? 'Stokta' : 'Tükendi'}
+                  </button>
+                </td>
+                <td>
+                  <button
+                    className={`badge ${p.active === false ? 'badge--error' : 'badge--success'}`}
+                    onClick={() => updateProduct(p.id, { active: p.active === false })}
+                    style={{ cursor: 'pointer', border: 'none' }}
+                    title={p.active === false ? 'Ürün yayında değil — tıklayarak yayına al' : 'Ürün yayında — tıklayarak yayından kaldır'}
+                  >
+                    {p.active === false ? 'Yayında Değil' : 'Yayında'}
                   </button>
                 </td>
                 <td>
