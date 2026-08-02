@@ -107,7 +107,7 @@ exports.handler = async (event) => {
             'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
           },
           body: JSON.stringify({
-            from: 'Paressilk <onboarding@resend.dev>',
+            from: 'Paressilk <siparis@paressilk.com>',
             to: [cart.email],
             subject: 'Sepetinizde ürünler bekliyor - Paressilk',
             html: buildEmailHtml(cart.items),
