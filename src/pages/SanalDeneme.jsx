@@ -135,7 +135,67 @@ function drawScarfDrape(ctx, srcImg, pts, scarfImg, w, h) {
   ctx.drawImage(layer, 0, 0);
 }
 
+// Sanal deneme geçici olarak kapalı — AI motoru (Gemini API) billing aktif
+// olunca true yapılır ve sayfa aynen geri açılır. Kod silinmedi, sadece geçitle.
+const SANAL_DENEME_AKTIF = false;
+
+function SanalDenemeYakinda() {
+  return (
+    <>
+      <Helmet>
+        <title>Sanal Deneme · Yakında | Paressilk</title>
+        <meta name="description" content="Paressilk sanal deneme özelliği çok yakında hizmetinizde. İpek eşarplarımızı kendi fotoğrafınız üzerinde deneyimleyin." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      <div style={{
+        minHeight: '70vh', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', textAlign: 'center',
+        padding: '80px 24px', background: 'var(--cream, #F5F0E8)',
+      }}>
+        <div style={{
+          fontSize: '0.8rem', letterSpacing: '0.25em', color: 'var(--gold, #B8860B)',
+          textTransform: 'uppercase', marginBottom: 20,
+        }}>
+          Paressilk · Yenilik
+        </div>
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none"
+          stroke="var(--gold, #B8860B)" strokeWidth="1.3" style={{ marginBottom: 24 }}>
+          <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+        </svg>
+        <h1 style={{
+          fontFamily: 'var(--font-heading, "Playfair Display", serif)',
+          fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'var(--ink, #1a1a1a)',
+          margin: '0 0 16px', fontWeight: 500,
+        }}>
+          Sanal Deneme Çok Yakında
+        </h1>
+        <p style={{
+          fontSize: '1.05rem', color: '#666', maxWidth: 520, lineHeight: 1.7,
+          margin: '0 0 36px',
+        }}>
+          İpek eşarplarımızı kendi fotoğrafınız üzerinde deneyimleyebileceğiniz
+          yapay zekâ destekli sanal deneme özelliğimiz üzerinde çalışıyoruz.
+          Çok yakında hizmetinizde olacak.
+        </p>
+        <Link to="/shop" className="btn btn--primary" style={{
+          background: 'var(--gold, #B8860B)', color: '#fff', padding: '14px 36px',
+          textDecoration: 'none', letterSpacing: '0.05em', fontSize: '0.9rem',
+          textTransform: 'uppercase',
+        }}>
+          Koleksiyonu Keşfet
+        </Link>
+      </div>
+    </>
+  );
+}
+
 export default function SanalDeneme() {
+  if (!SANAL_DENEME_AKTIF) return <SanalDenemeYakinda />;
+
+  return <SanalDenemeApp />;
+}
+
+function SanalDenemeApp() {
   const { products } = useProducts();
   const scarfProducts = products.filter(
     p => p.category === 'yeni-koleksiyon' || p.category === 'kelaghayi' || p.category === 'scarves'
