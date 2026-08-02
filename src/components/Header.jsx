@@ -55,6 +55,12 @@ export default function Header() {
                     <div style={{ padding: '12px 16px', borderBottom: '1px solid #eee', fontSize: '0.82rem', color: '#888' }}>
                       {user.firstName} {user.lastName}
                     </div>
+                    <Link to="/hesap" onClick={() => setUserMenuOpen(false)} style={{ display: 'block', padding: '12px 16px', borderBottom: '1px solid #eee', textDecoration: 'none', fontSize: '0.85rem', color: '#333' }}>
+                      Hesabım
+                    </Link>
+                    <Link to="/wishlist" onClick={() => setUserMenuOpen(false)} style={{ display: 'block', padding: '12px 16px', borderBottom: '1px solid #eee', textDecoration: 'none', fontSize: '0.85rem', color: '#333' }}>
+                      Favorilerim
+                    </Link>
                     <button onClick={() => { logout(); setUserMenuOpen(false); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', color: '#333' }}>
                       Çıkış Yap
                     </button>

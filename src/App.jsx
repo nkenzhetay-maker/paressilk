@@ -28,6 +28,7 @@ import MesafeliSatis from './pages/MesafeliSatis';
 import IadePolitikasi from './pages/IadePolitikasi';
 import SSS from './pages/SSS';
 import Wishlist from './pages/Wishlist';
+import Hesap from './pages/Hesap';
 import InstagramPage from './pages/InstagramPage';
 import CookieConsent from './components/CookieConsent';
 
@@ -73,6 +74,7 @@ function StorefrontLayout() {
         <Route path="/iade-politikasi" element={<IadePolitikasi />} />
         <Route path="/sss" element={<SSS />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/hesap" element={<Hesap />} />
         <Route path="/instagram" element={<InstagramPage />} />
         <Route path="/sanal-deneme" element={<Suspense fallback={<PageFallback />}><SanalDeneme /></Suspense>} />
         <Route path="/ai-playground" element={<Suspense fallback={<PageFallback />}><AITryonPlayground /></Suspense>} />
