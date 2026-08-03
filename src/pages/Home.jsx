@@ -216,8 +216,8 @@ export default function Home() {
       {/* About Section */}
       <section className="section">
         <div className="container">
-          <div className="about-section">
-            <img src="/images/brand/hikaye-ipek.jpg" alt="Paressilk - İpek Kozası ve Ahşap Baskı Kalıpları" className="about-section__image about-section__image--cover" style={{ objectPosition: 'left center' }} />
+          <div className="about-section about-section--overlay">
+            <img src="/images/brand/hikaye-ipek.jpg" alt="Paressilk - İpek Kozası ve Ahşap Baskı Kalıpları" className="about-section__image" />
             <div className="about-section__content">
               <p className="section__subtitle">Hikayemiz</p>
               <h3>Yüzyıllık İpek Geleneği</h3>

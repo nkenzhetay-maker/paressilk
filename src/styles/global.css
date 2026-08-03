@@ -683,6 +683,63 @@ input, textarea, select {
   object-fit: cover;
 }
 
+/* Tam-genişlik editoryal overlay (Home "Hikayemiz") — görsel sola taşar, yazı sağda üstte */
+.about-section--overlay {
+  position: relative;
+  display: block;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+}
+.about-section--overlay .about-section__image {
+  width: 100%;
+  height: clamp(460px, 72vh, 660px);
+  max-height: none;
+  object-fit: cover;
+  object-position: left center;
+}
+.about-section--overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to left,
+    rgba(250, 247, 241, 0.97) 0%,
+    rgba(250, 247, 241, 0.88) 24%,
+    rgba(250, 247, 241, 0.42) 44%,
+    rgba(250, 247, 241, 0) 60%);
+}
+.about-section--overlay .about-section__content {
+  position: absolute;
+  top: 50%;
+  right: 8vw;
+  transform: translateY(-50%);
+  width: min(40%, 440px);
+  z-index: 2;
+}
+.about-section--overlay .about-section__content h3 {
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+}
+@media (max-width: 768px) {
+  .about-section--overlay .about-section__image {
+    height: 78vh;
+  }
+  .about-section--overlay::after {
+    background: linear-gradient(to top,
+      rgba(250, 247, 241, 0.97) 0%,
+      rgba(250, 247, 241, 0.86) 38%,
+      rgba(250, 247, 241, 0) 74%);
+  }
+  .about-section--overlay .about-section__content {
+    top: auto;
+    bottom: 6%;
+    right: 22px;
+    left: 22px;
+    transform: none;
+    width: auto;
+  }
+}
+
 .about-section__content h3 {
   font-size: 2rem;
   font-weight: 300;
