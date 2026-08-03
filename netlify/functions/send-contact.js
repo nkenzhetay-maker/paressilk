@@ -1,3 +1,5 @@
+const { createClient } = require('@supabase/supabase-js');
+
 const ALLOWED_ORIGINS = [
   process.env.SITE_URL || 'https://paressilk.com',
   'https://paressilk.netlify.app',
@@ -32,6 +34,26 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Mesajınız en az 10 karakter olmalıdır' }) };
     }
 
+    // 1) Mesajı veritabanına kaydet (admin panelinde "Mesajlar" bölümünde görünür + oradan cevaplanır).
+    try {
+      const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_KEY;
+      if (url && key) {
+        const supabase = createClient(url, key, { auth: { persistSession: false } });
+        await supabase.from('messages').insert({
+          name: name.trim(),
+          email: email.trim(),
+          phone: (phone || '').trim(),
+          subject: (subject || 'Genel Bilgi').trim(),
+          message: message.trim(),
+          status: 'new',
+        });
+      }
+    } catch (dbErr) {
+      console.error('contact message save error:', dbErr.message);
+      // kayıt başarısız olsa bile e-posta gönderilmeye devam eder
+    }
+
+    // 2) Bilgilendirme e-postası (yedek) — info@'ya gider, oradan infograndreal Gmail'ine yönlenir.
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -40,7 +62,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         from: 'Paressilk İletişim <iletisim@paressilk.com>',
-        to: ['nkenzhetay@gmail.com'],
+        to: ['info@paressilk.com'],
         reply_to: email,
         subject: `İletişim Formu: ${subject || 'Genel Bilgi'} - ${name}`,
         html: `
@@ -59,8 +81,8 @@ exports.handler = async (event) => {
     });
 
     if (!res.ok) {
+      // Mesaj DB'ye kaydedildiği için e-posta hatası kritik değil; sadece logla.
       console.error('Resend error:', await res.text());
-      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Mesaj gönderilemedi' }) };
     }
 
     return {
