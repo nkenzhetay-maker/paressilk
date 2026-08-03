@@ -53,6 +53,24 @@ export default function About() {
 
         <section className="section">
           <div className="container">
+            <div className="about-section">
+              <img src="/images/products/sofi-v3-lifestyle.jpg" alt="Azerbaycan ahşap kalıp baskı zanaatı" className="about-section__image" />
+              <div className="about-section__content">
+                <p className="section__subtitle">Pares Vizyonu</p>
+                <h3>Kültürel Bir Köprü</h3>
+                <p>
+                  Paressilk, kendini lüks bir kültürel köprü olarak konumlandırır; asırlık Azerbaycan ahşap kalıp baskı tekniklerini üst düzey Türk estetik vizyonuyla birleştiren, sınırlı sayıda üretilen ve numaralandırılmış ipek sanat eserleri sunar.
+                </p>
+                <p>
+                  Parçalarımız sıradan birer aksesuar değildir; miras geleneği ve zarif lüks üzerine inşa edilmiş, klasik ve zamansız bir tasarım anlayışını temsil eden felsefi bir kültürel hareketi yansıtır.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--cream">
+          <div className="container">
             <div className="section__header" style={{ textAlign: 'center' }}>
               <p className="section__subtitle">Misyonumuz</p>
               <h2 className="section__title">İki Devlet, Tek İpek İpliği</h2>

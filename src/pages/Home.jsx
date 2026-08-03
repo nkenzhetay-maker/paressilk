@@ -37,14 +37,15 @@ function HomeProductCard({ product }) {
         </Link>
         <p className="home-product__price">{formatPrice(product.price)}</p>
         <p className="home-product__desc">{product.description}</p>
-        <button
-          className="home-product__cart-btn"
-          onClick={() => addItem(product)}
-          disabled={!product.inStock}
-          style={!product.inStock ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-        >
-          {product.inStock ? 'Sepete Ekle' : 'Stokta Yok'}
-        </button>
+        {product.inStock ? (
+          <button className="home-product__cart-btn" onClick={() => addItem(product)}>
+            Sepete Ekle
+          </button>
+        ) : (
+          <Link to={`/product/${product.id}`} className="home-product__cart-btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+            Ön Sipariş Ver
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -164,7 +165,7 @@ export default function Home() {
             <div className="section__divider" />
           </div>
           <div className="home-products-grid">
-            {products.filter(p => p.inStock && p.category !== 'yeni-koleksiyon').map(product => (
+            {getByCategory('all').filter(p => p.category !== 'yeni-koleksiyon').map(product => (
               <HomeProductCard key={product.id} product={product} />
             ))}
           </div>
