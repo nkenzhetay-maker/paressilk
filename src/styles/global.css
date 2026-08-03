@@ -656,94 +656,45 @@ input, textarea, select {
 
 /* About Section */
 .about-section {
-  position: relative;
-  display: block;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.about-section--reverse {
+  direction: rtl;
+}
+.about-section--reverse > * {
+  direction: ltr;
 }
 
 .about-section__image {
   width: 100%;
-  height: min(80vh, 700px);
-  min-height: 540px;
+  height: 500px;
   object-fit: cover;
-  object-position: center;
-  display: block;
-}
-
-/* Metin tarafına yumuşak açık gradyan — koyu yazı her görselde okunur kalsın */
-.about-section::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to left,
-    rgba(245, 240, 232, 0.94) 0%,
-    rgba(245, 240, 232, 0.78) 26%,
-    rgba(245, 240, 232, 0.35) 46%,
-    rgba(245, 240, 232, 0) 62%);
-}
-
-.about-section--reverse::after {
-  background: linear-gradient(to right,
-    rgba(245, 240, 232, 0.94) 0%,
-    rgba(245, 240, 232, 0.78) 26%,
-    rgba(245, 240, 232, 0.35) 46%,
-    rgba(245, 240, 232, 0) 62%);
-}
-
-.about-section__content {
-  position: absolute;
-  top: 50%;
-  right: 7%;
-  transform: translateY(-50%);
-  width: min(42%, 480px);
-  z-index: 2;
-}
-
-.about-section--reverse .about-section__content {
-  right: auto;
-  left: 7%;
-}
-
-.about-section__content .section__subtitle {
-  color: var(--gold, #B8860B);
 }
 
 .about-section__content h3 {
-  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-size: 2rem;
   font-weight: 300;
   margin-bottom: 20px;
-  color: var(--black, #1a1a1a);
 }
 
 .about-section__content p {
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   line-height: 1.8;
-  color: var(--gray-dark, #4a4a4a);
+  color: var(--gray-dark);
   margin-bottom: 16px;
 }
 
 @media (max-width: 768px) {
+  .about-section {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
   .about-section__image {
-    height: 62vh;
-    min-height: 420px;
-  }
-  .about-section::after,
-  .about-section--reverse::after {
-    background: linear-gradient(to top,
-      rgba(245, 240, 232, 0.97) 0%,
-      rgba(245, 240, 232, 0.85) 34%,
-      rgba(245, 240, 232, 0.2) 62%,
-      rgba(245, 240, 232, 0) 80%);
-  }
-  .about-section__content,
-  .about-section--reverse .about-section__content {
-    top: auto;
-    bottom: 8%;
-    transform: none;
-    width: auto;
-    right: 22px;
-    left: 22px;
+    height: 300px;
   }
 }
 

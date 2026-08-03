@@ -8,6 +8,7 @@ const PRODUCTS = require('../../src/data/products.json');
 const { applyPromo } = require('../lib/promos.cjs');
 const { sendOrderEmail, sendOrderSms } = require('../lib/notify.cjs');
 const { validateBilling, normalizeBilling } = require('../lib/billing.cjs');
+const { generateAccessCode } = require('../lib/bank.cjs');
 
 const PRICE_BY_ID = new Map(PRODUCTS.map(p => [String(p.id), Number(p.price)]));
 
