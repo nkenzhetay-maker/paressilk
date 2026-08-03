@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- Background -->
+  <circle cx="540" cy="540" r="540" fill="#1a1a1a"/>
+
+  <!-- Heart + Info combined icon - elegant monogram style -->
+  <g transform="translate(540, 460)" fill="none" stroke="#B8860B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Heart shape -->
+    <path d="M0,140 Q-40,110 -80,70 Q-140,10 -140,-50 Q-140,-100 -110,-130 Q-80,-160 -40,-160 Q-10,-160 0,-130 Q10,-160 40,-160 Q80,-160 110,-130 Q140,-100 140,-50 Q140,10 80,70 Q40,110 0,140 Z"/>
+    <!-- Small 'P' monogram inside heart -->
+    <text x="0" y="-10" text-anchor="middle" fill="#B8860B" font-family="'Playfair Display', 'Georgia', serif" font-size="80" font-weight="400" stroke="none">P</text>
+  </g>
+
+  <!-- Label -->
+  <text x="540" y="740" text-anchor="middle" fill="#B8860B" font-family="'Playfair Display', 'Georgia', serif" font-size="42" font-weight="400" letter-spacing="6">HAKKIMIZDA</text>
+
+  <!-- Subtle decorative line -->
+  <line x1="410" y1="770" x2="670" y2="770" stroke="#B8860B" stroke-width="1" opacity="0.4"/>
+</svg>
