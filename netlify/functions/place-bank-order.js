@@ -65,6 +65,8 @@ exports.handler = async (event) => {
     const grandTotal = Math.round((subtotal - discountTL + shippingTL) * 100) / 100;
 
     const orderNumber = `PS-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
+    // Havale erişim kodu: müşterinin e-posta/SMS'ine gider; bu kodu giren müşteriye IBAN gösterilir.
+    const accessCode = generateAccessCode();
 
     // Supabase kaydı (havale bekleniyor durumunda)
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -77,7 +79,7 @@ exports.handler = async (event) => {
       payment_status: 'awaiting_bank_transfer',
       status: 'awaiting_payment',
       items: orderItems,
-      shipping_address: { ...shippingInfo, note: String(note || '').slice(0, 500) },
+      shipping_address: { ...shippingInfo, note: String(note || '').slice(0, 500), accessCode },
       billing: normalizeBilling(billing),
       created_at: new Date().toISOString(),
     });
@@ -92,6 +94,7 @@ exports.handler = async (event) => {
       customerName: shippingInfo.name,
       customerEmail,
       paymentLabel: 'Havale / EFT',
+      accessCode,      // e-postada "ödeme kodu" olarak gösterilir
       items: orderItems,
       subtotal,
       discountTL,
@@ -103,7 +106,7 @@ exports.handler = async (event) => {
     };
     const [emailRes, smsRes] = await Promise.all([
       sendOrderEmail(orderPayload),
-      sendOrderSms({ phone: shippingInfo.phone, customerName: shippingInfo.name, orderNumber }),
+      sendOrderSms({ phone: shippingInfo.phone, customerName: shippingInfo.name, orderNumber, accessCode }),
     ]);
 
     return {

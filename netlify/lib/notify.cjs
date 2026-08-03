@@ -18,8 +18,31 @@ function orderEmailHtml(order) {
   const {
     orderNumber, customerName, paymentLabel, items = [],
     subtotal, discountTL, promoLabel, shippingTL, grandTotal,
-    shippingInfo = {}, billing = {},
+    shippingInfo = {}, billing = {}, accessCode,
   } = order;
+
+  const siteUrl = process.env.SITE_URL || 'https://paressilk.com';
+  const isBank = accessCode && /havale|eft/i.test(String(paymentLabel || ''));
+  // Havale ödeme kodu kutusu — müşteri bu kodu sitede girince IBAN görünür.
+  const bankCodeBlock = isBank ? `
+    <div style="background:#fffaf0;border:1px solid #e8d9b5;border-radius:8px;padding:24px;margin-top:16px;text-align:center;">
+      <h3 style="margin:0 0 6px;font-size:16px;color:#8a6600;">Ödeme (Havale/EFT) Bilgileri</h3>
+      <p style="margin:0 0 14px;color:#555;font-size:13px;line-height:1.6;">
+        Güvenliğiniz için IBAN bilgilerimiz yalnızca aşağıdaki koda özeldir.<br>
+        Bu kodu ödeme bilgileri sayfasına girerek hesap bilgilerimizi görüntüleyin.
+      </p>
+      <div style="display:inline-block;background:#fff;border:2px dashed #B8860B;border-radius:8px;padding:12px 26px;margin-bottom:14px;">
+        <span style="font-size:12px;color:#999;letter-spacing:2px;display:block;">ÖDEME KODUNUZ</span>
+        <span style="font-size:30px;font-weight:bold;letter-spacing:8px;color:#1a1a1a;">${esc(accessCode)}</span>
+      </div>
+      <div>
+        <a href="${siteUrl}/odeme-bilgileri?siparis=${encodeURIComponent(orderNumber)}"
+           style="display:inline-block;background:#B8860B;color:#fff;text-decoration:none;padding:11px 26px;border-radius:6px;font-size:14px;font-weight:bold;">
+          Ödeme Bilgilerini Görüntüle →
+        </a>
+      </div>
+      <p style="margin:14px 0 0;color:#888;font-size:12px;">Havale açıklamasına sipariş numaranızı yazmayı unutmayın: <b>${esc(orderNumber)}</b></p>
+    </div>` : '';
 
   const rows = items.map(it => `
     <tr>
@@ -78,6 +101,8 @@ function orderEmailHtml(order) {
         <tr><td style="text-align:right;padding:8px 0;font-size:16px;"><b>Genel Toplam (KDV Dahil):</b></td><td style="text-align:right;font-size:16px;"><b>${fmtTL(grandTotal)}</b></td></tr>
       </table>
     </div>
+
+    ${bankCodeBlock}
 
     <div style="background:#fff;border:1px solid #e8e2d5;border-radius:8px;padding:24px;margin-top:16px;">
       <h3 style="margin:0 0 12px;font-size:15px;border-bottom:1px solid #eee;padding-bottom:8px;">Teslimat Bilgileri</h3>
@@ -146,7 +171,7 @@ function normalizePhoneTR(phone) {
   return /^5\d{9}$/.test(p) ? p : null;
 }
 
-async function sendOrderSms({ phone, customerName, orderNumber }) {
+async function sendOrderSms({ phone, customerName, orderNumber, accessCode }) {
   const user = process.env.NETGSM_USERCODE;
   const pass = process.env.NETGSM_PASSWORD;
   const header = process.env.NETGSM_MSGHEADER;
@@ -155,7 +180,9 @@ async function sendOrderSms({ phone, customerName, orderNumber }) {
   const gsm = normalizePhoneTR(phone);
   if (!gsm) return { sent: false, reason: 'geçersiz telefon' };
 
-  const message = `Sn.${customerName} ${orderNumber} numaralı siparişiniz alınmıştır. Detaylar e-posta adresinize gönderildi. PARESSILK`;
+  const message = accessCode
+    ? `Sn.${customerName} ${orderNumber} numarali siparisiniz alindi. Odeme kodunuz: ${accessCode}. IBAN icin bu kodu sitede girin. PARESSILK`
+    : `Sn.${customerName} ${orderNumber} numaralı siparişiniz alınmıştır. Detaylar e-posta adresinize gönderildi. PARESSILK`;
 
   try {
     // Netgsm REST v2 (JSON)
