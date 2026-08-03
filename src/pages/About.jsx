@@ -36,7 +36,7 @@ export default function About() {
         <section className="section section--cream">
           <div className="container">
             <div className="about-section about-section--reverse">
-              <img src="/images/products/kelaghayi-6.jpg" alt="Şeki İpek Zanaatı" className="about-section__image" />
+              <img src="/images/brand/serap.jpg" alt="Serap Kabakçı — Paressilk Kurucusu" className="about-section__image about-section__image--cover" style={{ maxWidth: 420, margin: '0 auto', borderRadius: 8 }} />
               <div className="about-section__content">
                 <p className="section__subtitle">Kurucu</p>
                 <h3>Serap Kabakçı</h3>
