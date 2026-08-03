@@ -18,7 +18,7 @@ export default function About() {
         <section className="section">
           <div className="container">
             <div className="about-section">
-              <img src="/images/brand/showroom.jpg" alt="Paressilk Showroom" className="about-section__image" />
+              <img src="/images/brand/showroom.jpg" alt="Paressilk Showroom" className="about-section__image" style={{ objectPosition: 'left center' }} />
               <div className="about-section__content">
                 <p className="section__subtitle">Pares Felsefesi</p>
                 <h3>Bir Ruh Ortaklığı</h3>
@@ -35,8 +35,8 @@ export default function About() {
 
         <section className="section section--cream">
           <div className="container">
-            <div className="about-section" style={{ flexDirection: 'row-reverse' }}>
-              <img src="/images/products/kelaghayi-6.jpg" alt="Şeki İpek Zanaatı" className="about-section__image" />
+            <div className="about-section about-section--reverse">
+              <img src="/images/products/kelaghayi-6.jpg" alt="Şeki İpek Zanaatı" className="about-section__image" style={{ objectPosition: 'right center' }} />
               <div className="about-section__content">
                 <p className="section__subtitle">Kurucu</p>
                 <h3>Serap Kabakçı</h3>
@@ -54,7 +54,7 @@ export default function About() {
         <section className="section">
           <div className="container">
             <div className="about-section">
-              <img src="/images/brand/kultur-kopru.jpg" alt="Azerbaycan ahşap kalıp baskı zanaatı — Sofi ipek kozası ve doğal boyalar" className="about-section__image" />
+              <img src="/images/brand/kultur-kopru.jpg" alt="Azerbaycan ahşap kalıp baskı zanaatı — Sofi ipek kozası ve doğal boyalar" className="about-section__image" style={{ objectPosition: 'left center' }} />
               <div className="about-section__content">
                 <p className="section__subtitle">Pares Vizyonu</p>
                 <h3>Kültürel Bir Köprü</h3>
