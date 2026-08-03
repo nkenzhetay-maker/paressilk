@@ -58,6 +58,9 @@ export default function Footer() {
         <div className="footer__bottom">
           <p>&copy; {new Date().getFullYear()} Paressilk. Tüm hakları saklıdır.</p>
           <p style={{ fontSize: '0.7rem', color: '#666' }}>KVKK & Güvenli Alışveriş</p>
+          <p style={{ fontSize: '0.66rem', color: '#777', marginTop: 6, maxWidth: 560, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>
+            Sitemizdeki bazı tanıtım ve atmosfer görselleri yapay zekâ destekli olarak üretilmiştir. Ürün desenleri gerçek fotoğraflara dayanır.
+          </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', opacity: 0.6, marginTop: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             {/* Visa */}
             <svg width="40" height="25" viewBox="0 0 40 25" fill="none" xmlns="http://www.w3.org/2000/svg">

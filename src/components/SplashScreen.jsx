@@ -4,9 +4,9 @@ export default function SplashScreen({ onComplete }) {
   const [phase, setPhase] = useState('animate');
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase('fadeText'), 1800);
-    const t2 = setTimeout(() => setPhase('fadeOut'), 3200);
-    const t3 = setTimeout(() => onComplete(), 3800);
+    const t1 = setTimeout(() => setPhase('fadeText'), 800);
+    const t2 = setTimeout(() => setPhase('fadeOut'), 1350);
+    const t3 = setTimeout(() => onComplete(), 1800);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete]);
 
@@ -34,7 +34,7 @@ export default function SplashScreen({ onComplete }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: opacity 0.6s ease;
+          transition: opacity 0.45s ease;
         }
         .splash--exit {
           opacity: 0;
@@ -49,7 +49,7 @@ export default function SplashScreen({ onComplete }) {
         .splash__icon {
           opacity: 0;
           transform: scale(0.9);
-          animation: splashReveal 1.2s ease-out 0.3s forwards;
+          animation: splashReveal 0.6s ease-out 0.1s forwards;
         }
         .splash__icon--done {
           filter: drop-shadow(0 0 20px rgba(200, 164, 86, 0.4));
@@ -58,7 +58,7 @@ export default function SplashScreen({ onComplete }) {
           height: 60px;
           width: auto;
           filter: drop-shadow(0 0 0px rgba(200, 164, 86, 0));
-          animation: glowPulse 2s ease-in-out 1.5s infinite;
+          animation: glowPulse 2s ease-in-out 0.5s infinite;
         }
         @keyframes splashReveal {
           0% {
