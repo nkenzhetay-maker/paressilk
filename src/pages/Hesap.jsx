@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useUser } from '../context/UserContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../context/CartContext';
 
 const STATUS_LABELS = {
   awaiting_payment: 'Ödeme Bekleniyor',
@@ -22,6 +23,7 @@ export default function Hesap() {
   const { user, token, logout } = useUser();
   const navigate = useNavigate();
   const { items: wishlist } = useWishlist();
+  const { addItem } = useCart();
 
   const [customerNo, setCustomerNo] = useState('');
   const [form, setForm] = useState(null);      // düzenlenebilir profil
@@ -86,6 +88,12 @@ export default function Hesap() {
       setTimeout(() => setMsg(''), 3000);
     } catch (e) { setMsg(e.message); }
     finally { setSaving(false); }
+  };
+
+  const reorder = (o) => {
+    const list = (o.items || []).filter(it => it && it.id);
+    if (!list.length) { setMsg('Bu siparişte tekrarlanacak ürün bulunamadı.'); setTimeout(() => setMsg(''), 3000); return; }
+    list.forEach(it => addItem({ id: it.id, name: it.name, price: it.price, images: it.images }, it.qty || 1));
   };
 
   const fmt = (n, c = 'try') => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: (c || 'try').toUpperCase() }).format(n);
@@ -236,7 +244,9 @@ export default function Hesap() {
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {orders.map(o => (
+                {orders.map(o => {
+                  const its = (o.items || []).filter(it => it && it.id);
+                  return (
                   <div key={o.orderNumber} style={{ border: '1px solid #eee', borderRadius: 8, padding: 14 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
                       <div><div style={{ fontWeight: 600, fontSize: '0.88rem' }}>#{o.orderNumber}</div><div style={{ color: '#888', fontSize: '0.78rem' }}>{fmtDate(o.createdAt)}</div></div>
@@ -244,8 +254,18 @@ export default function Hesap() {
                         <span style={{ fontSize: '0.72rem', padding: '2px 10px', borderRadius: 20, background: (o.status === 'paid' || o.status === 'delivered') ? '#e6f4ea' : '#fdf3e3', color: (o.status === 'paid' || o.status === 'delivered') ? '#1e7e34' : '#a06a00' }}>{STATUS_LABELS[o.status] || o.status}</span>
                       </div>
                     </div>
+                    {its.length > 0 && (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, marginTop: 12, paddingTop: 12, borderTop: '1px solid #f2f2f2' }}>
+                        <div style={{ color: '#666', fontSize: '0.8rem' }}>
+                          {its.slice(0, 3).map(it => `${it.name}${it.qty > 1 ? ` ×${it.qty}` : ''}`).join(', ')}
+                          {its.length > 3 ? ` +${its.length - 3} ürün` : ''}
+                        </div>
+                        <button onClick={() => reorder(o)} style={{ padding: '7px 16px', border: '1px solid var(--gold, #B8860B)', color: 'var(--gold-dark, #8a6600)', background: '#fff', borderRadius: 6, cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>↻ Siparişi Tekrarla</button>
+                      </div>
+                    )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
         </div>
