@@ -32,6 +32,7 @@ import Hesap from './pages/Hesap';
 import GizlilikPolitikasi from './pages/GizlilikPolitikasi';
 import UyelikSozlesmesi from './pages/UyelikSozlesmesi';
 import InstagramPage from './pages/InstagramPage';
+import OdemeBilgileri from './pages/OdemeBilgileri';
 import CookieConsent from './components/CookieConsent';
 
 // Ağır / seyrek kullanılan sayfalar ayrı chunk'lara bölünür (lazy loading)
@@ -80,6 +81,7 @@ function StorefrontLayout() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/hesap" element={<Hesap />} />
         <Route path="/instagram" element={<InstagramPage />} />
+        <Route path="/odeme-bilgileri" element={<OdemeBilgileri />} />
         <Route path="/sanal-deneme" element={<Suspense fallback={<PageFallback />}><SanalDeneme /></Suspense>} />
         <Route path="/ai-playground" element={<Suspense fallback={<PageFallback />}><AITryonPlayground /></Suspense>} />
       </Routes>

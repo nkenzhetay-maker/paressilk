@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Helmet } from 'react-helmet-async';
+import BankInfoReveal from '../components/BankInfoReveal';
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -205,12 +206,11 @@ export default function Checkout() {
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', marginBottom: 12 }}>Siparişiniz Alındı!</h2>
           <p style={{ color: '#666', marginBottom: 8 }}>Sipariş numaranız: <strong>{orderNumber}</strong></p>
           {paymentMethod === 'bank' && (
-            <div style={{ background: '#F5F0E8', padding: 24, maxWidth: 500, margin: '20px auto', textAlign: 'left', fontSize: '0.85rem', lineHeight: 1.8 }}>
-              <p><strong>Havale/EFT Bilgileri:</strong></p>
-              <p>Banka: XXXX Bank</p>
-              <p>IBAN: TR00 0000 0000 0000 0000 0000 00</p>
-              <p>Hesap Sahibi: Paressilk</p>
-              <p style={{ color: 'var(--gold-dark)', marginTop: 8 }}>Açıklama: <strong>{orderNumber}</strong></p>
+            <div style={{ maxWidth: 520, margin: '24px auto', textAlign: 'left' }}>
+              <p style={{ color: '#666', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: 16 }}>
+                Ödeme kodunuz e-posta ve SMS ile gönderildi. Aşağıya girerek havale bilgilerimizi görüntüleyebilirsiniz.
+              </p>
+              <BankInfoReveal initialOrderNumber={orderNumber} />
             </div>
           )}
           <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: 8 }}>
@@ -429,10 +429,8 @@ export default function Checkout() {
                   {/* Bank Transfer Details */}
                   {paymentMethod === 'bank' && (
                     <div style={{ padding: 20, background: '#F5F0E8', marginBottom: 24, fontSize: '0.85rem', lineHeight: 1.8, borderRadius: 4 }}>
-                      <p><strong>Havale / EFT Bilgileri</strong></p>
-                      <p>Banka: XXXX Bank</p>
-                      <p>IBAN: TR00 0000 0000 0000 0000 0000 00</p>
-                      <p>Hesap Sahibi: Paressilk</p>
+                      <p><strong>Havale / EFT ile Ödeme</strong></p>
+                      <p style={{ color: '#555' }}>Siparişinizi onayladıktan sonra e-posta ve SMS ile 6 haneli bir ödeme kodu göndereceğiz. Bu kod ile havale/EFT bilgilerimizi güvenli şekilde görüntüleyebilirsiniz.</p>
                       <p style={{ marginTop: 8, color: 'var(--gold-dark)', fontSize: '0.8rem' }}>Sipariş onaylandıktan sonra 24 saat içinde havale yapılmalıdır.</p>
                     </div>
                   )}
