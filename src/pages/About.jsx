@@ -54,7 +54,7 @@ export default function About() {
         <section className="section">
           <div className="container">
             <div className="about-section">
-              <img src="/images/brand/kultur-kopru.jpg" alt="Azerbaycan ahşap kalıp baskı zanaatı — Sofi ipek kozası ve doğal boyalar" className="about-section__image" />
+              <img src="/images/brand/kultur-kopru-v2.jpg" alt="Azerbaycan ahşap kalıp baskı zanaatı — Sofi ipek kozası ve doğal boyalar" className="about-section__image" />
               <div className="about-section__content">
                 <p className="section__subtitle">Pares Vizyonu</p>
                 <h3>Kültürel Bir Köprü</h3>
