@@ -18,7 +18,7 @@ export default function About() {
         <section className="section">
           <div className="container">
             <div className="about-section">
-              <img src="/images/products/kelaghayi-1.jpg" alt="Paressilk - İpek Geleneği" className="about-section__image" />
+              <img src="/images/brand/showroom.jpg" alt="Paressilk Showroom" className="about-section__image" />
               <div className="about-section__content">
                 <p className="section__subtitle">Pares Felsefesi</p>
                 <h3>Bir Ruh Ortaklığı</h3>
