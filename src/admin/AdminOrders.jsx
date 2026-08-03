@@ -71,6 +71,31 @@ export default function AdminOrders() {
     }
   };
 
+  const cancelOrder = async (orderNumber) => {
+    if (busyId) return;
+    if (!window.confirm(`${orderNumber} numaralı siparişi İPTAL etmek istiyor musunuz?\n\nMüşteriye "ödemeniz ulaşmadığı için siparişiniz iptal edildi" bildirimi (e-posta/SMS) gönderilecek.`)) return;
+    setBusyId(orderNumber);
+    try {
+      const res = await fetch('/.netlify/functions/cancel-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ orderNumber }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Sipariş iptal edilemedi');
+      setOrders(prev => prev.map(o => o.orderNumber === orderNumber
+        ? { ...o, status: 'cancelled', paymentStatus: 'cancelled' }
+        : o));
+      window.alert(data.emailSent || data.smsSent
+        ? 'Sipariş iptal edildi ve müşteriye bildirim gönderildi.'
+        : 'Sipariş iptal edildi. (Bildirim gönderilemedi — e-posta/SMS yapılandırmasını kontrol edin.)');
+    } catch (err) {
+      window.alert(err.message || 'İşlem başarısız oldu.');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const formatPrice = (price, currency) => new Intl.NumberFormat('tr-TR', {
     style: 'currency', currency: (currency || 'try').toUpperCase(),
   }).format(price || 0);
@@ -169,17 +194,28 @@ export default function AdminOrders() {
                     <td><span className={`badge ${badgeClass(o.status)}`}>{label(o.status)}</span></td>
                     <td style={{ whiteSpace: 'nowrap', fontSize: '0.8rem' }}>{formatDate(o.createdAt)}</td>
                     <td>
-                      {o.paymentStatus !== 'paid' ? (
-                        <button
-                          className="btn btn--primary"
-                          onClick={() => confirmPayment(o.orderNumber)}
-                          disabled={busyId === o.orderNumber}
-                          style={{ fontSize: '0.75rem', padding: '6px 12px' }}
-                        >
-                          {busyId === o.orderNumber ? 'Onaylanıyor...' : 'Ödemeyi Onayla'}
-                        </button>
+                      {o.status === 'cancelled' ? (
+                        <span style={{ color: '#c0392b', fontSize: '0.8rem' }}>İptal edildi</span>
                       ) : (
-                        <span style={{ color: '#888', fontSize: '0.8rem' }}>—</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'stretch' }}>
+                          {o.paymentStatus !== 'paid' && (
+                            <button
+                              className="btn btn--primary"
+                              onClick={() => confirmPayment(o.orderNumber)}
+                              disabled={busyId === o.orderNumber}
+                              style={{ fontSize: '0.75rem', padding: '6px 12px' }}
+                            >
+                              {busyId === o.orderNumber ? 'Onaylanıyor...' : 'Ödemeyi Onayla'}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => cancelOrder(o.orderNumber)}
+                            disabled={busyId === o.orderNumber}
+                            style={{ fontSize: '0.75rem', padding: '6px 12px', background: '#fff', border: '1px solid #c0392b', color: '#c0392b', cursor: 'pointer', borderRadius: 4 }}
+                          >
+                            {busyId === o.orderNumber ? '...' : 'İptal Et'}
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>
