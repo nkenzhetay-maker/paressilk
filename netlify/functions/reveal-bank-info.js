@@ -53,9 +53,43 @@ exports.handler = async (event) => {
       return { statusCode: 404, headers, body: JSON.stringify({ error: 'Sipariş bulunamadı. Numarayı kontrol edin.' }) };
     }
 
-    const stored = String(data.shipping_address?.accessCode || '');
+    // Kaba kuvvet koruması: 5 yanlış denemede 10 dk kilit (sayaç sipariş kaydında tutulur).
+    const MAX_ATTEMPTS = 5;
+    const LOCK_MS = 10 * 60 * 1000;
+    const now = Date.now();
+    const sa = data.shipping_address || {};
+    const lockUntil = Number(sa._revealLockUntil || 0);
+
+    if (lockUntil && now < lockUntil) {
+      const mins = Math.ceil((lockUntil - now) / 60000);
+      return { statusCode: 429, headers, body: JSON.stringify({ error: `Çok fazla hatalı deneme. Lütfen ${mins} dakika sonra tekrar deneyin.` }) };
+    }
+
+    const stored = String(sa.accessCode || '');
     if (!stored || stored !== cd) {
-      return { statusCode: 401, headers, body: JSON.stringify({ error: 'Kod hatalı. E-postanıza gönderilen kodu girin.' }) };
+      const attempts = Number(sa._revealAttempts || 0) + 1;
+      const patch = { ...sa };
+      let locked = false;
+      if (attempts >= MAX_ATTEMPTS) {
+        patch._revealAttempts = 0;
+        patch._revealLockUntil = now + LOCK_MS;
+        locked = true;
+      } else {
+        patch._revealAttempts = attempts;
+      }
+      await supabase.from('orders').update({ shipping_address: patch }).eq('stripe_session_id', on);
+      if (locked) {
+        return { statusCode: 429, headers, body: JSON.stringify({ error: 'Çok fazla hatalı deneme. Güvenlik için 10 dakika kilitlendi.' }) };
+      }
+      return { statusCode: 401, headers, body: JSON.stringify({ error: `Kod hatalı. Kalan deneme hakkınız: ${MAX_ATTEMPTS - attempts}.` }) };
+    }
+
+    // Doğru kod → deneme sayacını sıfırla (varsa)
+    if (sa._revealAttempts || sa._revealLockUntil) {
+      const clean = { ...sa };
+      delete clean._revealAttempts;
+      delete clean._revealLockUntil;
+      await supabase.from('orders').update({ shipping_address: clean }).eq('stripe_session_id', on);
     }
 
     return {
