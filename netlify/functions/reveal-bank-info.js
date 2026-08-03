@@ -38,16 +38,17 @@ exports.handler = async (event) => {
     }
 
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY, { auth: { persistSession: false } });
-    const { data, error } = await supabase
+    const { data: rows, error } = await supabase
       .from('orders')
       .select('stripe_session_id, amount_total, currency, status, shipping_address')
       .eq('stripe_session_id', on)
-      .maybeSingle();
+      .limit(1);
 
     if (error) {
       console.error('reveal-bank-info db error:', error.message);
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Bir hata oluştu. Lütfen tekrar deneyin.' }) };
     }
+    const data = Array.isArray(rows) ? rows[0] : null;
     if (!data) {
       return { statusCode: 404, headers, body: JSON.stringify({ error: 'Sipariş bulunamadı. Numarayı kontrol edin.' }) };
     }
