@@ -106,7 +106,7 @@ export default function About() {
               <h2 className="section__title">Neden Paressilk?</h2>
               <div className="section__divider" />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 40 }}>
+            <div className="values-grid">
               {[
                 { title: '%100 Doğal İpek', desc: 'Sentetik veya karışım malzeme kullanmıyoruz. Tüm ürünlerimiz saf doğal ipekten üretilmiştir.' },
                 { title: 'El İşçiliği', desc: 'Her parça, usta zanaatkarlar tarafından geleneksel tekniklerle elle üretilir. Hiçbir ürün birbirinin aynısı değildir.' },
@@ -115,9 +115,10 @@ export default function About() {
                 { title: 'Özel Tasarım', desc: 'Kurumsal müşterilerimiz için özel logo ve desen baskısı hizmeti sunuyoruz.' },
                 { title: 'Premium Ambalaj', desc: 'Her ürün, hediye olarak da verilebilecek özel ambalajında teslim edilir.' },
               ].map((item, i) => (
-                <div key={i} style={{ textAlign: 'center', padding: '20px 0' }}>
-                  <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', marginBottom: 12 }}>{item.title}</h4>
-                  <p style={{ fontSize: '0.9rem', color: '#666', lineHeight: 1.7 }}>{item.desc}</p>
+                <div key={i} className="value-card">
+                  <h4>{item.title}</h4>
+                  <span className="value-card__divider" />
+                  <p>{item.desc}</p>
                 </div>
               ))}
             </div>
