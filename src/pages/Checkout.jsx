@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Helmet } from 'react-helmet-async';
 import BankInfoReveal from '../components/BankInfoReveal';
+import IlIlceSelect from '../components/IlIlceSelect';
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -288,14 +289,13 @@ export default function Checkout() {
                     <textarea rows="3" required value={formData.address} onChange={e => handleInputChange('address', e.target.value)} />
                   </div>
                   <div className="form-row">
-                    <div className="form-group">
-                      <label>İl</label>
-                      <input type="text" required value={formData.city} onChange={e => handleInputChange('city', e.target.value)} />
-                    </div>
-                    <div className="form-group">
-                      <label>İlçe</label>
-                      <input type="text" required value={formData.district} onChange={e => handleInputChange('district', e.target.value)} />
-                    </div>
+                    <IlIlceSelect
+                      required
+                      city={formData.city}
+                      district={formData.district}
+                      onCity={v => handleInputChange('city', v)}
+                      onDistrict={v => handleInputChange('district', v)}
+                    />
                   </div>
                   <div className="form-group">
                     <label>Posta Kodu</label>

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useUser } from '../context/UserContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
+import IlIlceSelect from '../components/IlIlceSelect';
 
 const STATUS_LABELS = {
   awaiting_payment: 'Ödeme Bekleniyor',
@@ -167,8 +168,9 @@ export default function Hesap() {
             <>
               <div style={{ marginBottom: 16 }}><span style={label}>Adres</span><input style={input} value={form.address} onChange={e => set('address', e.target.value)} placeholder="Mahalle, cadde, no, daire" /></div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
-                <div><span style={label}>İl</span><input style={input} value={form.city} onChange={e => set('city', e.target.value)} /></div>
-                <div><span style={label}>İlçe</span><input style={input} value={form.district} onChange={e => set('district', e.target.value)} /></div>
+                <IlIlceSelect variant="inline" labelStyle={label} inputStyle={input}
+                  city={form.city} district={form.district}
+                  onCity={v => set('city', v)} onDistrict={v => set('district', v)} />
                 <div><span style={label}>Posta Kodu</span><input style={input} value={form.postalCode} onChange={e => set('postalCode', e.target.value)} /></div>
               </div>
             </>
@@ -206,8 +208,9 @@ export default function Hesap() {
                 <>
                   <div style={{ marginBottom: 16 }}><span style={label}>Fatura Adresi</span><input style={input} value={form.billingAddress} onChange={e => set('billingAddress', e.target.value)} /></div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
-                    <div><span style={label}>İl</span><input style={input} value={form.billingCity} onChange={e => set('billingCity', e.target.value)} /></div>
-                    <div><span style={label}>İlçe</span><input style={input} value={form.billingDistrict} onChange={e => set('billingDistrict', e.target.value)} /></div>
+                    <IlIlceSelect variant="inline" labelStyle={label} inputStyle={input}
+                      city={form.billingCity} district={form.billingDistrict}
+                      onCity={v => set('billingCity', v)} onDistrict={v => set('billingDistrict', v)} />
                     <div><span style={label}>Posta Kodu</span><input style={input} value={form.billingPostalCode} onChange={e => set('billingPostalCode', e.target.value)} /></div>
                   </div>
                 </>
