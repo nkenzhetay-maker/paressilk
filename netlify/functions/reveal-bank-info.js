@@ -46,7 +46,8 @@ exports.handler = async (event) => {
 
     if (error) {
       console.error('reveal-bank-info db error:', error.message);
-      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Bir hata oluştu. Lütfen tekrar deneyin.' }) };
+      // GEÇİCİ TEŞHİS: gerçek Postgres hatasını yüzeye çıkar (sonra kaldırılacak)
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Bir hata oluştu. Lütfen tekrar deneyin.', _debug: { message: error.message, code: error.code, details: error.details, hint: error.hint } }) };
     }
     const data = Array.isArray(rows) ? rows[0] : null;
     if (!data) {

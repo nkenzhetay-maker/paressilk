@@ -671,7 +671,15 @@ input, textarea, select {
 
 .about-section__image {
   width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+}
+
+/* Home "Hikayemiz" gibi tam dolduran (kırpmalı) kullanım için */
+.about-section__image--cover {
   height: 500px;
+  max-height: none;
   object-fit: cover;
 }
 
