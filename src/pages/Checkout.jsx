@@ -28,7 +28,7 @@ export default function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('bank');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -384,6 +384,26 @@ export default function Checkout() {
                     <label
                       style={{
                         display: 'flex', alignItems: 'center', gap: 16, padding: 20,
+                        border: `2px solid ${paymentMethod === 'bank' ? 'var(--gold)' : '#eee'}`,
+                        cursor: 'pointer', transition: 'all 0.2s',
+                        background: paymentMethod === 'bank' ? '#FFFDF5' : '#fff',
+                      }}
+                    >
+                      <input type="radio" name="payment" value="bank" checked={paymentMethod === 'bank'} onChange={() => setPaymentMethod('bank')} style={{ accentColor: 'var(--gold)' }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 2l10 5H2l10-5z"/>
+                          </svg>
+                          <strong style={{ fontSize: '0.9rem' }}>Havale / EFT</strong>
+                        </div>
+                        <p style={{ fontSize: '0.78rem', color: '#888', marginTop: 4, marginLeft: 32 }}>Banka havalesi ile ödeme · Güvenli</p>
+                      </div>
+                    </label>
+
+                    <label
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 16, padding: 20,
                         border: `2px solid ${paymentMethod === 'card' ? 'var(--gold)' : '#eee'}`,
                         cursor: 'pointer', transition: 'all 0.2s',
                         background: paymentMethod === 'card' ? '#FFFDF5' : '#fff',
@@ -402,26 +422,6 @@ export default function Checkout() {
                       <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                         <svg width="32" height="20" viewBox="0 0 32 20"><rect width="32" height="20" rx="3" fill="#1A1F71"/><circle cx="12" cy="10" r="6" fill="#EB001B"/><circle cx="20" cy="10" r="6" fill="#F79E1B"/><path d="M16 5.5a6 6 0 010 9" fill="#FF5F00"/></svg>
                         <svg width="32" height="20" viewBox="0 0 32 20"><rect width="32" height="20" rx="3" fill="#0055A5"/><text x="16" y="13" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold">VISA</text></svg>
-                      </div>
-                    </label>
-
-                    <label
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 16, padding: 20,
-                        border: `2px solid ${paymentMethod === 'bank' ? 'var(--gold)' : '#eee'}`,
-                        cursor: 'pointer', transition: 'all 0.2s',
-                        background: paymentMethod === 'bank' ? '#FFFDF5' : '#fff',
-                      }}
-                    >
-                      <input type="radio" name="payment" value="bank" checked={paymentMethod === 'bank'} onChange={() => setPaymentMethod('bank')} style={{ accentColor: 'var(--gold)' }} />
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 2l10 5H2l10-5z"/>
-                          </svg>
-                          <strong style={{ fontSize: '0.9rem' }}>Havale / EFT</strong>
-                        </div>
-                        <p style={{ fontSize: '0.78rem', color: '#888', marginTop: 4, marginLeft: 32 }}>Banka havalesi ile ödeme</p>
                       </div>
                     </label>
                   </div>
