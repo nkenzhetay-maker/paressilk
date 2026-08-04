@@ -12,6 +12,38 @@ export default function AdminPreorders() {
   const [expanded, setExpanded] = useState(null);
   // Bir önceki ziyarette görülen en yeni kaydın zamanı — "YENİ" rozetini belirler
   const [seenTs, setSeenTs] = useState(() => Number(localStorage.getItem(SEEN_KEY) || 0));
+  // info@'dan mail gönderme (ön siparişçiye)
+  const [mailFor, setMailFor] = useState(null);
+  const [mailSubject, setMailSubject] = useState('');
+  const [mailBody, setMailBody] = useState('');
+  const [mailSending, setMailSending] = useState(false);
+  const [mailMsg, setMailMsg] = useState('');
+
+  const openMail = (r, key) => {
+    setMailFor(key);
+    setMailSubject(`Paressilk — ${r.productName || 'Ön Siparişiniz'}`);
+    setMailBody(`Merhaba ${r.customerName || ''},\n\nÖn sipariş verdiğiniz "${r.productName || ''}" ürünümüz stoğa girdi! Ön sipariş verdiğiniz için size öncelik tanıyoruz. Sipariş oluşturmak isterseniz bu e-postaya yanıt verebilir ya da sitemizden sipariş verebilirsiniz.\n\nSevgiler,\nParessilk`);
+    setMailMsg('');
+  };
+
+  const sendMail = async (r) => {
+    if (mailSending) return;
+    if (!mailSubject.trim() || !mailBody.trim()) { setMailMsg('Konu ve mesaj gerekli.'); return; }
+    setMailSending(true); setMailMsg('');
+    try {
+      const token = sessionStorage.getItem('paressilk_admin_token');
+      const res = await fetch('/.netlify/functions/send-customer-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
+        body: JSON.stringify({ to: r.email, name: r.customerName, subject: mailSubject, message: mailBody }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(d.error || 'Gönderilemedi');
+      setMailMsg(`✓ ${r.email} adresine info@paressilk.com'dan gönderildi`);
+      setMailFor(null);
+    } catch (e) { setMailMsg(e.message || 'Hata'); }
+    finally { setMailSending(false); }
+  };
 
   const load = useCallback(async () => {
     setLoading(true); setError('');
@@ -93,6 +125,7 @@ export default function AdminPreorders() {
               <h2 style={{ fontSize: '0.85rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#888', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: '1rem' }}>🔔</span> Son Ön Siparişler
               </h2>
+              {mailMsg && <p style={{ fontSize: '0.82rem', color: mailMsg.startsWith('✓') ? '#1e7e34' : '#c0392b', margin: '0 0 10px' }}>{mailMsg}</p>}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {data.recent.slice(0, 12).map((r, i) => {
                   const isNew = new Date(r.createdAt).getTime() > seenTs;
@@ -101,25 +134,41 @@ export default function AdminPreorders() {
                       ...card, padding: '12px 16px',
                       borderLeft: `3px solid ${isNew ? '#e53935' : '#e0e0e0'}`,
                       background: isNew ? '#fffaf7' : '#fff',
-                      display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
                     }}>
-                      <div style={{ flex: '1 1 200px', minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <strong style={{ fontSize: '0.9rem' }}>{r.customerName || '—'}</strong>
-                          {isNew && <span style={{ background: '#e53935', color: '#fff', fontSize: '0.62rem', fontWeight: 700, borderRadius: 8, padding: '1px 7px' }}>YENİ</span>}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                        <div style={{ flex: '1 1 180px', minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <strong style={{ fontSize: '0.9rem' }}>{r.customerName || '—'}</strong>
+                            {isNew && <span style={{ background: '#e53935', color: '#fff', fontSize: '0.62rem', fontWeight: 700, borderRadius: 8, padding: '1px 7px' }}>YENİ</span>}
+                          </div>
+                          <div style={{ fontSize: '0.78rem', color: '#666', marginTop: 2 }}>
+                            <b style={{ color: 'var(--gold-dark, #B8860B)' }}>{r.productName}</b>{r.productSku ? ` · ${r.productSku}` : ''}
+                          </div>
                         </div>
-                        <div style={{ fontSize: '0.78rem', color: '#666', marginTop: 2 }}>
-                          <b style={{ color: 'var(--gold-dark, #B8860B)' }}>{r.productName}</b>{r.productSku ? ` · ${r.productSku}` : ''}
+                        <div style={{ flex: '1 1 190px', fontSize: '0.76rem', color: '#777', minWidth: 0 }}>
+                          <span style={{ color: '#1565c0' }}>{r.email}</span>{r.phone ? ` · ${r.phone}` : ''}
+                        </div>
+                        <button onClick={() => (mailFor === i ? setMailFor(null) : openMail(r, i))}
+                          style={{ border: '1px solid var(--gold, #B8860B)', color: 'var(--gold-dark, #8a6600)', background: '#fff', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: '0.76rem', whiteSpace: 'nowrap' }}>
+                          ✉ info@'dan Mail
+                        </button>
+                        <div style={{ textAlign: 'right', fontSize: '0.72rem', color: '#999', whiteSpace: 'nowrap' }}>
+                          <div style={{ color: r.notified ? '#27ae60' : '#e65100', fontWeight: 600 }}>{r.notified ? 'Bildirildi' : 'Bekliyor'}</div>
+                          <div>{new Date(r.createdAt).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
                         </div>
                       </div>
-                      <div style={{ flex: '1 1 220px', fontSize: '0.76rem', color: '#777', minWidth: 0 }}>
-                        <a href={`mailto:${r.email}`} style={{ color: '#1565c0' }}>{r.email}</a>
-                        {r.phone ? ` · ` : ''}<a href={`tel:${r.phone}`} style={{ color: '#333' }}>{r.phone}</a>
-                      </div>
-                      <div style={{ textAlign: 'right', fontSize: '0.72rem', color: '#999', whiteSpace: 'nowrap' }}>
-                        <div style={{ color: r.notified ? '#27ae60' : '#e65100', fontWeight: 600 }}>{r.notified ? 'Bildirildi' : 'Bekliyor'}</div>
-                        <div>{new Date(r.createdAt).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
-                      </div>
+                      {mailFor === i && (
+                        <div style={{ marginTop: 12, borderTop: '1px solid #eee', paddingTop: 12 }}>
+                          <input value={mailSubject} onChange={e => setMailSubject(e.target.value)} placeholder="Konu"
+                            style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.85rem', marginBottom: 8, boxSizing: 'border-box' }} />
+                          <textarea value={mailBody} onChange={e => setMailBody(e.target.value)} rows={5}
+                            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.85rem', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }} />
+                          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
+                            <button onClick={() => setMailFor(null)} style={{ padding: '8px 16px', border: '1px solid #ddd', background: '#fff', borderRadius: 6, cursor: 'pointer', fontSize: '0.82rem' }}>Vazgeç</button>
+                            <button onClick={() => sendMail(r)} disabled={mailSending} style={{ padding: '8px 18px', border: 'none', background: 'var(--gold, #B8860B)', color: '#fff', borderRadius: 6, cursor: 'pointer', fontSize: '0.82rem' }}>{mailSending ? 'Gönderiliyor...' : "info@'dan Gönder"}</button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
