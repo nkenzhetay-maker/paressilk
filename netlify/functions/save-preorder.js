@@ -4,10 +4,8 @@
 // admin bu listedeki müşterilere öncelik verir. KVKK: açık rıza zorunlu.
 
 const { createClient } = require('@supabase/supabase-js');
-const PRODUCTS = require('../../src/data/products.json');
 const { sendPreorderEmail, sendPreorderSms } = require('../lib/notify.cjs');
-
-const PRODUCT_BY_ID = new Map(PRODUCTS.map(p => [String(p.id), p]));
+const { loadProducts } = require('../lib/product-store.cjs');
 
 const ALLOWED_ORIGINS = [
   process.env.SITE_URL || 'https://paressilk.com',
@@ -65,7 +63,8 @@ exports.handler = async (event) => {
   try {
     const { productId, firstName, lastName, email, phone, address, note, kvkkConsent } = JSON.parse(event.body || '{}');
 
-    const product = PRODUCT_BY_ID.get(String(productId));
+    const products = await loadProducts();
+    const product = products.find(p => String(p.id) === String(productId));
     if (!product) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçersiz ürün' }) };
     }

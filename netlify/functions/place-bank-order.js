@@ -4,13 +4,11 @@
 // e-posta (dekont) + SMS gönderilir. Fatura bilgileri (TC / kurumsal) doğrulanır.
 
 const { createClient } = require('@supabase/supabase-js');
-const PRODUCTS = require('../../src/data/products.json');
 const { applyPromo } = require('../lib/promos.cjs');
 const { sendOrderEmail, sendOrderSms } = require('../lib/notify.cjs');
 const { validateBilling, normalizeBilling } = require('../lib/billing.cjs');
 const { generateAccessCode } = require('../lib/bank.cjs');
-
-const PRICE_BY_ID = new Map(PRODUCTS.map(p => [String(p.id), Number(p.price)]));
+const { loadProducts } = require('../lib/product-store.cjs');
 
 const ALLOWED_ORIGINS = [
   process.env.SITE_URL || 'https://paressilk.com',
@@ -52,9 +50,11 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: billingError }) };
     }
 
-    // Fiyat otoritesi sunucu
+    // Fiyat otoritesi sunucu (ürünler Supabase'ten; admin panelinden eklenenler dahil)
+    const products = await loadProducts();
+    const priceById = new Map(products.map(p => [String(p.id), Number(p.price)]));
     const orderItems = items.map(it => {
-      const price = PRICE_BY_ID.get(String(it.id));
+      const price = priceById.get(String(it.id));
       if (price == null) throw new Error('Geçersiz ürün');
       const qty = Math.max(1, Math.min(99, Math.round(Number(it.qty) || 1)));
       return { id: String(it.id), name: String(it.name || '').slice(0, 200), price, qty };

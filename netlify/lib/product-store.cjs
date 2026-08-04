@@ -66,4 +66,23 @@ function productToRow(product, index) {
   return row;
 }
 
-module.exports = { getHeaders, verifyAdmin, getSupabase, rowToProduct, productToRow, ALLOWED_ORIGINS };
+// Sipariş/ön sipariş doğrulaması için ürünleri TEK kaynaktan yükle:
+// önce Supabase (admin panelinden eklenenler dahil), boş/hatalıysa statik products.json.
+let _fallbackProducts = [];
+try { _fallbackProducts = require('../../src/data/products.json'); } catch { _fallbackProducts = []; }
+
+async function loadProducts() {
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, data, active, featured, sort_order')
+        .order('sort_order', { ascending: true });
+      if (!error && Array.isArray(data) && data.length) return data.map(rowToProduct);
+    } catch { /* fallback'e düş */ }
+  }
+  return _fallbackProducts;
+}
+
+module.exports = { getHeaders, verifyAdmin, getSupabase, rowToProduct, productToRow, loadProducts, ALLOWED_ORIGINS };
