@@ -13,6 +13,7 @@ export default function AdminLayout() {
     { path: '/admin/products', label: 'Ürünler', icon: '🛍️' },
     { path: '/admin/orders', label: 'Siparişler', icon: '📦' },
     { path: '/admin/messages', label: 'Mesajlar', icon: '✉️' },
+    { path: '/admin/customers', label: 'Müşteriler', icon: '👤' },
     { path: '/admin/preorders', label: 'Ön Sipariş Talepleri', icon: '🔔' },
     { path: '/admin/ai-tryon', label: 'AI Sanal Deneme', icon: '🪄' },
     { path: '/admin/settings', label: 'Ayarlar', icon: '⚙️' },
