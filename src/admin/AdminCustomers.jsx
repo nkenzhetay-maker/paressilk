@@ -18,6 +18,37 @@ export default function AdminCustomers() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [openEmail, setOpenEmail] = useState(null);
+  // info@'dan mail gönderme
+  const [mailFor, setMailFor] = useState(null);
+  const [mailSubject, setMailSubject] = useState('');
+  const [mailBody, setMailBody] = useState('');
+  const [mailSending, setMailSending] = useState(false);
+  const [mailMsg, setMailMsg] = useState('');
+
+  const openMail = (c) => {
+    setMailFor(c.email);
+    setMailSubject('Paressilk — Size Özel');
+    setMailBody(`Merhaba ${c.name || ''},\n\n`);
+    setMailMsg('');
+  };
+
+  const sendMail = async (c) => {
+    if (mailSending) return;
+    if (!mailSubject.trim() || !mailBody.trim()) { setMailMsg('Konu ve mesaj gerekli.'); return; }
+    setMailSending(true); setMailMsg('');
+    try {
+      const res = await fetch('/.netlify/functions/send-customer-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ to: c.email, name: c.name, subject: mailSubject, message: mailBody }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(d.error || 'Gönderilemedi');
+      setMailMsg(`✓ ${c.email} adresine info@paressilk.com'dan gönderildi`);
+      setMailBody('');
+    } catch (e) { setMailMsg(e.message || 'Hata'); }
+    finally { setMailSending(false); }
+  };
 
   const load = useCallback(async () => {
     setLoading(true); setError('');
@@ -82,11 +113,25 @@ export default function AdminCustomers() {
                     {c.paidCount > 0 && <span style={{ fontSize: '0.72rem', padding: '2px 10px', borderRadius: 20, background: '#e6f4ea', color: '#1e7e34' }}>{c.paidCount} ödendi</span>}
                     {c.awaitingCount > 0 && <span style={{ fontSize: '0.72rem', padding: '2px 10px', borderRadius: 20, background: '#fdf3e3', color: '#a06a00' }}>{c.awaitingCount} bekliyor</span>}
                     {c.cancelledCount > 0 && <span style={{ fontSize: '0.72rem', padding: '2px 10px', borderRadius: 20, background: '#fdecec', color: '#c0392b' }}>{c.cancelledCount} iptal</span>}
-                    <a href={`mailto:${c.email}`} style={{ marginLeft: 'auto', fontSize: '0.78rem', color: 'var(--gold-dark, #8a6600)', textDecoration: 'none', border: '1px solid var(--gold, #B8860B)', borderRadius: 6, padding: '5px 12px' }}>✉ Mail Gönder</a>
+                    <button onClick={() => (mailFor === c.email ? setMailFor(null) : openMail(c))} style={{ marginLeft: 'auto', fontSize: '0.78rem', color: 'var(--gold-dark, #8a6600)', background: '#fff', cursor: 'pointer', border: '1px solid var(--gold, #B8860B)', borderRadius: 6, padding: '5px 12px' }}>✉ info@'dan Mail</button>
                     <button onClick={() => setOpenEmail(isOpen ? null : c.email)} style={{ fontSize: '0.78rem', background: 'none', border: '1px solid #ddd', borderRadius: 6, padding: '5px 12px', cursor: 'pointer' }}>
                       {isOpen ? 'Gizle' : `Geçmiş (${c.ordersCount})`}
                     </button>
                   </div>
+
+                  {mailFor === c.email && (
+                    <div style={{ marginTop: 12, borderTop: '1px solid #eee', paddingTop: 12 }}>
+                      <input value={mailSubject} onChange={e => setMailSubject(e.target.value)} placeholder="Konu"
+                        style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.85rem', marginBottom: 8, boxSizing: 'border-box' }} />
+                      <textarea value={mailBody} onChange={e => setMailBody(e.target.value)} rows={5}
+                        style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.85rem', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }} />
+                      <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8, alignItems: 'center' }}>
+                        {mailMsg && <span style={{ marginRight: 'auto', fontSize: '0.8rem', color: mailMsg.startsWith('✓') ? '#1e7e34' : '#c0392b' }}>{mailMsg}</span>}
+                        <button onClick={() => setMailFor(null)} style={{ padding: '8px 16px', border: '1px solid #ddd', background: '#fff', borderRadius: 6, cursor: 'pointer', fontSize: '0.82rem' }}>Vazgeç</button>
+                        <button onClick={() => sendMail(c)} disabled={mailSending} style={{ padding: '8px 18px', border: 'none', background: 'var(--gold, #B8860B)', color: '#fff', borderRadius: 6, cursor: 'pointer', fontSize: '0.82rem' }}>{mailSending ? 'Gönderiliyor...' : "info@'dan Gönder"}</button>
+                      </div>
+                    </div>
+                  )}
 
                   {isOpen && (
                     <div style={{ marginTop: 12, borderTop: '1px solid #f0f0f0', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
