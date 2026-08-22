@@ -46,6 +46,19 @@ function normalizePhoneTR(phone) {
 
 const validEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || ''));
 
+// Rastgele/bot ismi tespiti: aşırı uzun tek kelime ya da çok düşük sesli harf oranı
+function looksLikeGibberish(s) {
+  const t = String(s || '').trim();
+  if (!t) return false;
+  if (t.split(/\s+/).some(w => w.length > 18)) return true;
+  const letters = t.replace(/[^A-Za-zçğıöşüÇĞİÖŞÜ]/g, '');
+  if (letters.length >= 8) {
+    const vowels = (letters.match(/[aeıioöuüAEIİOÖUÜ]/g) || []).length;
+    if (vowels / letters.length < 0.18) return true;
+  }
+  return false;
+}
+
 exports.handler = async (event) => {
   const headers = getHeaders(event);
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers, body: '' };
@@ -61,7 +74,19 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { productId, firstName, lastName, email, phone, address, note, kvkkConsent } = JSON.parse(event.body || '{}');
+    const { productId, firstName, lastName, email, phone, address, note, kvkkConsent, website, elapsedMs } = JSON.parse(event.body || '{}');
+
+    // --- BOT KORUMASI ---
+    // Bota "başarılı" görünen sahte yanıt (tekrar denemesin), ama KAYDETME.
+    const fakeOk = () => ({ statusCode: 200, headers, body: JSON.stringify({ preorderNumber: `POS-${Date.now().toString(36).toUpperCase()}`, emailSent: false, smsSent: false }) });
+    // 1) Honeypot dolduysa → bot
+    if (website && String(website).trim() !== '') return fakeOk();
+    // 2) Form çok hızlı gönderildiyse (< 2.5 sn) → bot
+    if (typeof elapsedMs === 'number' && elapsedMs >= 0 && elapsedMs < 2500) return fakeOk();
+    // 3) Ad/soyad rastgele dizi (gibberish) ise → reddet
+    if (looksLikeGibberish(firstName) || looksLikeGibberish(lastName)) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Geçerli bir ad soyad giriniz' }) };
+    }
 
     const products = await loadProducts();
     const product = products.find(p => String(p.id) === String(productId));

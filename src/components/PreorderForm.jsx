@@ -20,6 +20,8 @@ export default function PreorderForm({ product }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
+  const [honeypot, setHoneypot] = useState(''); // bot tuzağı — gerçek kullanıcı görmez/doldurmaz
+  const [formLoadedAt] = useState(() => Date.now()); // çok hızlı gönderim = bot
 
   const set = (k, v) => { setForm(p => ({ ...p, [k]: v })); setError(''); };
 
@@ -36,7 +38,7 @@ export default function PreorderForm({ product }) {
       const res = await fetch('/.netlify/functions/save-preorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: product.id, ...form, kvkkConsent: consent }),
+        body: JSON.stringify({ productId: product.id, ...form, kvkkConsent: consent, website: honeypot, elapsedMs: Date.now() - formLoadedAt }),
       });
       const data = await res.json();
       if (res.ok && data.preorderNumber) setResult(data);
@@ -85,6 +87,13 @@ export default function PreorderForm({ product }) {
       </p>
 
       <form onSubmit={submit}>
+        {/* Bot tuzağı (honeypot) — ekran dışı, gerçek kullanıcı görmez/doldurmaz */}
+        <input
+          type="text" tabIndex={-1} autoComplete="off" aria-hidden="true"
+          value={honeypot} onChange={e => setHoneypot(e.target.value)}
+          name="website"
+          style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
+        />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ display: 'flex', gap: 10 }}>
             <input type="text" required placeholder="Ad *" value={form.firstName} onChange={e => set('firstName', e.target.value)} style={inputStyle} />
