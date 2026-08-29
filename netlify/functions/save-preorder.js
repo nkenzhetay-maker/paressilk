@@ -79,6 +79,12 @@ exports.handler = async (event) => {
     // --- BOT KORUMASI ---
     // Bota "başarılı" görünen sahte yanıt (tekrar denemesin), ama KAYDETME.
     const fakeOk = () => ({ statusCode: 200, headers, body: JSON.stringify({ preorderNumber: `POS-${Date.now().toString(36).toUpperCase()}`, emailSent: false, smsSent: false }) });
+    // 0) Kaynak doğrulama — istek yalnızca kendi form sayfamızdan (paressilk.com) gelmeli.
+    //    curl/script ile endpoint'e doğrudan vuran botlarda geçerli Origin/Referer bulunmaz.
+    const reqOrigin = event.headers.origin || event.headers.Origin || '';
+    const reqReferer = event.headers.referer || event.headers.Referer || '';
+    const fromOurSite = ALLOWED_ORIGINS.some(o => reqOrigin === o || (reqReferer && reqReferer.startsWith(o)));
+    if (!fromOurSite) return fakeOk();
     // 1) Honeypot dolduysa → bot
     if (website && String(website).trim() !== '') return fakeOk();
     // 2) Form çok hızlı gönderildiyse (< 2.5 sn) → bot
